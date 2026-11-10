@@ -1,5 +1,10 @@
 # Cleanup and production readiness
 
+This report records the earlier cleanup before the two-folder reorganization.
+For current file locations and commands, see [project overview](project-overview.md).
+Tests were subsequently removed from the working project by the owner; archived
+tests can still be run in a temporary verification copy.
+
 Reviewed on 10 November 2026. Work is local only: no deployment, remote Git push,
 live database migration, administrator change, or live service call was performed.
 

@@ -1,4 +1,4 @@
-import { sectionHeading } from '../../../shared/resumeParser.mjs'
+import { sectionHeading } from './resumeParsing/resumeParser.mjs'
 
 function rowsFrom(items) {
   const rows = []

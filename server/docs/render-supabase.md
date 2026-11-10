@@ -12,7 +12,7 @@ retained; you do not need Supabase Auth or a Supabase API key.
 ## 1. Create your free Supabase project
 
 1. Create a **Free** project in Supabase. Singapore is a useful region to pair
-   with the Singapore Render service in `render.yaml`.
+   with your Render service.
 2. Open **Connect → Session pooler** and copy the PostgreSQL URI using port **5432**.
    Use the exact host and username shown by your dashboard.
 3. Replace `[YOUR-PASSWORD]` with your database password. URL-encode reserved
@@ -39,9 +39,12 @@ server env file; never add them to a `VITE_` variable or commit them to Git.
 From the project root:
 
 ```sh
-npm run install:all
-npm run db:check
-npm run dev
+npm --prefix server ci
+npm --prefix client ci --include=dev
+npm --prefix server run db:check
+npm --prefix server run dev
+# In a separate terminal:
+npm --prefix client run dev
 ```
 
 `db:check` connects, creates the app's tables if needed, and seeds the template
@@ -71,7 +74,7 @@ Stop local development first. Keep `DATABASE_URL` pointing to your **empty**
 Supabase application database and run:
 
 ```sh
-npm run db:import
+npm --prefix server run db:import
 ```
 
 The default source is `server/data/linkfolio.sqlite`. Set `SQLITE_IMPORT_PATH` in
@@ -96,8 +99,8 @@ Push the project to a GitHub repository, excluding `server/.env` and
 | Runtime | Node |
 | Region | Singapore |
 | Instance type | **Free** |
-| Build command | `npm run install:all && npm run build` |
-| Start command | `npm start` |
+| Build command | `npm --prefix server ci && npm --prefix client ci --include=dev && npm --prefix client run build` |
+| Start command | `npm --prefix server start` |
 | Health check path | `/api/health` |
 
 Set these environment variables in Render:
@@ -117,9 +120,8 @@ that address for `APP_ORIGIN`; if it changes, update the variable and redeploy.
 The backend refuses to fall back to a temporary SQLite file in production when
 database settings are missing.
 
-Alternatively, create a Render **Blueprint** using the included `render.yaml`.
-It explicitly selects the Free instance and prompts for `DATABASE_URL` and
-`APP_ORIGIN`. See [Render Blueprints](https://render.com/docs/infrastructure-as-code).
+The optional Render blueprint was removed from this checkout. Use the manual
+service settings above; no deployment is performed by these source changes.
 
 After deployment, open `https://YOUR-SERVICE.onrender.com/api/health`; expect
 `{"status":"ok"}`. Then repeat the local checks on the deployed website.
@@ -127,7 +129,7 @@ After deployment, open `https://YOUR-SERVICE.onrender.com/api/health`; expect
 Production does not enable the local simulated payment flow. To try Premium
 templates without payment, use your own administrator account: configure
 `ADMIN_EMAIL` and `ADMIN_PASSWORD` locally with the same `DATABASE_URL`, run
-`npm run admin`, and remove `ADMIN_PASSWORD` afterward. The new administrator
+`npm --prefix server run admin`, and remove `ADMIN_PASSWORD` afterward. The new administrator
 account has Premium. Password-reset emails require separate SMTP configuration;
 without it, registration and normal login still work.
 

@@ -5,7 +5,7 @@ const { existsSync } = require('node:fs')
 // The React build is the view layer; API routes/controllers/models stay separate.
 function serveClient(app, directory = resolve(__dirname, '../client/dist')) {
   if (!existsSync(resolve(directory, 'index.html'))) {
-    if (app.locals.config.production) throw new Error('Client build is missing. Run npm run build before starting production.')
+    if (app.locals.config.production) throw new Error('Client build is missing. Run npm run build from the client folder before starting production.')
     return
   }
   app.use(express.static(directory))

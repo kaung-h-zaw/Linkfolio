@@ -5,7 +5,7 @@ import { textDocument } from './summary'
 import { newExperience } from './experience'
 import { newEducation, newSkill, skillLevels } from './educationSkills'
 import { newProject, newCertification, newLanguage, languageLevels } from './additionalSections'
-import { cleanResumeText, suggestPersonalDetails, parseResumeText } from '../../../shared/resumeParser.mjs'
+import { cleanResumeText, suggestPersonalDetails, parseResumeText } from './resumeParsing/resumeParser.mjs'
 import { pdfReadingOrder } from './pdfReadingOrder'
 
 export { cleanResumeText, suggestPersonalDetails, parseResumeText }

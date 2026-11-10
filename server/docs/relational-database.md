@@ -79,7 +79,7 @@ editor property is a separate SQL table.
 
 ## Migrate and verify
 
-From the project root:
+From the `server/` folder:
 
 ```sh
 npm run db:normalize

@@ -17,7 +17,7 @@ async function start() {
   }
   const client = resolve(__dirname, '../client/dist')
   if (production && !existsSync(resolve(client, 'index.html'))) {
-    throw new Error('Client build is missing. Run npm run build before starting production.')
+    throw new Error('Client build is missing. Run npm run build from the client folder before starting production.')
   }
   const database = await openConfiguredDatabase()
   const app = createApp({ database, origin, production })

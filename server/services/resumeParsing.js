@@ -1,5 +1,5 @@
-const { resumeSchema, validParsedResume } = require('../../shared/resumeSchema.mjs')
-const { parseResumeText } = require('../../shared/resumeParser.mjs')
+const { resumeSchema, validParsedResume } = require('../../client/src/lib/resumeParsing/resumeSchema.mjs')
+const { parseResumeText } = require('../../client/src/lib/resumeParsing/resumeParser.mjs')
 
 async function parseWithAI(source, { apiKey, model = 'gpt-4.1-mini', signal, fetchImpl = fetch }) {
   const response = await fetchImpl('https://api.openai.com/v1/responses', {

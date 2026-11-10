@@ -10,7 +10,8 @@
     "admin": "node admin.js",
     "db:check": "node checkDatabase.js",
     "db:normalize": "node migrateRelational.js",
-    "db:import": "node migrateSqlite.js"
+    "db:import": "node migrateSqlite.js",
+    "lint": "node ../client/node_modules/eslint/bin/eslint.js . --max-warnings=0"
   },
   "keywords": [],
   "author": "",

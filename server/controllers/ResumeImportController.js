@@ -1,5 +1,5 @@
 const { text, requireValue } = require('../validation')
-const { parseResumeText } = require('../../shared/resumeParser.mjs')
+const { parseResumeText } = require('../../client/src/lib/resumeParsing/resumeParser.mjs')
 const { parseWithAI } = require('../services/resumeParsing')
 
 module.exports = {
