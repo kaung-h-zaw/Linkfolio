@@ -1,0 +1,8 @@
+**/node_modules/
+client/dist/
+server/data/
+**/.env
+.DS_Store
+tmp/
+client/test-results/
+client/playwright-report/

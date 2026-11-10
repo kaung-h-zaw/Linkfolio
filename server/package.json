@@ -1,0 +1,30 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Linkfolio authenticated resume and portfolio API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test",
+    "admin": "node admin.js",
+    "db:check": "node checkDatabase.js",
+    "db:normalize": "node migrateRelational.js",
+    "db:import": "node migrateSqlite.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemailer": "^10.0.14",
+    "pg": "^8.23.1",
+    "stripe": "^23.0.0"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: linkfolio
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.21.0
+      - key: NODE_ENV
+        value: production
+      - key: APP_ORIGIN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      - key: DEMO_PAYMENTS
+        value: "false"

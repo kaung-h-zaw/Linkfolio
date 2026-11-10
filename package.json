@@ -1,0 +1,21 @@
+{
+  "name": "linkfolio",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "install:all": "npm --prefix server ci && npm --prefix client ci",
+    "dev": "node scripts/dev.mjs",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start",
+    "test": "npm --prefix server test",
+    "lint": "npm --prefix client run lint",
+    "admin": "npm --prefix server run admin",
+    "test:e2e": "npm --prefix client run test:e2e",
+    "db:check": "npm --prefix server run db:check",
+    "db:normalize": "npm --prefix server run db:normalize --",
+    "db:import": "npm --prefix server run db:import"
+  }
+}
