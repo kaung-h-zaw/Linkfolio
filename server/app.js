@@ -4,6 +4,7 @@ const { openDatabase } = require('./database')
 const createModels = require('./models')
 const { sqliteAdapter } = require('./databaseAdapter')
 const requestMiddleware = require('./middleware/requestMiddleware')
+const securityHeaders = require('./middleware/securityHeaders')
 const errorMiddleware = require('./middleware/errorMiddleware')
 const BillingController = require('./controllers/BillingController')
 const billingRoutes = require('./routes/billingRoutes')
@@ -50,6 +51,7 @@ function createApp({
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   }
+  app.use(securityHeaders)
 
   // Stripe verifies the original request bytes, before express.json parses them.
   app.post(

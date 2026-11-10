@@ -94,7 +94,8 @@ for (const engine of ['sqlite','postgres']) {
       throw new Error('rollback')
     }),/rollback/)
     assert.deepEqual(JSON.parse((await models.Document.findById(updated.id)).data),updated)
-    const {portfolio,...resumeOnly}=updated
+    const resumeOnly={...updated}
+    delete resumeOnly.portfolio
     await models.Document.updateData(JSON.stringify(resumeOnly),'third',updated.id)
     assert.equal(Number((await db.prepare('SELECT COUNT(*) AS n FROM portfolios').get()).n),0)
     assert.equal(Number((await db.prepare('SELECT COUNT(*) AS n FROM portfolio_settings').get()).n),0)

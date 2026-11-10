@@ -6,7 +6,8 @@ function errorMiddleware(error, req, res, next) {
     return res.status(409).json({ error:'This email or portfolio address is already in use. Choose another one.' })
   }
   if (!(error instanceof HttpError) && error.status !== 400 && error.status !== 413)
-    console.error(error)
+    // Driver/provider error objects can contain credentials or personal data.
+    console.error('Request failed:', { name: error.name, code: error.code })
   res.status(error.status || 500).json({
     error:
       error instanceof HttpError
