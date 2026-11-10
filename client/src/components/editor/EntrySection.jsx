@@ -12,16 +12,14 @@ export default function EntrySection({
   const root = useRef(null)
   const heading = useRef(null)
   const id = useId()
-  const entry = section.entries.find((item) => item.id === selected)
+  // Add Content requests an entry directly; local selection handles row clicks.
+  const entry = section.entries.find((item) => item.id === (editEntryId || selected))
   useEffect(() => {
-    if (!editEntryId || !section.entries.some(item=>item.id===editEntryId)) return
-    setSelected(editEntryId)
-    setOpen(true)
-    onEditingChange(true)
-    requestAnimationFrame(()=>{
-      const pane=document.getElementById('editor-content')
-      pane?.scrollTo({top:0,behavior:'instant'})
+    if (!editEntryId) return
+    const frame = requestAnimationFrame(() => {
+      document.getElementById('editor-content')?.scrollTo({ top: 0, behavior: 'instant' })
     })
+    return () => cancelAnimationFrame(frame)
   }, [editEntryId])
   function toggle() {
     setOpen(!open)
@@ -49,7 +47,7 @@ export default function EntrySection({
   function remove(entryId) {
     setUndo(section)
     onChange({ ...section, entries:section.entries.filter((item) => item.id !== entryId) })
-    if (selected === entryId) done()
+    if (entry?.id === entryId) done()
   }
   function visibility(item) {
     onChange({ ...section, entries:section.entries.map((row) => row.id === item.id ? { ...row,visible:!row.visible } : row) })

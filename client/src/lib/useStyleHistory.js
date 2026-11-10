@@ -1,16 +1,16 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export default function useStyleHistory(initial, keys) {
   const [history, setHistory] = useState(() => ({ past: [], present: typeof initial === 'function' ? initial() : initial, future: [] }))
-  const project = (value) => keys ? Object.fromEntries(keys.map((key) => [key, value[key]])) : value
+  const project = useCallback((value) => keys ? Object.fromEntries(keys.map((key) => [key, value[key]])) : value, [keys])
   const restore = (current, snapshot) => keys ? { ...current, ...project(snapshot) } : snapshot
-  function set(value) {
+  const set = useCallback((value) => {
     setHistory((current) => {
       const next = typeof value === 'function' ? value(current.present) : value
       if (JSON.stringify(project(next)) === JSON.stringify(project(current.present))) return { ...current, present: next }
       return { past: [...current.past, current.present].slice(-50), present: next, future: [] }
     })
-  }
+  }, [project])
   function undo() {
     setHistory((current) => current.past.length ? { past: current.past.slice(0, -1), present: restore(current.present, current.past.at(-1)), future: [current.present, ...current.future] } : current)
   }

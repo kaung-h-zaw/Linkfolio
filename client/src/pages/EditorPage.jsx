@@ -260,7 +260,7 @@ function ResumeEditor({ params, mode }) {
     sync()
     const stopRefresh=refreshResumesOnOpen()
     return ()=>{active=false;unsubscribe();stopRefresh()}
-  },[sourceId])
+  },[sourceId, setResumeStyle])
   const [notice, setNotice] = useState('')
   function updatePersonal(value) {
     if (value.photo && value.photo !== personal.photo) setResumeStyle(current => ({ ...current, design:{ ...current.design, photoShow:true } }))
