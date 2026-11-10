@@ -1,8 +1,10 @@
 **/node_modules/
 client/dist/
 server/data/
-**/.env
+**/.env*
+!**/.env.example
 .DS_Store
 tmp/
-client/test-results/
-client/playwright-report/
+**/test-results/
+**/playwright-report/
+*.log

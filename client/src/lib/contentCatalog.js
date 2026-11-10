@@ -49,7 +49,7 @@ export const extraSections = [
 export const isCustomSection = (key) => key === 'custom' || (typeof key === 'string' && /^custom_[a-f0-9-]{36}$/.test(key))
 export const isExtraSection = (key) => isCustomSection(key) || extraSections.some(([type]) => type === key)
 
-export const customDateLabels = ['', 'Issued', 'Awarded', 'Completed', 'Published', 'custom']
+const customDateLabels = ['', 'Issued', 'Awarded', 'Completed', 'Published', 'custom']
 export function customEntryDates(entry, formatDate = experienceDate) {
   const dates=[formatDate(entry.startDate),entry.current?'Present':formatDate(entry.endDate)].filter(Boolean).join(' — ')
   if (!entry.startDate || entry.endDate || entry.current) return dates

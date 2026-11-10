@@ -1,5 +1,5 @@
 import { validSectionStyles } from './sectionStyle.js'
-export const defaultDesign = {
+const defaultDesign = {
   font: 'template',
   fontSize: 14,
   nameSize: 36,
@@ -142,7 +142,7 @@ export function validDesign(value) {
   })
 }
 
-export const expandedDesign = {
+const expandedDesign = {
   nameFont: 'template',
   headingIcons: 'none',
   entryLayout: 'full',

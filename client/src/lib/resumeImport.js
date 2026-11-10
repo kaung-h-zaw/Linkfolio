@@ -9,7 +9,7 @@ import { cleanResumeText, suggestPersonalDetails, parseResumeText } from '../../
 import { pdfReadingOrder } from './pdfReadingOrder'
 
 export { cleanResumeText, suggestPersonalDetails, parseResumeText }
-export const MAX_IMPORT_BYTES = 5 * 1024 * 1024
+const MAX_IMPORT_BYTES = 5 * 1024 * 1024
 export const MAX_IMPORT_TEXT = 60000
 const abort = (signal) => signal?.throwIfAborted()
 

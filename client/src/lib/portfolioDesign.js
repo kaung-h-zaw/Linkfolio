@@ -1,5 +1,5 @@
 import { validSectionStyles } from './sectionStyle.js'
-export const portfolioSectionOrder = ['about','projects','experience','education','skills','certifications','languages','custom','contact']
+const portfolioSectionOrder = ['about','projects','experience','education','skills','certifications','languages','custom','contact']
 export const portfolioFonts = { template:'Template font', sans:'Modern sans serif', serif:'Editorial serif', mono:'Monospace' }
 export const portfolioDesignDefaults = {
   font:'template', palette:'template', background:'#ffffff', text:'#24313e', accentCustom:false,
@@ -50,6 +50,5 @@ export const portraitStylePresets = [
   {id:'circle',name:'Circle',shape:'circle',frame:'none'},
 ]
 
-export const portraitShapeOptions = {template:'Template default',circle:'Circle',rounded:'Rounded square',square:'Square'}
 export const imageFrameOptions = {template:'Template default',none:'No frame',outline:'Accent outline',double:'Double frame',polaroid:'Polaroid',offset:'Offset shadow',shadow:'Soft shadow',mat:'Gallery mat',raised:'Raised frame',layered:'Layered print',floating:'Floating'}
 export const imageEffectOptions = {template:'Template default',natural:'Original colors',grayscale:'Black and white',sepia:'Warm sepia',vivid:'Vivid',soft:'Soft and muted'}

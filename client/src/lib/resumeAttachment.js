@@ -1,5 +1,3 @@
-export const MAX_RESUME_BYTES = 2 * 1024 * 1024
-
 export function validResumeAttachment(file) {
   return file === null || (
     file && typeof file === 'object' &&

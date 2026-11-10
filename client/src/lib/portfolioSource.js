@@ -24,7 +24,7 @@ function stable(value) {
   if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map((key) => [key,stable(value[key])]))
   return value
 }
-export function findPortfolioResume(document, documents) {
+function findPortfolioResume(document, documents) {
   const resumes = documents.filter((item) => item.kind !== 'portfolio')
   if (document.portfolio?.sourceResume) return resumes.find((item) => item.id === document.portfolio.sourceResume.id)
   if (document.kind !== 'portfolio') return resumes.find((item) => item.id === document.id)

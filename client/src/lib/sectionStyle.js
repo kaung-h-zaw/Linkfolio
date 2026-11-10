@@ -21,20 +21,3 @@ export function validSectionStyles(value, allowedKeys) {
       })))
 }
 
-export function sectionStyleProps(style = {}) {
-  return {
-    'data-section-entry-layout': style.entryLayout,
-    'data-section-font': style.fontSize !== undefined ? 'true' : undefined,
-    'data-section-heading': style.headingSize !== undefined ? 'true' : undefined,
-    'data-section-line': style.lineHeight !== undefined ? 'true' : undefined,
-    'data-section-spacing': style.spacing !== undefined ? 'true' : undefined,
-    'data-section-accent': style.accent ? 'true' : undefined,
-    style: {
-      '--section-font': style.fontSize === undefined ? undefined : `${style.fontSize}px`,
-      '--section-heading': style.headingSize === undefined ? undefined : `${style.headingSize}px`,
-      '--section-line': style.lineHeight,
-      '--section-spacing': style.spacing === undefined ? undefined : `${style.spacing}px`,
-      '--section-accent': style.accent,
-    },
-  }
-}

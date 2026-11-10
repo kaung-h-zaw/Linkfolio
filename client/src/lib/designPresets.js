@@ -13,13 +13,3 @@ export function matchesPreset(current, values) {
   return Object.entries(values).every(([key, value]) => current[key] === value)
 }
 
-export const resumeFontChoices = [
-  { id: 'template', name: 'Original', family: 'inherit' },
-  { id: 'Arial, sans-serif', name: 'Modern', family: 'Arial, sans-serif' },
-  { id: 'Georgia, serif', name: 'Classic', family: 'Georgia, serif' },
-]
-export const portfolioFontChoices = [
-  { id: 'template', name: 'Original', family: 'inherit' },
-  { id: 'sans', name: 'Modern', family: 'Arial, sans-serif' },
-  { id: 'serif', name: 'Classic', family: 'Georgia, serif' },
-]
