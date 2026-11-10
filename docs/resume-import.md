@@ -14,6 +14,10 @@ This is structured content import into Linkfolio templates, rather than pixel-fo
 
 ## Optional AI parsing
 
+The authenticated AI endpoint allows ten requests per account per fifteen minutes
+and returns HTTP 429 with `Retry-After` when exhausted. Limits are stored in the
+server process and reset on restart; multiple instances need a shared limiter.
+
 Set `OPENAI_API_KEY` in the server environment to enable the optional AI checkbox. `RESUME_IMPORT_MODEL` defaults to `gpt-4.1-mini` and can be changed to a model that supports Responses API structured output. The key never reaches the browser.
 
 AI parsing sends only extracted text, and only after the user selects the checkbox. The request uses a strict JSON schema, instructs the model to preserve wording and omit unknown facts, and sets `store: false`. Refusals, truncated output, invalid fields and unavailable service fall back to local parsing with a visible review message. Schema compliance validates structure, not factual accuracy. A valid server key is needed to exercise the live provider; tests cover the request and response validation with a fake transport.

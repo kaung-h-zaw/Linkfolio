@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 const headers = { 'X-Linkfolio-Request':'1' }
 

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { jsPDF } from 'jspdf'
 import { fileURLToPath } from 'node:url'
 import { Buffer } from 'node:buffer'

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 
 test('resume workspace offers new and import choices on desktop and mobile', async ({ page }, testInfo) => {
   const result = await page.request.post('/api/auth/register', {
@@ -29,7 +29,7 @@ test('resume workspace offers new and import choices on desktop and mobile', asy
   await page.getByRole('link', { name: 'Home', exact: true }).click()
     await page.getByRole('navigation', { name:'Workspace', exact:true }).getByRole('link', { name:'Resume', exact:true }).click()
   await expect(page.getByRole('button', { name: 'Delete resume', exact: true })).toBeHidden()
-  await page.locator('.library-more summary').click()
+  await page.getByLabel('More options for Resume Creator — Resume', { exact: true }).click()
   await expect(page.getByRole('button', { name: 'Delete resume', exact: true })).toBeVisible()
   await expect(page.getByRole('link', { name: 'New resume', exact: true })).toHaveCount(0)
   await expect(page.getByRole('link', { name: 'Import resume', exact: true })).toHaveCount(1)

@@ -11,7 +11,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The root `npm test` runs backend integration tests. The browser smoke test runs on port 4173 against an isolated temporary database and saves screenshots and a downloaded PDF under `test-results`.
+The root `npm test` runs backend integration tests. Each browser test runs its own local server on an available port with an isolated in-memory database. Tests load no live service credentials and save screenshots, failure traces and downloaded PDFs under `test-results`.
 
 ## Main code paths
 
@@ -25,4 +25,4 @@ The root `npm test` runs backend integration tests. The browser smoke test runs 
 - `src/components/editor/PublicationPanel.jsx` manages custom URLs and visibility; `src/components/ContactForm.jsx` handles visitor messages.
 - The pure section schema and design validators in `src/lib` are also used by server validation.
 
-Template demonstrations use sample content. New drafts start with the account name and email and empty professional sections. Uploaded-resume parsing and Privacy/Terms pages remain outside the reports' implementation scope.
+Template demonstrations use sample content. New drafts start with the account name and email and empty professional sections. Resume import supports PDF, DOCX, text and local image OCR; AI parsing is optional. See [resume import](../docs/resume-import.md). Privacy/Terms pages remain outside the reports' implementation scope.

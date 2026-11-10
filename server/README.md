@@ -137,7 +137,7 @@ npm run dev
 
 Open `http://localhost:5173`. The API runs at `http://localhost:3001`. Press Ctrl+C in both terminals to stop them.
 
-From the project root, `npm test` checks the API, `npm run lint` checks the frontend, and `npm run test:e2e` checks the complete browser workflow with a temporary database. See the [project README](../README.md) for service credentials and deployment.
+From the project root, `npm test` checks the API, `npm run lint` checks the frontend, backend, shared modules and scripts, and `npm run test:e2e` checks browser workflows with an isolated in-memory database per test. See the [project README](../README.md) for service credentials and deployment.
 
 For Render Free and Supabase Free, follow [the setup and testing guide](../docs/render-supabase.md).
 `npm run db:check` verifies your configured database. `npm run db:import` copies

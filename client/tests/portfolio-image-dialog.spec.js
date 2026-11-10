@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { readFileSync } from 'node:fs'
 import { Buffer } from 'node:buffer'
 import { sampleProfile } from '../src/components/resumeTemplates.js'

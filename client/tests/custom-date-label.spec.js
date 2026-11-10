@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test'
+import {test,expect} from './fixtures.js'
 import {sampleProfile} from '../src/components/resumeTemplates.js'
 import {newContentEntry} from '../src/lib/contentCatalog.js'
 const headers={'X-Linkfolio-Request':'1'}

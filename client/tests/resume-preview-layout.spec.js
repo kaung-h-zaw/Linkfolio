@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { readFile } from 'node:fs/promises'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { getExperience } from '../src/lib/experience.js'

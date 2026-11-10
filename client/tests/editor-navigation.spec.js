@@ -1,6 +1,6 @@
 import { openGeneralGroup } from './helpers/designControls.js'
 import { setControlValue } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'
 const headers={ 'X-Linkfolio-Request':'1' }
@@ -130,7 +130,6 @@ test('design shortcuts reveal the right controls and retain saved changes', asyn
     await page.setViewportSize({ width:1440, height:900 })
     await page.goto(`${portfolio ? '/portfolio/editor/design' : '/editor'}?resume=${id}`)
     if (!portfolio) await page.getByRole('navigation', { name:'Editor navigation', exact:true }).getByRole('button', { name:'Design', exact:true }).click()
-    const shortcuts = page.getByRole('navigation', { name:'Design settings', exact:true })
     const go=async label=>{if(label==='Sections')await page.getByRole('button',{name:'Section customizations',exact:true}).click();else await openGeneralGroup(page,label)}
     if (portfolio) await expect.poll(() => page.locator('.portfolio-editor-canvas').evaluate((element) => Math.round(element.getBoundingClientRect().width - element.parentElement.getBoundingClientRect().width))).toBeLessThanOrEqual(1)
     await page.screenshot({ path:testInfo.outputPath(`${portfolio ? 'portfolio' : 'resume'}-design-overview.png`) })

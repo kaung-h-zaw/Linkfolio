@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test'
+import {test,expect} from './fixtures.js'
 const headers={'X-Linkfolio-Request':'1'}
 test('new resumes add chosen sections and continue directly into entry details',async({page},testInfo)=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message))

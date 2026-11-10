@@ -1,6 +1,6 @@
 import { openGeneralGroup, openSectionCard } from './helpers/designControls.js'
 import { setControlValue } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { getDesign } from '../src/lib/resumeDesign.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'
@@ -19,7 +19,7 @@ async function save(page) {
   await expect(page.getByText('Saved to your account', { exact: true }).first()).toBeVisible()
 }
 
-test('all resume section cards retain layout changes and use General appearance', async ({page},testInfo)=>{
+test('all resume section cards retain layout changes and use General appearance', async ({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message))
   await createDocument(page,'resume')
   const card=await openSectionCard(page,'experience')

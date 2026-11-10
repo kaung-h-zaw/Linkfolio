@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 
 test('analytics overview, portfolio filter, refresh and empty states are readable on mobile', async ({ page }, testInfo) => {
   const registration = await page.request.post('/api/auth/register', {

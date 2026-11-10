@@ -1,6 +1,6 @@
 import { openGeneralGroup } from './helpers/designControls.js'
 import { setControlValue } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 const headers = { 'X-Linkfolio-Request':'1' }
 
@@ -10,7 +10,6 @@ test('text and spacing sliders support exact values, limits, undo, reset and sav
   expect((await page.request.put(`/api/documents/${id}`, { headers, data:{ ...sampleProfile,id,kind:'resume',name:'Text and spacing',templateId:'essential' } })).status()).toBe(200)
   await page.setViewportSize({width:1440,height:1000})
   await page.goto(`/editor?resume=${id}`)
-  const navigation = page.getByRole('navigation', {name:'Design settings',exact:true})
   await page.getByRole('navigation', {name:'Editor navigation',exact:true}).getByRole('button', {name:'Design',exact:true}).click()
   await openGeneralGroup(page,'Text sizes')
   const text = page.getByRole('region', {name:'Text size',exact:true})

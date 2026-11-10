@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { getDesign } from '../src/lib/resumeDesign.js'
 import { getProjects } from '../src/lib/additionalSections.js'
@@ -14,7 +14,6 @@ test('entry controls apply across sections and show date/location order without 
   expect((await page.request.put(`/api/documents/${id}`, {headers,data:{...sampleProfile,id,kind:'resume',name:'Entry layout',templateId:'essential',projectsSection:projects,design:getDesign({entryLayout:'columns',sectionStyles:{experience:{entryLayout:'full',title:'Work history'},education:{entryLayout:'columns'}}})}})).status()).toBe(200)
   await page.setViewportSize({width:1440,height:1000})
   await page.goto(`/editor?resume=${id}`)
-  const nav=page.getByRole('navigation',{name:'Design settings',exact:true})
   const editorNav=page.getByRole('navigation',{name:'Editor navigation',exact:true})
   await editorNav.getByRole('button',{name:'Design',exact:true}).click()
   await openGeneralGroup(page,'Entries')

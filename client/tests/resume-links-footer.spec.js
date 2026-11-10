@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { getExperience } from '../src/lib/experience.js'
 const headers={'X-Linkfolio-Request':'1'}
@@ -10,7 +10,7 @@ test('links and repeated footers save and export without covering content',async
   expect((await page.request.put(`/api/documents/${id}`,{headers,data:{...sampleProfile,personal:{...sampleProfile.personal,links:[{id:'web',type:'Website',name:'',label:'example.com',url:'https://example.com'}]},experienceSection:experience,id,kind:'resume',name:'Links and footer',templateId:'classic'}})).status()).toBe(200)
   await page.goto(`/editor?resume=${id}`)
   await page.getByRole('navigation',{name:'Editor navigation',exact:true}).getByRole('button',{name:'Design',exact:true}).click()
-  const nav=page.getByRole('navigation',{name:'Design settings',exact:true}),links=page.getByRole('region',{name:'Links',exact:true}),footer=page.getByRole('region',{name:'Footer',exact:true})
+  const links=page.getByRole('region',{name:'Links',exact:true}),footer=page.getByRole('region',{name:'Footer',exact:true})
   const pages=page.locator('#editor-preview .resume-page'),paper=pages.first(),web=paper.locator('header a').first()
   await openGeneralGroup(page,'Links')
   await expect(links.locator('details')).toHaveCount(0)

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 
 test('upgrades live in Premium, plan removal and sign out live in Account', async ({ page }, testInfo) => {
   const headers = { 'X-Linkfolio-Request': '1' }

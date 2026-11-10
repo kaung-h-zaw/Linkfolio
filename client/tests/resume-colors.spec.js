@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 const headers = { 'X-Linkfolio-Request':'1' }
 test('simple colors card applies each area and preserves choices',async({page},testInfo)=>{
@@ -9,7 +9,6 @@ test('simple colors card applies each area and preserves choices',async({page},t
   await page.setViewportSize({width:1440,height:1000})
   await page.goto(`/editor?resume=${id}`)
   await page.getByRole('navigation',{name:'Editor navigation',exact:true}).getByRole('button',{name:'Design',exact:true}).click()
-  const nav=page.getByRole('navigation',{name:'Design settings',exact:true})
   await openGeneralGroup(page,'Colors')
   const card=page.getByRole('region',{name:'Colors',exact:true})
   const paper=page.locator('#editor-preview .resume-page').first()

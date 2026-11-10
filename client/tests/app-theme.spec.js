@@ -1,7 +1,8 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { getPortfolioTemplate } from '../src/lib/portfolioTemplates.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'
+import { openSectionCard } from './helpers/designControls.js'
 
 const headers = { 'X-Linkfolio-Request': '1' }
 test('soft application theme covers home, authentication, workspace and editors without changing documents', async ({ page }, testInfo) => {
@@ -30,12 +31,10 @@ test('soft application theme covers home, authentication, workspace and editors 
   await page.screenshot({ path: testInfo.outputPath('workspace-soft-desktop.png') })
   await page.goto(`/editor?resume=${id}`)
   await page.getByRole('button', { name: 'Design', exact: true }).click()
-  await page.getByRole('tab', { name: /^Sections/ }).click()
-  await page.locator('[data-section-choice=experience]').click()
-  const card = page.getByRole('region', { name: 'Resume section customization', exact: true })
+  const card = await openSectionCard(page, 'experience')
   await card.evaluate((element) => element.scrollIntoView({ block: 'start', behavior: 'instant' }))
   await expect(card).toHaveCSS('background-color', 'rgb(255, 255, 255)')
-  await expect(page.getByRole('tab', { name: /^Sections/ })).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+  await expect(page.getByRole('button', { name: 'Section customizations', exact: true })).toHaveAttribute('aria-expanded', 'true')
   const document = page.locator('#editor-preview .resume-page').first()
   await expect(document).toHaveCSS('background-color', 'rgb(255, 255, 255)')
   await expect(document).toHaveCSS('color', 'rgb(30, 41, 59)')

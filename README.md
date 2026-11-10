@@ -12,7 +12,7 @@ The backend follows the teacher's MERN Recipe App authentication structure: Comm
 
 ## Run locally
 
-Use Node **22.13 or newer** (Node 24 LTS is also supported). SQLite uses Node's built-in `node:sqlite`; Node 22 may print an experimental warning.
+Use **Node 22 (22.13 or newer within that release line) or Node 24**. SQLite uses Node's built-in `node:sqlite`; Node 22 may print an experimental warning.
 
 ```sh
 npm run install:all
@@ -74,10 +74,17 @@ The server serves the built client and its routes from port 3001 (or the host's 
 npm test
 npm run lint
 npm run build
-# Browser workflow test, with an isolated database on port 4173:
+# Browser workflows, with an isolated in-memory database and port per test:
 npx --prefix client playwright install chromium
 npm run test:e2e
 ```
+
+Root linting covers the frontend, backend, shared modules and scripts. Browser
+tests build the client, start a separate local Node server for each test, and
+load no live database, email, payment or AI credentials. Production-header tests
+also exercise PDF export, OCR, device previews and anonymous portfolio sharing.
+See [the cleanup and production readiness report](docs/production-readiness.md)
+for verification results and remaining deployment checks.
 
 Backend integration tests exercise accounts, ownership boundaries, free limits, public/private controls, URL collisions, message validation, analytics, reset tokens, admin access, demo payment outcomes, deletion and persistence. No external payment or email service is needed for these tests.
 

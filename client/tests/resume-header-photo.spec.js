@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { fileURLToPath } from 'node:url'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 const headers={'X-Linkfolio-Request':'1'}
@@ -9,7 +9,6 @@ test('header and photo choices update preview, save and reset independently',asy
   expect((await page.request.put(`/api/documents/${id}`,{headers,data:{...sampleProfile,personal:{...sampleProfile.personal,links:[{id:'gh',type:'GitHub',name:'',label:'GitHub',url:'https://github.com/example'},{id:'in',type:'LinkedIn',name:'',label:'LinkedIn',url:'https://www.linkedin.com/in/example'},{id:'web',type:'Website',name:'',label:'Website',url:'https://example.com'},{id:'other',type:'GitHub',name:'',label:'Other',url:'https://github.com.example.com'}]},id,kind:'resume',name:'Header and photo',templateId:'classic'}})).status()).toBe(200)
   await page.goto(`/editor?resume=${id}`)
   await page.getByRole('navigation',{name:'Editor navigation',exact:true}).getByRole('button',{name:'Design',exact:true}).click()
-  const nav=page.getByRole('navigation',{name:'Design settings',exact:true})
   const card=page.getByRole('region',{name:'Header',exact:true}),photoCard=page.getByRole('region',{name:'Photo',exact:true})
   const paper=page.locator('#editor-preview .resume-page').first(),header=paper.locator('header'),photo=header.locator('.resume-photo')
   await openGeneralGroup(page,'Header')

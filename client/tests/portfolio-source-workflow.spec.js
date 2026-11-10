@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { hydrateProfile } from '../src/lib/profile.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'

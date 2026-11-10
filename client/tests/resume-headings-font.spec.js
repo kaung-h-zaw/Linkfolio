@@ -1,5 +1,5 @@
 import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 const headers = { 'X-Linkfolio-Request':'1' }
 
@@ -10,7 +10,6 @@ test('heading and font cards show live styles, preserve independent fonts and sa
   await page.setViewportSize({width:1440,height:1000})
   await page.goto(`/editor?resume=${id}`)
   const editor=page.getByRole('navigation',{name:'Editor navigation',exact:true})
-  const navigation=page.getByRole('navigation',{name:'Design settings',exact:true})
   await editor.getByRole('button',{name:'Design',exact:true}).click()
   await openGeneralGroup(page,'Headings')
   const headings=page.getByRole('region',{name:'Section headings',exact:true})

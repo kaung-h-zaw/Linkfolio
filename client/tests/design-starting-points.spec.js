@@ -1,5 +1,5 @@
-import { openGeneralGroup } from './helpers/designControls.js'
-import { test, expect } from '@playwright/test'
+import { openGeneralGroup, openSectionCard } from './helpers/designControls.js'
+import { test, expect } from './fixtures.js'
 import { sampleProfile } from '../src/components/resumeTemplates.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'
 import { portfolioDemoImages } from '../src/lib/portfolioImages.js'
@@ -87,18 +87,18 @@ test('portfolio essentials preserve content, undo styles, publish and adapt to m
   await page.getByText('Choose portfolio template', { exact: true }).click()
   await page.getByRole('button', { name: 'Use Clear template', exact: true }).click()
   await page.getByText('Choose portfolio template', { exact: true }).click()
-  const modernFont = page.getByRole('button', { name: 'Modern font', exact: true })
-  await expect(page.getByLabel('Portfolio font', { exact: true })).toBeHidden()
+  const modernFont = page.getByLabel('Portfolio font', { exact: true })
+  await expect(modernFont).toBeVisible()
   await expect(page.getByRole('button', { name: 'Use template accent', exact: true })).toHaveAttribute('aria-pressed', 'true')
-  await page.getByRole('button', { name: 'Forest', exact: true }).click()
+  await page.getByRole('button', { name: 'Accent color: #137763', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Use template accent', exact: true })).toHaveAttribute('aria-pressed', 'false')
   await expect(page.locator('#editor-preview .portfolio-site')).toHaveAttribute('data-custom-accent', 'true')
-  await modernFont.click()
-  await expect(modernFont).toHaveAttribute('aria-pressed', 'true')
+  await modernFont.selectOption('sans')
+  await expect(modernFont).toHaveValue('sans')
   await expect(page.locator('#editor-preview .portfolio-site')).toHaveAttribute('data-web-source', 'miniport')
-  await page.getByRole('button', { name: 'Classic font', exact: true }).click()
+  await modernFont.selectOption('serif')
   await page.getByRole('button', { name: 'Undo styling', exact: false }).click()
-  await expect(modernFont).toHaveAttribute('aria-pressed', 'true')
+  await expect(modernFont).toHaveValue('sans')
   // Content edits must survive undoing a style change.
   await page.getByRole('button', { name: 'Content', exact: true }).click()
   await page.getByLabel('Availability', { exact: true }).selectOption('Available for freelance')
@@ -106,18 +106,17 @@ test('portfolio essentials preserve content, undo styles, publish and adapt to m
   await page.getByRole('button', { name: 'Undo styling', exact: false }).click()
   await expect(page.locator('#editor-preview .portfolio-availability')).toHaveText('Available for freelance')
   await page.getByRole('button', { name: 'Redo styling', exact: false }).click()
-  await expect(modernFont).toHaveAttribute('aria-pressed', 'true')
-  await page.getByRole('tab', { name: /^Sections/ }).click()
-  await page.locator('[data-section-choice=hero]').click()
+  await expect(modernFont).toHaveValue('sans')
+  await openSectionCard(page, 'hero')
   await page.getByRole('button', { name: 'Introduction: Split introduction', exact: true }).click()
-  await page.locator('[data-section-choice=projects]').click()
+  await openSectionCard(page, 'projects')
   await page.getByRole('button', { name: 'Projects: Card grid', exact: true }).click()
-  await page.getByRole('tab', { name: /^General/ }).click()
+  await openGeneralGroup(page, 'Spacing')
   await page.getByRole('button', { name: 'Balanced spacing', exact: true }).click()
   await page.screenshot({ path: testInfo.outputPath('portfolio-design-desktop.png') })
   await save(page)
   await page.reload()
-  await expect(modernFont).toHaveAttribute('aria-pressed', 'true')
+  await expect(modernFont).toHaveValue('sans')
   const slug = `signature-${id.slice(0, 8)}`
   expect((await page.request.put(`/api/documents/${id}/publication`, { headers, data: { slug, visibility: 'public' } })).status()).toBe(200)
   const visitor = await page.context().newPage()

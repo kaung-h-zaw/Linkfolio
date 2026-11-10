@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import assert from 'node:assert/strict'
 
 test('account, resume export, public portfolio, messages, analytics, payments and privacy', async ({
@@ -142,7 +142,7 @@ test('account, resume export, public portfolio, messages, analytics, payments an
     await page.screenshot({ path: testInfo.outputPath('dashboard.png'), fullPage: true })
     await page.goto('/account')
     await page.getByRole('button', { name: 'Sign out', exact: true }).click()
-    await page.waitForURL('http://localhost:4173/')
+    await page.waitForURL((url) => url.pathname === '/')
     await page.getByRole('link', { name: 'Sign in', exact: true }).click()
     await page.waitForURL('**/login')
     await page.getByLabel('Email', { exact: true }).fill(email)

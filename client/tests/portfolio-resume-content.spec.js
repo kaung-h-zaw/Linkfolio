@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 import { emptyProfile } from '../src/lib/profile.js'
 import { defaultPortfolio } from '../src/lib/portfolio.js'
 import { newLanguage } from '../src/lib/additionalSections.js'
