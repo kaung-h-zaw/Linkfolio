@@ -49,6 +49,7 @@ export default function Navbar() {
             Get started <Icon name="arrow" className="h-4 w-4" />
           </Link>
         </div>
+
         <button
           ref={toggle}
           type="button"

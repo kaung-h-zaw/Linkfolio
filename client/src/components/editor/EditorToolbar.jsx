@@ -13,6 +13,7 @@ export default function EditorToolbar({ mode = 'resume', navigation, onHome, onP
 
 
       <div className={`editor-toolbar-actions ${portfolio ? 'is-portfolio' : ''}`}>
+
         {!portfolio && profile && <ResumeDownloadButton profile={profile} label="Download PDF" shortLabel="PDF" showIcon buttonClassName="editor-nav-button" />}
         <button type="button" ref={previewButtonRef} onClick={onPreview} aria-controls="editor-preview" aria-pressed={isPreview} aria-label={isPreview ? 'Back to editor' : 'Preview'} title={isPreview ? 'Back to editor' : 'Preview'} className="editor-nav-button"><Icon name="eye" className="h-4 w-4" /><span className="toolbar-preview-label">{isPreview ? 'Back to editor' : 'Preview'}</span></button>
         <button type="button" disabled={!onSave} onClick={onSave} title={`Save ${mode} to your account`} className="editor-nav-button editor-save-button"><Icon name="save" className="h-4 w-4" /><span>Save</span></button>

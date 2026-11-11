@@ -1,0 +1,188 @@
+/* Application chrome only. Resume pages and portfolio content own their palettes. */
+/* Specificity makes the palette authoritative over the earlier application defaults. */
+html[data-app-theme] .linkfolio-app {
+  color-scheme:light;
+}
+html[data-app-theme='dark'] .linkfolio-app { color-scheme:dark; }
+.linkfolio-app :is(.resume-document,.linkfolio-sheet,.linkfolio-preview) { color-scheme:light; }
+.linkfolio-app .portfolio-site:not([data-custom-palette='true']) { color-scheme:normal; }
+html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
+.linkfolio-app :is(.app-workspace,.editor-workspace,.editor-layout,.workspace-main,#editor-content) { background:var(--app-canvas); color:var(--app-text); }
+/* Keep the editor chrome on the same canvas tone as the workspace behind it. */
+.linkfolio-app .editor-workspace,
+.linkfolio-app .editor-workspace .editor-toolbar-shell,
+.linkfolio-app .editor-workspace .calm-editor-bar { background:var(--app-canvas); }
+.linkfolio-app #editor-preview { background:var(--app-preview-mat); }
+.linkfolio-app #editor-preview > div:first-child { background:var(--app-preview-mat); border-color:var(--app-border); }
+.linkfolio-app .app-sidebar { background:var(--app-sidebar); }
+.sidebar-brand-actions,.auth-header-actions { display:flex; align-items:center; gap:8px; }
+.sidebar-brand-actions { flex-shrink:0; }
+.linkfolio-app .sidebar-brand-row { gap:8px; }
+.linkfolio-app .sidebar-brand-row .app-brand { min-width:0; }
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(button,a,input,select,textarea,summary):focus-visible { outline:2px solid var(--app-focus); outline-offset:3px; }
+  :scope :is(input,select,textarea) { color:var(--app-text); border-color:var(--app-border-strong); background-color:var(--app-raised); }
+  :scope :is(input,textarea)::placeholder { color:var(--app-muted); opacity:.8; }
+  :scope input:is([type='checkbox'],[type='radio'],[type='range']) { accent-color:var(--app-accent); }
+  :scope :is(h1,h2,h3,h4,legend,label,summary) { color:var(--app-text); }
+  :scope .text-muted { color:var(--app-muted); }
+  :scope .text-accent { color:var(--app-accent); }
+  :scope :is(.bg-white,dialog,.resume-design-card,.editor-entry-card,.personal-overview,.library-empty-state,.plan-benefits-card) { background-color:var(--app-surface); color:var(--app-text); border-color:var(--app-border); }
+  :scope .bg-paper { background-color:var(--app-canvas); }
+  :scope .bg-sage { background-color:var(--app-selected); }
+  :scope .border-line { border-color:var(--app-border); }
+  :scope :is(.bg-accent,.button-green,.editor-save-button) { background:var(--app-primary); color:var(--app-on-primary); border-color:var(--app-primary); }
+  :scope :is(.bg-accent,.button-green,.editor-save-button):hover:not(:disabled) { background:var(--app-primary-hover); border-color:var(--app-primary-hover); }
+  :scope .text-white { color:var(--app-on-primary); }
+  :scope :is(.bg-amber-50,.bg-amber-100) { background:var(--app-warning-bg); color:var(--app-warning); }
+  :scope :is(.text-amber-900,.text-amber-800,.text-amber-700) { color:var(--app-warning); }
+  :scope :is(.bg-red-50,.bg-red-100) { background:var(--app-danger-bg); color:var(--app-danger); }
+  :scope :is(.text-red-700,.text-red-600,.text-red-800) { color:var(--app-danger); }
+  :scope :is(.bg-green-50,.bg-emerald-50) { background:var(--app-selected); color:var(--app-accent); }
+  :scope :is(.text-green-700,.text-emerald-700,.text-green-800) { color:var(--app-accent); }
+  :scope :is(.portfolio-template-dialog,.resume-template-dialog-minimal,.resume-template-preview-dialog) { background:var(--app-surface); }
+  :scope :is(.portfolio-template-dialog,.resume-template-dialog-minimal,.resume-template-preview-dialog)::backdrop { background:var(--app-backdrop); backdrop-filter:none; }
+  :scope * { scrollbar-color:var(--app-scrollbar) transparent; }
+  :scope *::-webkit-scrollbar-thumb { background:var(--app-scrollbar); }
+}
+/* Paper and visual previews retain their actual design in both interface modes. */
+.linkfolio-app :is(.resume-template-minimal-preview,.resume-template-paper,.gallery-card-paper) { background:#fff; }
+.linkfolio-app .gallery-card-preview { background:var(--app-inset); }
+@media(max-width:767px) {
+  .auth-header-actions { gap:6px; }
+  .auth-header-actions > a { font-size:12px; }
+}
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),textarea,select) { border-color:var(--app-border-strong) !important; }
+  :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button { border-color:var(--app-border); }
+  :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button[aria-pressed='true'] { border-color:var(--app-accent); box-shadow:0 0 0 1px var(--app-accent); }
+  :scope .resume-template-minimal-card[aria-pressed='true'] .resume-template-minimal-preview { border-color:var(--app-accent); box-shadow:0 0 0 1px var(--app-accent); }
+  :scope [class*='hover:bg-white']:hover { background-color:var(--app-inset); }
+}
+.linkfolio-app .app-auth.bg-white { background:var(--app-canvas); }
+.linkfolio-app .app-auth > header { background:var(--app-surface); }
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(.button-dark,.bg-ink) { background:var(--app-primary); color:var(--app-on-primary); border-color:var(--app-primary); }
+  :scope :is(.button-dark,.bg-ink):hover { background:var(--app-primary-hover); }
+}
+/* These swatches show actual document colors rather than application theme colors. */
+.linkfolio-app .editor-workspace .portfolio-accent-swatches > button { color:#fff; }
+
+@font-face {
+  font-family:'Inter';
+  src:url('/fonts/InterVariable.woff2') format('woff2');
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
+.linkfolio-app { font-family:var(--app-font); }
+.linkfolio-app :is(.linkfolio-sheet,.linkfolio-preview) { font-family:var(--font-sans); }
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(button,input,textarea,select) { font-family:var(--app-font); }
+  :scope :is(.button,.editor-nav-button,input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),textarea,select) { border-radius:var(--app-radius); }
+  :scope .button-outline { background:var(--app-surface); color:var(--app-text); border-color:var(--app-border); }
+  :scope .button-outline:hover:not(:disabled) { background:var(--app-inset); border-color:var(--app-border-strong); }
+  :scope :is(button,input,select,textarea):disabled { cursor:not-allowed; opacity:.55; }
+  :scope :is(input,textarea)::placeholder { color:var(--app-muted); opacity:1; }
+  :scope :is(.portfolio-template-dialog,.resume-template-dialog-minimal,.resume-template-preview-dialog)::backdrop { background:var(--app-backdrop); }
+  :scope :is(.editor-entry-card,.resume-design-card,.personal-overview,.dashboard-panel,.dashboard-stat) { border-radius:var(--app-radius); box-shadow:none; }
+  :scope :is(.text-slate-500,.text-gray-500,.text-slate-600,.text-gray-600) { color:var(--app-muted); }
+  :scope :is(.border-slate-200,.border-gray-200,.border-slate-300,.border-gray-300) { border-color:var(--app-border); }
+}
+
+
+.linkfolio-app dialog::backdrop { background:var(--app-backdrop); backdrop-filter:none; }
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope .portfolio-template-choice:hover:not(:disabled) { transform:none; box-shadow:none; }
+  :scope .app-hero > div:last-child { transform:none; box-shadow:none; }
+}
+.linkfolio-app .app-sidebar nav a > svg { color:var(--app-muted); }
+.linkfolio-app .app-sidebar nav a:is([aria-current='page'],:hover) > svg { color:var(--app-accent); }
+.account-appearance-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:20px; }
+.account-appearance-options > button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; min-height:86px; padding:12px 8px; border:1px solid var(--app-border); border-radius:var(--app-radius); background:var(--app-raised); color:var(--app-muted); font-size:13px; cursor:pointer; }
+.account-appearance-options > button:hover { background:var(--app-inset); color:var(--app-text); }
+.account-appearance-options > button[aria-pressed='true'] { border-color:var(--app-accent); background:var(--app-selected); color:var(--app-text); font-weight:600; }
+.account-appearance-options > button[aria-pressed='true'] > svg { color:var(--app-accent); }
+.account-appearance-note { margin-top:14px; color:var(--app-muted); font-size:11px; line-height:1.6; }
+
+.account-card-grid > section:last-of-type { grid-column:1 / -1; }
+.account-delete-card { display:flex; align-items:center; justify-content:space-between; gap:18px; min-height:84px; padding:16px 18px; border:1px solid var(--app-border); border-radius:12px; background:var(--app-surface); }
+.linkfolio-app .account-setting-column > :is(.account-signout-card,.account-delete-card) { padding:16px 18px; }
+.account-delete-card h2 { font-size:14px; }
+.account-delete-card .button { flex:none; }
+@media(max-width:767px) { .account-delete-card { align-items:flex-start; flex-direction:column; } }
+/* Apply a palette change in one paint instead of fading through low-contrast colors. */
+html[data-app-theme-changing] .linkfolio-app,
+html[data-app-theme-changing] .linkfolio-app *:not(:where(.resume-document,.resume-document *,.portfolio-site,.portfolio-site *,.linkfolio-sheet,.linkfolio-sheet *,.linkfolio-preview,.linkfolio-preview *)) { transition:none !important; }
+.linkfolio-app .editor-workspace .calm-editor-bar .editor-toolbar-actions .editor-save-button { border-color:var(--app-primary); }
+
+/* Neutral feedback and control states share the same palette as the surrounding UI. */
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(.editor-entry-card,.resume-design-card,.personal-overview,.dashboard-panel,.dashboard-stat) :is(.editor-entry-card,.resume-design-card,.personal-overview) { background:var(--app-raised); }
+  :scope :is(.shadow,.shadow-sm,.shadow-md,.shadow-lg,.shadow-xl,dialog,.app-auth main,.customization-tabs,.resume-customization-tabs) { box-shadow:none; }
+  :scope :is(.portfolio-template-dialog,.portfolio-detail-dialog,.portfolio-upload-dialog,.app-auth main) { border-radius:var(--app-radius); }
+  :scope :is(.portfolio-template-choice,.resume-style-presets > button,.portfolio-accent-swatches > button)[aria-pressed='true'] { box-shadow:0 0 0 1px var(--app-accent); }
+  :scope .portfolio-accent-swatches > button { box-shadow:none; }
+  :scope .portfolio-accent-swatches > button:hover { box-shadow:0 0 0 2px var(--app-border-strong); }
+  :scope :is(.bg-paper\/40,.bg-white\/60) { background:var(--app-inset); }
+  :scope :is(.text-ink,.text-slate-900,.text-gray-900) { color:var(--app-text); }
+  :scope :is(.border-red-700,.border-red-600) { border-color:var(--app-danger); }
+  :scope :is(.ring-accent,.ring-black\/10) { --tw-ring-color:var(--app-border-strong); }
+}
+
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope .skip-link { background:var(--app-primary); color:var(--app-on-primary); }
+  /* The darker light-mode nested surface needs stronger small-text contrast. */
+  :scope :is(input,textarea,select,.account-appearance-options > button,.library-status,.dashboard-visibility,.personal-edit-button,.resume-customization-tabs,.customization-tabs,.editor-panel-navigation,.appearance-card,.appearance-spacing-choices > button,.design-choice-grid button,.design-spacing-grid button,.design-layout-grid button,.section-layout-choices button) { --app-muted:var(--app-inset-muted); }
+  :scope .app-hero > div:last-child > div:first-child { --app-muted:var(--app-inset-muted); }
+}
+
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope .design-history { color:var(--app-muted); }
+  :scope .portfolio-template-summary-icon { background:var(--app-raised); color:var(--app-text); }
+}
+
+/* Give actions a consistent hierarchy, distinct from passive selection fills. */
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish) {
+    background:transparent;
+    color:var(--app-text);
+    border:1px solid var(--app-control-border);
+  }
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish) {
+    background:transparent;
+    color:var(--app-text);
+    border-color:var(--app-control-border);
+  }
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):hover:not(:disabled),
+  :scope :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):hover:not(:disabled) {
+    background:var(--app-control-hover);
+    color:var(--app-text);
+    border-color:var(--app-border-strong);
+  }
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):active:not(:disabled),
+  :scope :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):active:not(:disabled) { background:var(--app-control-active); }
+  :scope :is(.button-green,.button-dark,.bg-accent,.editor-save-button):active:not(:disabled) { background:var(--app-primary-active); border-color:var(--app-primary-active); }
+  :scope .account-appearance-options > button { background:transparent; }
+  :scope .account-appearance-options > button[aria-pressed='true'] { background:var(--app-selected); }
+  :scope .analytics-chart-legend > span:first-child i,
+  :scope .analytics-bar-row:not(.clicks-bar) i { background:var(--app-accent); }
+}
+
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent) { border-color:var(--app-primary); }
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent):hover:not(:disabled) { border-color:var(--app-primary-hover); }
+  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent,.editor-save-button):active:not(:disabled) { background:var(--app-primary-active); border-color:var(--app-primary-active); }
+}
+
+/* Warm light-mode navigation follows the reference without changing its layout. */
+.linkfolio-app .app-sidebar nav a[aria-current='page'] { background:var(--app-nav-selected); }
+html[data-app-theme='light'] .linkfolio-app .app-sidebar nav a[aria-current='page']::before { background:transparent; }
+
+/* Utility hover fills must follow the application palette in either mode. */
+@scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
+  :scope [class~='hover:bg-paper']:hover { background-color:var(--app-control-hover); }
+  :scope .create-resume-option { background:transparent; color:var(--app-text); cursor:pointer; }
+  :scope .create-resume-option:hover { background:var(--app-control-hover); border-color:var(--app-control-border); }
+  :scope .create-resume-option:active { background:var(--app-control-active); }
+}

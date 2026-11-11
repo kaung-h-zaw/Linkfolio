@@ -1,16 +1,19 @@
-import { isCustomSection } from './contentCatalog.js'
+import { isExtraSection } from './contentCatalog.js'
 import { getProjects, visibleEntries } from './additionalSections.js'
 import { portfolioImageSource } from './portfolioImages.js'
 import { profileLinkHref } from './profileLinks.js'
 import { entryHasContent } from './sectionContent.js'
 
-export function portfolioCustomSections(profile) {
-  return (profile?.extraContent || []).filter((section)=>isCustomSection(section.type) && section.showInPortfolio === true && !(profile.removedSections || []).includes(section.type))
-    .map((section)=>({...section,entries:section.entries.filter((entry)=>entry.visible && entryHasContent(entry)).map((entry)=>section.format==='skills' ? {id:entry.id,name:entry.name,content:entry.content,visible:entry.visible} : entry)})).filter((section)=>section.entries.length)
+export function portfolioExtraSections(profile) {
+  return (profile?.extraContent || []).filter((section) => isExtraSection(section.type) && !(profile.removedSections || []).includes(section.type))
+    .map((section) => ({...section, entries: section.entries.filter((entry) => entry.visible && entryHasContent(entry)).map((entry) => section.format === 'skills' ? {id:entry.id,name:entry.name,content:entry.content,visible:entry.visible} : entry)}))
+}
+export function portfolioCustomSections(profile, settings = {}) {
+  return portfolioExtraSections(profile).filter((section) => (settings.extraSectionVisibility?.[section.type] ?? settings.custom !== false) && section.entries.length)
 }
 export function portfolioDetailEntries(profile,settings) {
   const projects=settings.projects !== false && !(profile.removedSections || []).includes('projects') ? visibleEntries(getProjects(profile),['name','subtitle','url','github']) : []
-  const custom=settings.custom !== false ? portfolioCustomSections(profile).flatMap((section)=>section.entries.map((entry)=>({...entry,sectionTitle:section.heading}))) : []
+  const custom=portfolioCustomSections(profile,settings).flatMap((section)=>section.entries.map((entry)=>({...entry,sectionTitle:settings.sectionTitles?.[section.type] || section.heading})))
   return [...projects.map((entry)=>({key:`projects:${entry.id}`,kind:'projects',entry,title:entry.name || 'Project'})),...custom.map((entry)=>({key:`custom:${entry.id}`,kind:'custom',entry,title:entry.name || entry.sectionTitle || 'Details'}))]
 }
 export function validDetailPages(value) {

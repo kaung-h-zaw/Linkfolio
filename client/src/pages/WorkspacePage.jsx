@@ -1,9 +1,12 @@
+import AppThemeControl from '../components/AppThemeControl'
+import { isSelectableTemplate, templateNames } from '../lib/templateCatalog'
 import Icon from '../components/Icon'
 import WorkspaceHeader from '../components/WorkspaceHeader'
 import DashboardCards from '../components/DashboardCards'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import RemovePremiumDialog from '../components/RemovePremiumDialog'
+import DeleteAccountDialog from '../components/DeleteAccountDialog'
 import PortfolioAnalytics from '../components/PortfolioAnalytics'
 import MessageInbox from '../components/MessageInbox'
 import SetupSidebar from '../components/SetupSidebar'
@@ -15,7 +18,7 @@ const titles = {
   dashboard: 'Your dashboard',
   analytics: 'Portfolio analytics',
   messages: 'Contact messages',
-  account: 'Your account',
+  account: 'Account settings',
   premium: 'Upgrade to Premium',
   admin: 'Administration',
 }
@@ -36,6 +39,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
   const [attempt, setAttempt] = useState(0)
   const [checkout, setCheckout] = useState(null)
   const [removePremiumOpen, setRemovePremiumOpen] = useState(false)
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
   useEffect(() => {
     let active = true
     async function load() {
@@ -112,7 +116,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
     <div data-workspace-view={view} className="app-workspace min-h-dvh bg-paper md:flex">
       <SetupSidebar active={view} mobileCompact />
       <main className={`min-w-0 flex-1 p-5 sm:p-8 lg:p-10 workspace-main ${view === 'dashboard' ? 'dashboard-main' : ''}`}>
-        <WorkspaceHeader title={titles[view]} icon={{ dashboard:'window',analytics:'eye',messages:'mail',account:'user',premium:'spark',admin:'skills' }[view]} description={view === 'dashboard' ? `Welcome back, ${user.fullName}` : undefined} />
+        <WorkspaceHeader title={titles[view]} icon={{ dashboard:'window',analytics:'eye',messages:'mail',account:'user',premium:'spark',admin:'skills' }[view]} description={view === 'dashboard' ? `Welcome back, ${user.fullName}` : view === 'account' ? 'Manage your profile, plan, and appearance.' : undefined} />
         {error && (
           <div
             role="alert"
@@ -139,8 +143,9 @@ export default function WorkspacePage({ view = 'dashboard' }) {
         {view === 'messages' && <MessageInbox />}
         {view === 'account' && (
           <div className="account-card-grid">
+          <div className="account-setting-column">
           <form
-            className="space-y-5 rounded-lg border border-line bg-white p-6"
+            className="account-profile-card space-y-5 rounded-lg border border-line bg-white p-6"
             onSubmit={(event) => {
               event.preventDefault()
               const fullName = new FormData(event.currentTarget).get('fullName')
@@ -150,7 +155,10 @@ export default function WorkspacePage({ view = 'dashboard' }) {
               }, 'Account name updated. Edit your saved resumes to update the name shown on them.')
             }}
           >
-            <h2 className="text-xl font-semibold">Profile details</h2>
+            <div className="account-card-heading">
+              <span className="account-card-icon"><Icon name="user" className="h-4 w-4" /></span>
+              <div><h2 className="text-xl font-semibold">Profile details</h2><p className="mt-1 text-sm text-muted">Your account identity and sign-in email.</p></div>
+            </div>
             <label className="block text-sm font-medium">
               Full name
               <input
@@ -161,7 +169,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
                 className="mt-2 min-h-12 w-full rounded border border-line px-3"
               />
             </label>
-            <p className="text-sm">Email: {user.email}</p>
+            <p className="account-email-row"><span>Email address</span><strong>{user.email}</strong></p>
             <button disabled={busy} className="button button-green">
               <Icon name="save" className="h-4 w-4"/>Save account
             </button>
@@ -169,21 +177,35 @@ export default function WorkspacePage({ view = 'dashboard' }) {
               Change your password
             </Link>
           </form>
-          <section className="rounded-lg border border-line bg-white p-6">
-            <h2 className="text-xl font-semibold">Your plan</h2>
-            <p className="mt-3 text-base font-medium">{user.plan === 'premium' ? 'Premium' : 'Free'} account</p>
-            <p className="mt-2 text-sm leading-6 text-muted">{user.plan === 'premium' ? 'Switching to Free keeps your saved work.' : 'More saved work and Premium templates.'}</p>
-            {user.plan === 'premium' ? <button type="button" disabled={busy} onClick={() => setRemovePremiumOpen(true)} className="button button-outline mt-5 disabled:opacity-50">Remove Premium</button> : <Link to="/premium" className="button button-green mt-5">Upgrade to Premium</Link>}
+          <section className="account-signout-card">
+            <div><h2 className="font-semibold">Sign out</h2><p className="mt-1 text-sm text-muted">End your session on this device.</p></div>
+            <button type="button" disabled={busy} onClick={() => action(async () => { await logout() })} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
           </section>
-          <section className="rounded-lg border border-line bg-white p-6">
-            <h2 className="text-xl font-semibold">Sign out</h2>
-            
-            <button type="button" disabled={busy} onClick={() => action(async () => { await logout() })} className="button button-outline mt-5 disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
+          <section className="account-delete-card">
+            <div><h2 className="font-semibold">Delete account</h2><p className="mt-1 text-sm text-muted">Permanently delete your account and all saved work.</p></div>
+            <button type="button" disabled={busy} onClick={() => setDeleteAccountOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="trash" className="h-4 w-4"/>Delete account</button>
           </section>
+          </div>
+          <div className="account-setting-column">
+          <section className="account-plan-card rounded-lg border border-line bg-white p-6">
+              <div className="account-card-heading">
+                <span className="account-card-icon"><Icon name="spark" className="h-4 w-4" /></span>
+                <div><h2 className="text-xl font-semibold">Your plan</h2><p className="mt-1 text-sm text-muted">Your current Linkfolio membership.</p></div>
+              </div>
+              <div className="account-plan-status"><span className="account-plan-dot" aria-hidden="true" />{user.plan === 'premium' ? 'Premium account' : 'Free account'}</div>
+              <p className="mt-2 text-sm leading-6 text-muted">{user.plan === 'premium' ? 'Switching to Free keeps your saved work.' : 'Get more room for your work and access Premium templates.'}</p>
+              {user.plan === 'premium' ? <button type="button" disabled={busy} onClick={() => setRemovePremiumOpen(true)} className="button button-outline mt-4 disabled:opacity-50">Manage plan</button> : <Link to="/premium" className="button button-green mt-4">Explore Premium</Link>}
+          </section>
+          <AppThemeControl />
+          </div>
           {removePremiumOpen && <RemovePremiumDialog onClose={() => setRemovePremiumOpen(false)} onConfirm={async () => {
             const result = await api('/billing/downgrade', { method: 'POST' })
             setUser(result.user)
             setNotice('Premium removed. Your account is now on the Free plan.')
+          }} />}
+          {deleteAccountOpen && <DeleteAccountDialog fullName={user.fullName} onClose={() => setDeleteAccountOpen(false)} onConfirm={async (fullName) => {
+            await api('/account', { method: 'DELETE', body: { fullName } })
+            await logout()
           }} />}
           </div>
         )}
@@ -319,13 +341,13 @@ export default function WorkspacePage({ view = 'dashboard' }) {
             </div>
             <h2 className="mt-8 text-xl font-semibold">Templates</h2>
             <div className="admin-template-grid mt-4 grid gap-3 lg:grid-cols-2">
-              {data.templates.map((template) => (
+              {data.templates.filter(isSelectableTemplate).map((template) => (
                 <div
                   key={`${template.kind}-${template.id}`}
                   className="flex flex-wrap items-center justify-between gap-3 rounded border border-line bg-white p-4"
                 >
                   <p className="text-sm">
-                    {template.name} · {template.kind}
+                    {templateNames[template.kind][template.id]} · {template.kind}
                   </p>
                   <div className="flex gap-4">
                     {[

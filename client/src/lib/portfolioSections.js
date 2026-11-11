@@ -1,9 +1,11 @@
+import { isExtraSection } from './contentCatalog.js'
+
 export const portfolioSectionDesigns = [
   {
     key: 'hero',
     title: 'Introduction',
     options: [
-      ['left', 'Left aligned'],
+      ['portrait-left', 'Portrait focus'],
       ['centered', 'Centered'],
       ['split', 'Split introduction'],
     ],
@@ -54,14 +56,14 @@ export const portfolioSectionDesigns = [
     ],
   },
   { key:'certifications',title:'Certifications',options:[['list','Simple list'],['cards','Cards']] },
-  {key:'custom',title:'Custom section',options:[['list','List'],['cards','Cards']]},
+  {key:'custom',title:'Custom section',options:[['list','List'],['grid','Two columns'],['cards','Cards'],['timeline','Timeline'],['compact','Compact']]},
   { key:'languages',title:'Languages',options:[['list','Simple list'],['cards','Cards']] },
   {
     key: 'contact',
     title: 'Contact',
     options: [
       ['simple', 'Simple'],
-      ['centered', 'Centered invitation'],
+      ['form-first', 'Form first'],
 
     ],
   },
@@ -72,12 +74,10 @@ export function validSectionLayouts(value) {
     typeof value === 'object' &&
     !Array.isArray(value) &&
     Object.entries(value).every(([key, layout]) => {
-      const section = portfolioSectionDesigns.find(
-        (section) => section.key === key,
-      )
+      const section = portfolioSectionDesigns.find((section) => section.key === key) || (isExtraSection(key) ? portfolioSectionDesigns.find((section) => section.key === 'custom') : undefined)
       return (
         section &&
-        (layout === 'template' || (layout === 'panel' && ['about','contact'].includes(key)) || section.options.some(([id]) => id === layout))
+        (layout === 'template' || (key === 'hero' && layout === 'left') || (key === 'contact' && layout === 'centered') || (layout === 'panel' && ['about','contact'].includes(key)) || section.options.some(([id]) => id === layout))
       )
     })
   )

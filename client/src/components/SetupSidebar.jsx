@@ -13,7 +13,7 @@ export default function SetupSidebar({ active, mobileCompact = true }) {
   const { unread = 0 } = useMessages() || {}
   return (
     <aside data-compact={mobileCompact ? 'true' : undefined} data-menu-open={menuOpen} className="app-sidebar border-b border-line bg-[#eef1f5] px-5 py-5 md:sticky md:top-0 md:flex md:h-dvh md:w-56 md:shrink-0 md:flex-col md:border-r md:border-b-0 md:px-5 md:py-8 lg:w-64">
-      <div className="sidebar-brand-row"><Logo to="/dashboard" label="Linkfolio dashboard" />{mobileCompact && <button ref={menuToggle} type="button" className="sidebar-menu-toggle" aria-label={menuOpen ? 'Close workspace menu' : 'Open workspace menu'} aria-expanded={menuOpen} aria-controls={menuId} onClick={() => setMenuOpen((open) => !open)}><Icon name={menuOpen ? 'close' : 'menu'} className="h-4 w-4" />Menu</button>}</div>
+      <div className="sidebar-brand-row"><Logo to="/dashboard" label="Linkfolio dashboard" /><div className="sidebar-brand-actions">{mobileCompact && <button ref={menuToggle} type="button" className="sidebar-menu-toggle" aria-label={menuOpen ? 'Close workspace menu' : 'Open workspace menu'} aria-expanded={menuOpen} aria-controls={menuId} onClick={() => setMenuOpen((open) => !open)}><Icon name={menuOpen ? 'close' : 'menu'} className="h-4 w-4" />Menu</button>}</div></div>
       <nav id={menuId} onKeyDown={(event) => { if (event.key === 'Escape') { setMenuOpen(false); menuToggle.current?.focus() } }} aria-label="Workspace" className="mt-6 flex flex-wrap gap-2 md:mt-12 md:flex-col">
         {[
           ['dashboard', 'Dashboard', 'window', '/dashboard'],

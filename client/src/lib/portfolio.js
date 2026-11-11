@@ -1,3 +1,4 @@
+import { isExtraSection } from './contentCatalog.js'
 import { validDetailPages } from './portfolioContent.js'
 import { validPortfolioDesign } from './portfolioDesign.js'
 import { validPortfolioImages } from './portfolioImages.js'
@@ -33,8 +34,9 @@ export function validPortfolio(value) {
           value[key] === undefined) ||
         typeof value[key] === typeof fallback,
     ) &&
-    (value.sectionTitles === undefined || (value.sectionTitles && typeof value.sectionTitles === 'object' && !Array.isArray(value.sectionTitles) && Object.entries(value.sectionTitles).every(([key,title]) => ['about','projects','experience','education','skills','certifications','languages','contact','custom'].includes(key) && typeof title === 'string' && title.length <= 80))) &&
+    (value.sectionTitles === undefined || (value.sectionTitles && typeof value.sectionTitles === 'object' && !Array.isArray(value.sectionTitles) && Object.entries(value.sectionTitles).every(([key,title]) => (['about','projects','experience','education','skills','certifications','languages','contact'].includes(key) || isExtraSection(key)) && typeof title === 'string' && title.length <= 80))) &&
     (value.sourceResume === undefined || (value.sourceResume && !Array.isArray(value.sourceResume) && typeof value.sourceResume === 'object' && Object.keys(value.sourceResume).every((key) => ['id','name'].includes(key)) && typeof value.sourceResume.id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value.sourceResume.id) && typeof value.sourceResume.name === 'string' && value.sourceResume.name.length <= 240)) &&
+    (value.extraSectionVisibility === undefined || (value.extraSectionVisibility && typeof value.extraSectionVisibility === 'object' && !Array.isArray(value.extraSectionVisibility) && Object.entries(value.extraSectionVisibility).every(([key,visible]) => isExtraSection(key) && typeof visible === 'boolean'))) &&
     validDetailPages(value.detailPages) &&
     (value.custom === undefined || typeof value.custom === 'boolean') &&
     validPortfolioDesign(value.design) &&

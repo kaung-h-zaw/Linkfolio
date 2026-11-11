@@ -13,3 +13,10 @@ export function matchesPreset(current, values) {
   return Object.entries(values).every(([key, value]) => current[key] === value)
 }
 
+
+// Styling alternatives keep the selected template's structure and section order.
+export const resumeStyles = [
+  { id:'minimal', name:'Minimal', description:'Quiet sans serif type and open headings.', values:{font:'Arial, sans-serif',nameFont:'template',color:'#30363c',header:'left',nameSize:30,headings:'plain',capitals:false,headingCase:'capitalize',accentName:false,accentTitle:false,accentHeadings:false,sectionGap:22,lineHeight:1.4} },
+  { id:'executive', name:'Executive', description:'A formal serif masthead with deep green details.', values:{font:'Georgia, serif',nameFont:'template',color:'#28483e',header:'center',nameSize:32,headings:'rule',capitals:false,headingCase:'capitalize',accentName:false,accentTitle:false,accentHeadings:true,sectionGap:20,lineHeight:1.35} },
+  { id:'elegant', name:'Elegant', description:'Refined serif type and soft wine accents.', values:{font:'Georgia, serif',nameFont:'template',color:'#794658',header:'center',nameSize:34,headings:'rule',capitals:false,headingCase:'capitalize',accentName:true,accentTitle:false,accentHeadings:true,sectionGap:20,lineHeight:1.45} },
+]

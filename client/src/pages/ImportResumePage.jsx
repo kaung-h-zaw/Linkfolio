@@ -19,7 +19,7 @@ export default function ImportResumePage() {
   const [sourceDirty, setSourceDirty] = useState(false)
   const [name, setName] = useState('Imported resume')
   const [parsed, setParsed] = useState(null)
-  const [templateId, setTemplateId] = useState('essential')
+  const [templateId, setTemplateId] = useState('flowcv-classic-serif')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [progress, setProgress] = useState({ label: 'Reading your resume…', progress: undefined })

@@ -1,6 +1,9 @@
 import { LuGripVertical, LuSaveOff } from 'react-icons/lu'
 import {
+  FiSun,
+  FiMoon,
   FiMail,
+  FiCopy,
   FiCamera,
   FiHome,
   FiMapPin,
@@ -57,7 +60,10 @@ import {
   FiArrowLeft,
 } from 'react-icons/fi'
 const icons = {
+  sun:FiSun,
+  moon:FiMoon,
   mail: FiMail,
+  copy: FiCopy,
   camera: FiCamera,
   home: FiHome,
   location: FiMapPin,

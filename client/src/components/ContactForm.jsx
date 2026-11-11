@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useEffect, useId, useState } from 'react'
 import Icon from './Icon'
 import { api } from '../lib/api'
-export default function ContactForm({ slug }) {
+export default function ContactForm({ slug, preview = false }) {
+  const previewHint = useId()
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState('')
   const [sent, setSent] = useState(false)
@@ -13,7 +13,7 @@ export default function ContactForm({ slug }) {
   }, [sent])
   async function submit(event) {
     event.preventDefault()
-    if (busy) return
+    if (busy || preview || !slug) return
     const form = event.currentTarget
     const body = Object.fromEntries(new FormData(form))
     setBusy(true)
@@ -34,58 +34,40 @@ export default function ContactForm({ slug }) {
     }
   }
   return (
-    <form onSubmit={submit} className="mt-8 max-w-xl space-y-4">
-      <h3 className="text-lg font-semibold">Send a message</h3>
-      <label className="block text-sm">
-        Your name
-        <input
-          name="name"
-          autoComplete="name"
-          required
-          maxLength={120}
-          className="mt-2 min-h-11 w-full rounded border border-line bg-white px-3 text-ink"
-        />
-      </label>
-      <label className="block text-sm">
-        Your email
-        <input
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          maxLength={254}
-          className="mt-2 min-h-11 w-full rounded border border-line bg-white px-3 text-ink"
-        />
-      </label>
-      <label className="block text-sm">
-        Message
-        <textarea
-          name="message"
-          required
-          maxLength={5000}
-          rows={5}
-          className="mt-2 w-full rounded border border-line bg-white p-3 text-ink"
-        />
+    <form onSubmit={submit} className="portfolio-contact-form" aria-label="Send a message" aria-describedby={preview ? previewHint : undefined} data-preview={preview || undefined}>
+      <div className="portfolio-form-heading">
+        <span className="portfolio-form-heading-icon" aria-hidden="true"><Icon name="edit" className="h-5 w-5" /></span>
+        <div><h3>Send a message</h3><p>Tell me what you’re working on.</p></div>
+      </div>
+      <div className="portfolio-form-row">
+        <label className="portfolio-form-field">
+          <span>Your name</span>
+          <input name="name" autoComplete="name" required maxLength={120} placeholder="Your name" />
+        </label>
+        <label className="portfolio-form-field">
+          <span>Your email</span>
+          <input name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" />
+        </label>
+      </div>
+      <label className="portfolio-form-field">
+        <span>Message</span>
+        <textarea name="message" required maxLength={5000} rows={5} placeholder="A little about your project, idea, or question…" />
       </label>
       <label aria-hidden="true" className="hidden">
         Website
         <input name="website" tabIndex={-1} autoComplete="off" />
       </label>
-      <button disabled={busy} className="button button-green disabled:opacity-50">
-        {busy ? 'Sending…' : 'Send message'}
+      <button type="submit" disabled={busy || preview} aria-busy={busy} className="portfolio-button portfolio-send-button">
+        <span>{busy ? 'Sending…' : 'Send message'}</span>
+        {busy ? <span className="portfolio-send-spinner" aria-hidden="true" /> : <Icon name="arrow" className="h-4 w-4" />}
       </button>
-      {sent && createPortal(
-        <div role="status" aria-live="polite" className="fixed right-5 bottom-5 left-5 z-50 flex items-start gap-3 rounded-xl border border-line bg-white p-5 text-ink shadow-xl sm:left-auto sm:w-96">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sage text-accent"><Icon name="check" className="h-5 w-5" /></span>
-          <div className="min-w-0 flex-1"><p className="font-semibold">Message sent</p><p className="mt-1 text-sm leading-6 text-muted">{result}</p></div>
-          <button type="button" onClick={() => { setSent(false); setResult('') }} aria-label="Dismiss message confirmation" className="grid h-8 w-8 shrink-0 place-items-center rounded hover:bg-paper"><Icon name="close" className="h-4 w-4" /></button>
-        </div>, document.body
-      )}
-      {result && !sent && (
-        <p role="status" className="text-sm">
-          {result}
-        </p>
-      )}
+      {preview && <p id={previewHint} className="portfolio-form-preview-note">Visitors can send messages from your published portfolio.</p>}
+      {sent && <div role="status" aria-live="polite" className="portfolio-form-feedback portfolio-form-feedback--success">
+        <Icon name="check" className="h-5 w-5" />
+        <div><p className="portfolio-form-feedback-title">Message sent</p><p>{result}</p></div>
+        <button type="button" onClick={() => { setSent(false); setResult('') }} aria-label="Dismiss message confirmation"><Icon name="close" className="h-4 w-4" /></button>
+      </div>}
+      {result && !sent && <p role="alert" className="portfolio-form-feedback portfolio-form-feedback--error">{result}</p>}
     </form>
   )
 }

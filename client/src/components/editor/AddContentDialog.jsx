@@ -8,7 +8,6 @@ export default function AddContentDialog({ added, existing = [], onAdd, onClose 
   const [customName,setCustomName] = useState('')
   const [format,setFormat] = useState('standard')
   const [showInResume,setShowInResume]=useState(true)
-  const [showInPortfolio,setShowInPortfolio]=useState(false)
   useEffect(() => { dialog.current.showModal() }, [])
   const choices = [
     ...coreSections.filter(([type]) => type !== 'personal'),
@@ -19,9 +18,9 @@ export default function AddContentDialog({ added, existing = [], onAdd, onClose 
       <div><h2 id="add-content-title" className="text-xl font-semibold">{customOpen?'Custom section':'Add Content'}</h2></div>
       <button autoFocus type="button" aria-label="Close" onClick={() => dialog.current.close()} className="add-content-close"><Icon name="close" className="h-5 w-5"/></button>
     </div>
-    {customOpen ? <form className="space-y-4 p-5" onSubmit={(event) => { event.preventDefault(); if (customName.trim()) onAdd('custom',customName.trim(),{showInResume,showInPortfolio,format}) }}>
+    {customOpen ? <form className="space-y-4 p-5" onSubmit={(event) => { event.preventDefault(); if (customName.trim()) onAdd('custom',customName.trim(),{showInResume,format}) }}>
       <label className="block text-sm font-medium">Section name<input autoFocus required maxLength={80} value={customName} onChange={(event) => setCustomName(event.target.value)} placeholder="e.g. Volunteering or Awards" className="mt-2 min-h-11 w-full rounded border border-line px-3" /></label>
-      <div className="flex flex-wrap gap-4"><label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={showInResume} onChange={(event)=>setShowInResume(event.target.checked)} />Show in resume</label><label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={showInPortfolio} onChange={(event)=>setShowInPortfolio(event.target.checked)} />Show in portfolio</label></div>
+      <div className="flex flex-wrap gap-4"><label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" checked={showInResume} onChange={(event)=>setShowInResume(event.target.checked)} />Show in resume</label></div>
       <fieldset><legend className="mb-2 text-sm font-semibold">Content type</legend><div className="custom-section-type-choices">{[['standard','Standard entries'],['skills','Skill groups']].map(([value,label])=><button key={value} type="button" aria-label={`Custom section type: ${label}`} aria-pressed={format===value} onClick={()=>setFormat(value)}>{label}</button>)}</div></fieldset>
       <div className="flex gap-3"><button className="button button-green" disabled={!customName.trim()}>Continue<Icon name="arrow" className="ml-2 h-4 w-4"/></button><button type="button" className="button button-outline" onClick={() => setCustomOpen(false)}>Cancel</button></div>
     </form> : <div className="grid gap-3 p-5 sm:grid-cols-2">

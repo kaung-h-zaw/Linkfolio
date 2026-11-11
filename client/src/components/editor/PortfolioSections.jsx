@@ -1,4 +1,5 @@
 import Icon from '../Icon'
+import { isExtraSection, isCustomSection } from '../../lib/contentCatalog'
 import { useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { portfolioOrder } from '../../lib/portfolioDesign'
@@ -6,8 +7,9 @@ import { portfolioOrder } from '../../lib/portfolioDesign'
 export default function PortfolioSections({sections,settings,onChange}) {
   const helpId=useId(),list=useRef(null),drag=useRef(null),positions=useRef(new Map())
   const [floating,setFloating]=useState(null),[dragOrder,setDragOrder]=useState(null),[announcement,setAnnouncement]=useState('')
-  const order=dragOrder||portfolioOrder(null,settings.design)
-  const rows=[...sections].sort((a,b)=>order.indexOf(a.key)-order.indexOf(b.key))
+  const order=dragOrder||portfolioOrder(null,settings.design,sections.filter(section=>section.extra).map(section=>section.key))
+  const footerSection=sections.find(section=>section.key==='contact')
+  const rows=sections.filter(section=>section.key!=='contact').sort((a,b)=>order.indexOf(a.key)-order.indexOf(b.key))
   const signature=rows.map(row=>row.key).join('|')
   function saveOrder(keys,key,title) {
     onChange({...settings,design:{...settings.design,sectionOrder:keys}})
@@ -72,11 +74,16 @@ export default function PortfolioSections({sections,settings,onChange}) {
           const delta=event.key==='ArrowUp'?-1:event.key==='ArrowDown'?1:0
           if(delta&&rows[index+delta]){event.preventDefault();reorder(row.key,rows[index+delta].key)}
         }}><Icon name="grip" className="h-5 w-5"/></button>
-        <Icon name={row.key==='about'?'file':row.key} className="section-order-icon h-4 w-4"/>
+        <Icon name={row.key==='about'?'file':isCustomSection(row.key)?'custom':row.key} className="section-order-icon h-4 w-4"/>
         <span className="min-w-0 flex-1 break-words text-xs font-semibold">{row.title}</span>
-        <label className="grid min-h-11 min-w-11 cursor-pointer place-items-center"><input type="checkbox" className="accent-accent" aria-label={`Show ${row.title} section`} checked={settings[row.key]!==false} onChange={event=>onChange({...settings,[row.key]:event.target.checked})}/></label>
+        <label className="grid min-h-11 min-w-11 cursor-pointer place-items-center"><input type="checkbox" className="accent-accent" aria-label={`Show ${row.title} section`} checked={isExtraSection(row.key) ? settings.extraSectionVisibility?.[row.key] ?? settings.custom !== false : settings[row.key]!==false} onChange={event=>onChange(isExtraSection(row.key) ? {...settings,extraSectionVisibility:{...settings.extraSectionVisibility,[row.key]:event.target.checked}} : {...settings,[row.key]:event.target.checked})}/></label>
       </div>)}
     </div>
+    {footerSection && <div className="resume-arrange-row portfolio-footer-order-row">
+      <Icon name="mail" className="section-order-icon h-4 w-4" />
+      <span className="min-w-0 flex-1 text-xs font-semibold">{footerSection.title}<span className="mt-1 block text-xs font-normal text-muted">Footer · Always last</span></span>
+      <label className="grid min-h-11 min-w-11 cursor-pointer place-items-center"><input type="checkbox" className="accent-accent" aria-label={`Show ${footerSection.title} section`} checked={settings.contact!==false} onChange={event=>onChange({...settings,contact:event.target.checked})} /></label>
+    </div>}
     {!rows.length&&<p className="text-sm text-muted">Choose a resume with content to arrange its sections.</p>}
     {floating&&createPortal(<div aria-hidden="true" className="section-drag-floating" style={{left:floating.left,top:floating.top,width:floating.width,height:floating.height}}><Icon name="grip" className="h-5 w-5"/><Icon name={floating.key==='about'?'file':floating.key} className="h-4 w-4"/><span>{floating.title}</span></div>,document.body)}
   </section>

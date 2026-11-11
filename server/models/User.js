@@ -56,6 +56,9 @@ function createUserModel(db) {
     updateName(fullName, id) {
       return db.prepare('UPDATE users SET full_name = ? WHERE id = ?').run(fullName, id)
     },
+    deleteById(id) {
+      return db.prepare('DELETE FROM users WHERE id = ?').run(id)
+    },
     findActiveByEmail(email) {
       return db.prepare('SELECT * FROM users WHERE email = ? AND disabled = 0').get(email)
     },

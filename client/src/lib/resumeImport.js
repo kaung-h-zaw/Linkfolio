@@ -105,7 +105,7 @@ function descriptionDocument(value) {
   }
   return { type: 'doc', content }
 }
-export function createImportedResume(source, personal, name, templateId = 'essential', structured) {
+export function createImportedResume(source, personal, name, templateId = 'flowcv-classic-serif', structured) {
   const text = cleanResumeText(source)
   if (!text) throw new Error('Add your resume text before importing.')
   if (text.length > MAX_IMPORT_TEXT) throw new Error('Import up to 60,000 characters.')

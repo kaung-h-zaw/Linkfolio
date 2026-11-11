@@ -1,6 +1,8 @@
+import { flowcvResumeTemplates } from '../lib/flowcvResumeTemplates.js'
+import { resumeTemplateIds } from '../lib/templateCatalog.js'
 import { textDocument } from '../lib/summary'
 
-// Published references; these are editable adaptations, not official university templates.
+// Linkfolio resume types, with source references retained for their design foundations.
 const documentDefaults = {
   fontSize: 14, nameSize: 28, lineHeight: 1.35, sectionGap: 16,
   titleSize: 13, headingSize: 13, entrySize: 14, entryGap: 10,
@@ -8,85 +10,84 @@ const documentDefaults = {
   entryLayout: 'columns',
 }
 
-export const selectableResumeTemplates = [
+// Stable IDs preserve saved resumes, template access, and existing links.
+const legacyResumeTemplates = [
   {
-    id: 'classic', name: 'Harvard', category: 'Traditional',
-    description: 'Centered name, compact contact details and ruled sections, adapted from Harvard’s published resume format.',
-    color: '#222222', font: '"Times New Roman", Times, serif',
-    reference: 'harvard',
-    source: { label: 'Harvard Mignone Center for Career Success', url: 'https://careerservices.fas.harvard.edu/resources/create-a-strong-resume/' },
-    sectionOrder: ['education', 'experience', 'projects', 'skills', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'center' },
+    id:'classic', name:'Classic Resume', category:'Traditional', reference:'harvard',
+    description:'Traditional serif typography, a centered name, and clear ruled sections.',
+    color:'#222222', font:'"Times New Roman", Times, serif',
+    source:{label:'Harvard Mignone Center for Career Success',url:'https://careerservices.fas.harvard.edu/resources/create-a-strong-resume/'},
+    sectionOrder:['summary','experience','education','projects','skills','certifications'],
+    defaults:{...documentDefaults,header:'center'},
   },
   {
-    id: 'essential', name: 'MIT', category: 'Professional',
-    description: 'A straightforward single-column layout with bold headings and aligned dates, based on MIT CAPD’s resume samples.',
-    color: '#222222', font: 'Arial, Helvetica, sans-serif',
-    reference: 'mit',
-    source: { label: 'MIT Career Advising & Professional Development', url: 'https://capd.mit.edu/resources/resumes/' },
-    sectionOrder: ['education', 'experience', 'projects', 'skills', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'left' },
+    id:'slate', name:'Modern Resume', category:'Modern', reference:'awesome',
+    description:'A confident sans serif heading, crisp accent rules, and a balanced single column.',
+    color:'#28647a', font:'Arial, Helvetica, sans-serif',
+    source:{label:'Claud D. Park · Awesome CV',url:'https://github.com/posquit0/Awesome-CV'},
+    sectionOrder:['summary','experience','projects','education','skills','certifications'],
+    defaults:{...documentDefaults,header:'left',nameSize:34,accentName:true,accentTitle:true,accentHeadings:true,capitals:false,headings:'short'},
   },
   {
-    id: 'editorial', name: 'Bajaj Developer', category: 'Technical',
-    description: 'Compact serif typography, section rules and a split header, adapted from Sourabh Bajaj’s open-source developer resume.',
-    color: '#222222', font: '"Times New Roman", Times, serif',
-    reference: 'bajaj',
-    source: { label: 'Sourabh Bajaj · MIT-licensed resume', url: 'https://github.com/sb2nov/resume' },
-    sectionOrder: ['education', 'experience', 'projects', 'skills', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'left' },
+    id:'essential', name:'Minimal Resume', category:'Clean', reference:'mit',
+    description:'A quiet text-first layout with generous spacing and understated headings.',
+    color:'#30363c', font:'Arial, Helvetica, sans-serif',
+    source:{label:'MIT Career Advising & Professional Development',url:'https://capd.mit.edu/resources/resumes/'},
+    sectionOrder:['summary','experience','education','projects','skills','certifications'],
+    defaults:{...documentDefaults,header:'left',nameSize:30,sectionGap:22,headings:'plain',capitals:false,contactIcons:'none'},
   },
   {
-    id: 'slate', name: 'Awesome CV', category: 'Modern', reference: 'awesome',
-    description: 'A confident centered heading, red accents and compact experience entries, inspired by Claud D. Park’s Awesome CV.',
-    color: '#b84343', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'Claud D. Park · Awesome CV', url: 'https://github.com/posquit0/Awesome-CV' },
-    sectionOrder: ['summary', 'experience', 'projects', 'education', 'skills', 'certifications'],
-    defaults: { ...documentDefaults, header: 'center', accentTitle: true, accentHeadings: true, capitals: false },
+    id:'canvas', name:'Creative Resume', category:'Creative', reference:'alta', photo:true,
+    description:'Expressive plum accents, an optional portrait, and an asymmetric two-column body.',
+    color:'#753c64', font:'Arial, Helvetica, sans-serif',
+    source:{label:'LianTze Lim · AltaCV',url:'https://github.com/liantze/AltaCV'},
+    sectionOrder:['summary','experience','education','skills','projects','certifications'],
+    defaults:{...documentDefaults,header:'left',fontSize:13,accentName:true,accentTitle:true,accentHeadings:true,entryLayout:'full',headingIcons:'outline'},
   },
   {
-    id: 'avenue', name: 'ModernCV Classic', category: 'Photo', reference: 'modern-classic', photo: true,
-    description: 'A blue name, optional square portrait and dates in a left-hand rail, based on ModernCV’s Classic style.',
-    color: '#397ba3', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'Xavier Danaux & ModernCV maintainers', url: 'https://github.com/moderncv/moderncv' },
-    sectionOrder: ['summary', 'experience', 'education', 'projects', 'skills', 'certifications'],
-    defaults: { ...documentDefaults, header: 'left', accentName: true, accentHeadings: true, capitals: false, metadataPosition: 'left' },
+    id:'studio', name:'Executive Resume', category:'Professional', reference:'modern-banking',
+    description:'A composed leadership profile with a strong masthead and structured career history.',
+    color:'#28483e', font:'Georgia, serif',
+    source:{label:'ModernCV maintainers',url:'https://github.com/moderncv/moderncv'},
+    sectionOrder:['summary','experience','education','skills','projects','certifications'],
+    defaults:{...documentDefaults,header:'center',nameSize:32,accentHeadings:true,capitals:false,sectionGap:20},
   },
   {
-    id: 'grid', name: 'Deedy', category: 'Modern', reference: 'deedy',
-    description: 'An asymmetric two-column resume with a large centered name and a compact education and skills column.',
-    color: '#414141', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'Debarghya Das · Deedy Resume', url: 'https://github.com/deedy/Deedy-Resume' },
-    sectionOrder: ['experience', 'education', 'skills', 'projects', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'center', nameSize: 36, fontSize: 13, entryLayout: 'full', capitals: true },
+    id:'editorial', name:'Academic Resume', category:'Academic', reference:'academic',
+    description:'Education and publications come first in an orderly serif layout with room for research.',
+    color:'#283a53', font:'"Times New Roman", Times, serif',
+    source:{label:'Sourabh Bajaj · resume typography reference',url:'https://github.com/sb2nov/resume'},
+    sectionOrder:['education','publications','experience','projects','certifications','skills','summary'],
+    defaults:{...documentDefaults,header:'left',nameSize:30,sectionGap:20,lineHeight:1.45,accentHeadings:true,capitals:false,dateFormat:'year'},
   },
   {
-    id: 'studio', name: 'ModernCV Banking', category: 'Modern', reference: 'modern-banking',
-    description: 'A centered professional heading with green accents and precise section rules, based on ModernCV’s Banking style.',
-    color: '#377462', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'Xavier Danaux & ModernCV maintainers', url: 'https://github.com/moderncv/moderncv' },
-    sectionOrder: ['experience', 'education', 'projects', 'skills', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'center', accentHeadings: true, capitals: false },
+    id:'grid', name:'Technical Resume', category:'Technical', reference:'deedy',
+    description:'A compact skills and education rail beside detailed experience and engineering projects.',
+    color:'#314d6a', font:'Arial, Helvetica, sans-serif',
+    source:{label:'Debarghya Das · Deedy Resume',url:'https://github.com/deedy/Deedy-Resume'},
+    sectionOrder:['summary','experience','education','skills','projects','certifications'],
+    defaults:{...documentDefaults,header:'left',nameSize:32,fontSize:13,entryLayout:'full',accentHeadings:true,capitals:true},
   },
   {
-    id: 'canvas', name: 'AltaCV', category: 'Photo', reference: 'alta', photo: true,
-    description: 'A circular portrait, plum accents and a two-column body, inspired by LianTze Lim’s AltaCV.',
-    color: '#753c64', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'LianTze Lim · AltaCV', url: 'https://github.com/liantze/AltaCV' },
-    sectionOrder: ['experience', 'education', 'skills', 'projects', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'left', fontSize: 13, accentTitle: true, accentHeadings: true, entryLayout: 'full', headingIcons: 'outline' },
+    id:'avenue', name:'Elegant Resume', category:'Traditional', reference:'elegant', photo:true,
+    description:'Refined serif typography, a warm wine accent, and delicate section dividers.',
+    color:'#794658', font:'Georgia, serif',
+    source:{label:'ModernCV maintainers',url:'https://github.com/moderncv/moderncv'},
+    sectionOrder:['summary','experience','education','projects','skills','certifications'],
+    defaults:{...documentDefaults,header:'center',nameSize:34,lineHeight:1.45,sectionGap:20,accentName:true,accentHeadings:true,capitals:false,photoShow:false},
   },
   {
-    id: 'folio', name: 'Twenty One Seconds', category: 'Photo', reference: 'twentyone', photo: true,
-    description: 'A pale blue sidebar with a circular portrait and contact details, paired with a wider experience column.',
-    color: '#205d7c', font: 'Arial, Helvetica, sans-serif',
-    source: { label: 'Alessandro Trinca Tornidor · Twenty One Seconds', url: 'https://github.com/trincadev/cv-latex-twentyoneseconds' },
-    sectionOrder: ['experience', 'education', 'skills', 'projects', 'certifications', 'summary'],
-    defaults: { ...documentDefaults, header: 'left', fontSize: 13, nameSize: 25, entryLayout: 'full', accentName: true, accentTitle: true, accentHeadings: true, capitals: false },
+    id:'folio', name:'ATS-Friendly Resume', category:'Clean', reference:'ats',
+    description:'One column, standard headings, plain contact details, and a straightforward reading order.',
+    color:'#222222', font:'Arial, Helvetica, sans-serif',
+    source:{label:'MIT Career Advising & Professional Development',url:'https://capd.mit.edu/resources/resumes/'},
+    sectionOrder:['summary','experience','education','skills','projects','certifications'],
+    defaults:{...documentDefaults,header:'left',layout:'one',headerPosition:'top',headings:'plain',nameSize:28,entryLayout:'full',photoShow:false,contactIcons:'none',headingIcons:'none',linkIcon:false,linkBlue:false,underline:false,accentName:false,accentTitle:false,accentHeadings:false,sectionStyles:{skills:{contentLayout:'list'},languages:{contentLayout:'list'},certifications:{contentLayout:'list'}}},
   },
 ]
 
-export const resumeTemplates = selectableResumeTemplates
+export const resumeTemplates = [...legacyResumeTemplates, ...flowcvResumeTemplates]
+export const selectableResumeTemplates = resumeTemplateIds.map(id => resumeTemplates.find(template => template.id === id))
 
 export const sampleProfile = {
   personal: {

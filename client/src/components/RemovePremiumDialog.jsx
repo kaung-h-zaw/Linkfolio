@@ -41,7 +41,7 @@ export default function RemovePremiumDialog({ onConfirm, onClose }) {
       <div className="p-6 sm:p-8">
         <div className="flex items-start justify-between gap-4">
           <span className="grid h-12 w-12 place-items-center rounded-xl bg-paper text-accent"><Icon name="spark" className="h-6 w-6" /></span>
-          <button type="button" aria-label="Close plan confirmation" disabled={busy} onClick={close} className="grid h-10 w-10 place-items-center rounded-lg text-muted hover:bg-paper disabled:opacity-50"><Icon name="close" className="h-5 w-5" /></button>
+          <button type="button" aria-label="Close plan confirmation" disabled={busy} onClick={close} className="grid h-10 w-10 place-items-center rounded-lg border border-line bg-white text-muted hover:bg-paper disabled:opacity-50"><Icon name="close" className="h-5 w-5" /></button>
         </div>
         <h2 id="remove-premium-title" className="mt-5 text-2xl font-semibold tracking-tight">Switch to Free?</h2>
         <p id="remove-premium-description" className="mt-3 text-base leading-7 text-muted">You’ll remove Premium access from your account. Here’s what changes.</p>
@@ -51,7 +51,7 @@ export default function RemovePremiumDialog({ onConfirm, onClose }) {
         </div>
         {error && <p role="alert" className="mt-5 rounded-lg border border-red-200 p-3 text-sm leading-6 text-red-700">{error}</p>}
       </div>
-      <div className="flex flex-col gap-3 border-t border-line bg-paper/50 p-6 sm:flex-row sm:px-8">
+      <div className="flex flex-col gap-3 border-t border-line p-6 sm:flex-row sm:px-8" style={{ backgroundColor: 'var(--app-surface)' }}>
         <button ref={keepButton} type="button" disabled={busy} onClick={close} className="button button-green flex-1 disabled:opacity-50">Keep Premium</button>
         <button type="button" disabled={busy} onClick={confirm} className="button button-outline flex-1 disabled:opacity-50">{busy ? 'Switching…' : 'Switch to Free'}</button>
       </div>

@@ -1,6 +1,7 @@
+import Icon from '../Icon'
 import PortfolioSections from './PortfolioSections'
 import PortfolioEntryDetailsEditor from './PortfolioEntryDetailsEditor'
-import { portfolioCustomSections } from '../../lib/portfolioContent'
+import { portfolioExtraSections } from '../../lib/portfolioContent'
 import { getPortfolioTemplate } from '../../lib/portfolioTemplates'
 import PortfolioDesignControls from './PortfolioDesignControls'
 import PortfolioImages from './PortfolioImages'
@@ -34,15 +35,20 @@ export default function PortfolioPanel({
   onEditResume,
   linkedResume,
 }) {
+  const currentTemplate = getPortfolioTemplate(settings.template)
   const sourceResume = settings.sourceResume || linkedResume
   const currentResume = resumes.find((resume) => resume.id === sourceResume?.id)
   const counts = profile ? { about:getSummary(profile).entries.filter((e) => e.visible && summaryText(e.content).trim()).length, projects:visibleEntries(getProjects(profile),['name']).length,experience:visibleEntries(getExperience(profile),['jobTitle','company']).length,education:visibleEntries(getEducation(profile),['degree','school']).length,skills:visibleEntries(getSkills(profile),['name']).length,certifications:visibleEntries(getCertifications(profile),['name']).length,languages:visibleEntries(getLanguages(profile),['name']).length,contact:personal.email || personal.website || personal.phone ? 1 : 0 } : {}
   for (const key of profile?.removedSections || []) counts[key === 'summary' ? 'about' : key] = 0
-  counts.custom=portfolioCustomSections(profile).reduce((total,section)=>total+section.entries.length,0)
-  const customTitle=portfolioCustomSections(profile)[0]?.heading || 'Custom section'
+  const extraSections=portfolioExtraSections(profile)
+  const sections=[
+    ...['about','projects','experience','education','skills','certifications','languages','contact'].filter(key=>counts[key]>0).map(key=>({key,title:settings.sectionTitles?.[key] || key[0].toUpperCase()+key.slice(1)})),
+    ...extraSections.map(section=>({key:section.type,title:settings.sectionTitles?.[section.type] || section.heading || 'Custom section',extra:true})),
+  ]
   const [customAvailability, setCustomAvailability] = useState(
     () => !availabilityOptions.includes(settings.availability),
   )
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false)
   const set = (key, value) => onChange({ ...settings, [key]: value })
   return (
     <>
@@ -53,10 +59,14 @@ export default function PortfolioPanel({
       </div>
     <div className="editor-panel-body mx-auto max-w-2xl space-y-5 px-4 py-7 lg:px-8">
       {mode === 'design' && <>
-        <PortfolioDesignControls templatePicker={<details className="resume-design-card portfolio-template-card" data-design-group="templates">
-          <summary className="design-template-row cursor-pointer"><span><span className="block text-sm font-semibold">Templates</span><strong className="mt-1 block text-sm">{getPortfolioTemplate(settings.template).name}</strong></span><span className="rounded-md border border-line px-3 py-2 text-sm font-medium">Choose portfolio template</span></summary>
-          <div className="mt-5"><PortfolioTemplatePicker profile={profile} settings={settings} value={settings.template || defaultPortfolio.template} surface={settings.surface} color={settings.color} onChange={(value) => set('template',value)} /></div>
-        </details>} customizationTab={customizationTab} onCustomizationTabChange={onCustomizationTabChange} selectedSection={selectedSection} onSelectSection={onSelectSection} styleHistory={styleHistory} profile={profile} settings={settings} onChange={onChange} />
+        <PortfolioDesignControls templatePicker={<section className="resume-design-card portfolio-template-card" data-design-group="templates">
+          <div className="portfolio-template-summary">
+            <span className="portfolio-template-summary-icon" aria-hidden="true"><Icon name="window" className="h-6 w-6" /></span>
+            <div><p>Portfolio template</p><strong>{currentTemplate.name}</strong><span>Six layouts. Your own look.</span></div>
+            <button type="button" onClick={() => setTemplatePickerOpen(true)}><span>Choose portfolio template</span><Icon name="arrow" className="h-4 w-4"/></button>
+          </div>
+        </section>} customizationTab={customizationTab} onCustomizationTabChange={onCustomizationTabChange} selectedSection={selectedSection} onSelectSection={onSelectSection} styleHistory={styleHistory} profile={profile} settings={settings} onChange={onChange} />
+        {templatePickerOpen && <PortfolioTemplatePicker profile={profile} settings={settings} value={settings.template || defaultPortfolio.template} surface={settings.surface} color={settings.color} onChange={(value) => set('template',value)} onClose={() => setTemplatePickerOpen(false)} />}
       </>}
       {mode === 'content' && (
         <>
@@ -72,7 +82,7 @@ export default function PortfolioPanel({
             </div>
             {!resumes.length && <Link to="/setup" className="button button-outline">Create a resume</Link>}
           </section>
-          <PortfolioSections settings={settings} onChange={onChange} sections={['about','projects','experience','education','skills','certifications','languages','custom','contact'].filter((key)=>counts[key]>0).map((key)=>({key,title:key==='custom' ? customTitle : key[0].toUpperCase()+key.slice(1)}))} />
+          <PortfolioSections settings={settings} onChange={onChange} sections={sections} />
           <section className="space-y-5 rounded-md border border-line bg-white p-5">
             <h2 className="font-semibold">Availability</h2>
             <label className="block text-sm font-medium">

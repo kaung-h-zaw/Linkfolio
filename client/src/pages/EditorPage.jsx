@@ -55,7 +55,7 @@ function ResumeEditor({ params, mode }) {
           id: crypto.randomUUID(),
           name: isPortfolio ? 'Untitled portfolio' : 'Untitled resume',
           kind: mode,
-          templateId: params.get('template') || 'essential',
+          templateId: params.get('template') || 'flowcv-classic-serif',
           removedSections: isPortfolio ? [] : ['summary','experience','education','skills','projects','certifications','languages'],
         }
       )
@@ -83,8 +83,8 @@ function ResumeEditor({ params, mode }) {
     else setResumeTab(value)
   }
   const [resumeStyle, setResumeStyle, resumeStyleHistory] = useStyleHistory(() => ({
-    templateId: draft.templateId || 'essential',
-    design: getDesign({ ...resumeTemplates.find((item) => item.id === (draft.templateId || 'essential'))?.defaults, ...draft.design }),
+    templateId: draft.templateId || 'flowcv-classic-serif',
+    design: getDesign({ ...resumeTemplates.find((item) => item.id === (draft.templateId || 'flowcv-classic-serif'))?.defaults, ...draft.design }),
   }))
   const [customizationTab, setCustomizationTab] = useState('general')
   const [selectedDesignSection, setSelectedDesignSection] = useState('')
@@ -94,7 +94,7 @@ function ResumeEditor({ params, mode }) {
     ...defaultPortfolio,
     ...draft.portfolio,
     template:getPortfolioTemplate(draft.portfolio?.template || defaultPortfolio.template).id,
-  }), ['template', 'design', 'color', 'surface', 'sectionLayouts', 'sectionTitles', 'about', 'projects', 'experience', 'education', 'skills', 'certifications', 'languages', 'contact'])
+  }), ['template', 'design', 'color', 'surface', 'sectionLayouts', 'sectionTitles', 'extraSectionVisibility', 'about', 'projects', 'experience', 'education', 'skills', 'certifications', 'languages', 'contact'])
   function updatePortfolio(value) {
     setPortfolio(value)
     setNotice('Unsaved changes')
@@ -105,12 +105,14 @@ function ResumeEditor({ params, mode }) {
   }
   function changeTemplate(value) {
     const previousDefaults = getDesign(resumeTemplates.find((item) => item.id === templateId)?.defaults)
-    const nextDefaults = resumeTemplates.find((item) => item.id === value)?.defaults || {}
+    const nextDefaults = getDesign(resumeTemplates.find((item) => item.id === value)?.defaults)
     setResumeStyle((current) => ({
       templateId: value,
       design: {
         ...current.design,
-        ...Object.fromEntries(Object.entries(nextDefaults).filter(([key]) => current.design[key] === previousDefaults[key])),
+        ...Object.fromEntries([...new Set([...Object.keys(previousDefaults), ...Object.keys(nextDefaults)])]
+          .filter(key => JSON.stringify(current.design[key]) === JSON.stringify(previousDefaults[key]))
+          .map(key => [key, nextDefaults[key]])),
       },
     }))
     setNotice('Unsaved changes')
@@ -525,14 +527,14 @@ function ResumeEditor({ params, mode }) {
               setSelectedDesignSection(section.dataset.section)
               setView('content')
               requestAnimationFrame(() => requestAnimationFrame(() => {
-                if (isPortfolio) { scrollToEditor('smooth'); return }
                 const pane=document.getElementById('editor-content')
                 const target=[...pane.querySelectorAll('[data-section-customization]')].find(card=>card.dataset.sectionCustomization===section.dataset.section)
-                if (target) pane.scrollTo({top:pane.scrollTop+target.getBoundingClientRect().top-pane.getBoundingClientRect().top-24,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})
+                if (target) pane.scrollTo({top:pane.scrollTop+target.getBoundingClientRect().top-pane.getBoundingClientRect().top-(pane.querySelector('.resume-customization-tabs')?.offsetHeight || 0)-16,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})
               }))
             }
           }}
           data-edit-sections={tab === 'design' && !focusedPreview ? 'true' : undefined}
+          data-preview-kind={isPortfolio ? 'portfolio' : 'resume'}
           id="editor-preview"
           aria-label={isPortfolio ? 'Portfolio preview' : 'Resume preview'}
           className={`${view === 'preview' ? 'flex' : 'hidden'} min-h-0 min-w-0 flex-col border-line bg-[#eef0f2] md:flex md:border-l`}

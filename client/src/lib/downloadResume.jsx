@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 import { flushSync } from 'react-dom'
 import ResumePreview from '../components/ResumePreview'
 import { RESUME_RENDER_WIDTH } from './resumePage'
+import { addPdfTextLayer } from './pdfTextLayer'
 import { resumeTemplates } from '../components/resumeTemplates'
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
@@ -35,6 +36,7 @@ export async function downloadResume(profile) {
       const width = pdf.internal.pageSize.getWidth()
       const height = pdf.internal.pageSize.getHeight()
       pdf.addImage(canvas, 'PNG', 0, 0, width, height, undefined, 'FAST')
+      if (template.searchablePdf || template.reference === 'ats') addPdfTextLayer(pdf, page, width, height)
       const bounds = page.getBoundingClientRect()
       for (const link of page.querySelectorAll('a[href]')) {
         const rect = link.getBoundingClientRect()

@@ -8,7 +8,7 @@ const devices = [
   { id: 'tablet', label: 'Tablet', width: 768, height: 1024, Icon: FiTablet },
   { id: 'mobile', label: 'Mobile', width: 390, height: 844, Icon: FiSmartphone },
 ]
-const frameDocument = '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portfolio device preview</title></head><body style="margin:0"><div id="portfolio-root"></div></body></html>'
+const frameDocument = '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portfolio device preview</title><style>html,body{margin:0;scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}</style></head><body><div id="portfolio-root"></div></body></html>'
 
 export default function PortfolioDevicePreview({ profile, settings, onExitPreview, focused = false }) {
   const [deviceId, setDeviceId] = useState('desktop')

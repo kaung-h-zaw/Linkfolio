@@ -1,3 +1,4 @@
+import ResumeStylePresets from './ResumeStylePresets'
 import ResumeDocumentSettings from './ResumeDocumentSettings'
 import ResumeTemplateCard from './ResumeTemplateCard'
 import ResumeLayoutCard from './ResumeLayoutCard'
@@ -27,6 +28,7 @@ export default function DesignPanel({ profile, onEditPersonal, design, onChange,
       <ResumeCustomizationGroups value={customizationTab} onChange={onCustomizationTabChange} sections={<ResumeSectionDesigns profile={profile} design={design} onChange={onChange} selected={selectedSection} onSelect={onSelectSection} />}>
       <ResumeDocumentSettings design={design} onChange={onChange} template={resumeTemplates.find((item) => item.id === templateId)} />
       <ResumeTemplateCard profile={profile} templateId={templateId} onBrowse={() => setPicker(true)} />
+      <ResumeStylePresets design={design} template={resumeTemplates.find(item => item.id === templateId)} onChange={onChange} />
       {picker && <DesignTemplatePicker profile={profile} selected={templateId} onSelect={onTemplateChange} onClose={() => setPicker(false)} />}
       <ResumeLayoutCard profile={profile} design={design} onChange={onChange} template={resumeTemplates.find((item) => item.id === templateId)} />
       <ResumeSizeSpacingCards design={design} onChange={onChange} template={resumeTemplates.find((item) => item.id === templateId)} />

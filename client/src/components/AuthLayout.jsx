@@ -10,9 +10,9 @@ export default function AuthLayout({ children, titleId }) {
       <header className="border-b border-line">
         <div className="shell flex h-18 items-center justify-between gap-4">
           <Logo />
-          <Link to="/" className="nav-link text-sm">
+          <div className="auth-header-actions"><Link to="/" className="nav-link text-sm">
             Back to home
-          </Link>
+          </Link></div>
         </div>
       </header>
       <main

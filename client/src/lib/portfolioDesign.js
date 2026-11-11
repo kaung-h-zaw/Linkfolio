@@ -1,3 +1,5 @@
+import { getPortfolioTemplate } from './portfolioTemplates.js'
+import { isExtraSection } from './contentCatalog.js'
 import { validSectionStyles } from './sectionStyle.js'
 const portfolioSectionOrder = ['about','projects','experience','education','skills','certifications','languages','custom','contact']
 export const portfolioFonts = { template:'Template font', sans:'Modern sans serif', serif:'Editorial serif', mono:'Monospace' }
@@ -16,19 +18,26 @@ export function validPortfolioDesign(value) {
     if (ranges[key]) return Number.isFinite(item) && item >= ranges[key][0] && item <= ranges[key][1]
     if (enums[key]) return enums[key].includes(item)
     if (['background','text'].includes(key)) return typeof item === 'string' && /^#[0-9a-f]{6}$/i.test(item)
-    if (key === 'accentCustom') return typeof item === 'boolean'
-    if (key === 'sectionOrder') return Array.isArray(item) && item.length <= portfolioSectionOrder.length && new Set(item).size === item.length && item.every((id) => portfolioSectionOrder.includes(id))
+    if (['accentCustom','textCustom'].includes(key)) return typeof item === 'boolean'
+    if (key === 'sectionOrder') return Array.isArray(item) && item.length <= 50 && new Set(item).size === item.length && item.every((id) => portfolioSectionOrder.includes(id) || isExtraSection(id))
     return false
   }))
 }
-export function portfolioOrder(_template, design = {}) {
-  const base = portfolioSectionOrder
-  return [...(design.sectionOrder || []), ...base.filter((key) => !(design.sectionOrder || []).includes(key))]
+export function portfolioOrder(_template, design = {}, extraKeys) {
+  const expand = (keys) => extraKeys ? keys.flatMap((key) => key === 'custom' ? extraKeys : [key]) : keys
+  const base = expand(portfolioSectionOrder)
+  const saved = extraKeys?.includes('custom') ? design.sectionOrder || [] : expand(design.sectionOrder || [])
+  return [...new Set([...saved, ...base])].filter(key=>key!=='contact').concat('contact')
 }
 export function portfolioDesignStyle(settings) {
   const design = settings.design || {}
-  const colors = design.palette === 'dark' ? { background:'#111827',text:'#e5e7eb',surface:'#1f2937' } : design.palette === 'light' ? { background:'#ffffff',text:'#24313e',surface:'#f4f6f8' } : { background:design.background || '#ffffff',text:design.text || '#24313e',surface:settings.surface || '#f1f6f2' }
-  const vars = { '--portfolio-accent':settings.color || '#137763','--portfolio-surface':colors.surface,'--portfolio-background':colors.background,'--portfolio-text':colors.text }
+  const templateColors = getPortfolioTemplate(settings.template).colors || portfolioDesignDefaults
+  const colors = design.palette === 'dark' ? {background:'#111827',text:'#e5e7eb',surface:'#1f2937'} : design.palette === 'light' ? {background:'#ffffff',text:'#24313e',surface:'#f4f6f8'} : design.palette === 'custom' ? {background:design.background || '#ffffff',text:design.text || '#24313e',surface:settings.surface || '#f1f6f2'} : templateColors
+  const text = design.textCustom ? design.text || colors.text : colors.text
+  const vars = { '--portfolio-accent':design.accentCustom ? settings.color || '#137763' : templateColors.accent || '#137763','--portfolio-surface':colors.surface,'--portfolio-background':colors.background,'--portfolio-text':text }
+  if (design.palette && design.palette !== 'template') Object.assign(vars, {'--theme-paper':colors.background,'--theme-ink':text,'--theme-rule':`color-mix(in srgb, ${text} 18%, transparent)`,'--theme-muted':`color-mix(in srgb, ${text} 72%, ${colors.background})`})
+  if (design.textCustom) Object.assign(vars, {'--theme-ink':text,'--theme-muted':`color-mix(in srgb, ${text} 72%, ${colors.background})`})
+  if (design.accentCustom) vars['--theme-accent'] = settings.color || '#137763'
   const fonts = { sans:'Arial, Helvetica, sans-serif',serif:'Georgia, serif',mono:'"Courier New", monospace' }
   if (fonts[design.font]) vars['--portfolio-font'] = fonts[design.font]
   for (const key of Object.keys(ranges)) if (design[key] !== undefined) vars['--portfolio-' + key] = design[key] + (key === 'lineHeight' ? '' : 'px')

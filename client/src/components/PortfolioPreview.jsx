@@ -1,13 +1,14 @@
-import { customEntryDates } from '../lib/contentCatalog'
+import { customEntryDates, isExtraSection } from '../lib/contentCatalog'
 import { Link } from 'react-router-dom'
 import PortfolioEntryDetail from './PortfolioEntryDetail'
-import { portfolioCustomSections, portfolioDetailEntries, detailImages } from '../lib/portfolioContent'
+import { portfolioCustomSections, portfolioExtraSections, portfolioDetailEntries, detailImages } from '../lib/portfolioContent'
 import { portfolioDesignStyle, portfolioOrder } from '../lib/portfolioDesign'
 import { portfolioImageSource } from '../lib/portfolioImages'
 import ContactForm from './ContactForm'
+import CopyEmailButton from './CopyEmailButton'
 import PortfolioContactLinks from './PortfolioContactLinks'
-import ResumeDownloadButton from './ResumeDownloadButton'
-import { useContext, useId, useRef, useState } from 'react'
+import PortfolioNavigation from './PortfolioNavigation'
+import { useContext, useId, useState } from 'react'
 import { PreviewSelectionContext } from '../lib/previewSelection'
 import PortfolioHero from './PortfolioHero'
 import { getPortfolioTemplate } from '../lib/portfolioTemplates'
@@ -32,24 +33,25 @@ export default function PortfolioPreview({
   const [previewDetail,setPreviewDetail]=useState('')
   const details=portfolioDetailEntries(profile,settings)
   const activeDetail=details.find((item)=>item.key===(detailKey || previewDetail) && settings.detailPages?.[item.key]?.enabled)
-  const customSections=portfolioCustomSections(profile)
-  const customEntries=customSections.flatMap((section)=>section.entries)
+  const customSections=portfolioCustomSections(profile,settings)
+  const skillGroups=new Set(customSections.filter(section=>section.format==='skills').map(section=>section.type))
+  const hasCustomSection=portfolioExtraSections(profile).some(section=>section.type==='custom')
   function detailLink(kind,entry) {
     const key=`${kind}:${entry.id}`
     if(!settings.detailPages?.[key]?.enabled) return null
     return publicSlug ? <Link to={`/p/${encodeURIComponent(publicSlug)}/${kind}/${encodeURIComponent(entry.id)}`} className="portfolio-button">View details</Link> : <button type="button" className="portfolio-button" onClick={()=>setPreviewDetail(key)}>View details</button>
   }
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('')
-  const menuButton = useRef(null)
   const target = (key) => publicSlug ? `#${key}` : `#portfolio-${instance}-${key}`
   const template = getPortfolioTemplate(settings.template)
   const design = settings.design || {}
-  const order = portfolioOrder(template,design)
+  const order = portfolioOrder(template,design,customSections.map(section=>section.type))
   const layout = (key) => {
-    const selected = settings.sectionLayouts?.[key]
+    const selected = settings.sectionLayouts?.[key] ?? (isExtraSection(key) && !hasCustomSection ? settings.sectionLayouts?.custom : undefined)
+    if (key === 'hero' && selected === 'left') return 'portrait-left'
+    if (key === 'contact' && selected === 'centered') return 'form-first'
     if (selected === 'panel') return key === 'about' ? 'reading' : 'simple'
-    return selected && selected !== 'template' ? selected : template.layouts[key] || 'template'
+    const resolved = selected && selected !== 'template' ? selected : template.layouts[key] || (isExtraSection(key) ? template.layouts[skillGroups.has(key) ? 'skills' : 'experience'] : undefined) || 'template'
+    return key === 'hero' && resolved === 'left' ? 'portrait-left' : key === 'contact' && resolved === 'centered' ? 'form-first' : resolved
   }
   const personal = profile.personal
   const included = (key) => !(profile.removedSections || []).includes(key)
@@ -82,13 +84,21 @@ export default function PortfolioPreview({
     ['skills', 'Skills', skills],
     ['certifications', 'Certifications', certifications],
     ['languages','Languages',languages],
-    ['custom',customSections[0]?.heading || 'Custom section',customEntries],
-  ].filter(([key, , entries]) => settings[key] !== false && entries.length)
+    ...customSections.map(section=>[section.type,section.heading || 'Custom section',section.entries]),
+  ].filter(([key, , entries]) => (isExtraSection(key) || settings[key] !== false) && entries.length)
   if (settings.contact && (email || links.length || publicSlug))
     sections.push(['contact', 'Contact', []])
   for (const section of sections) section[1] = settings.sectionTitles?.[section[0]]?.trim() || section[1]
   sections.sort((a,b) => order.indexOf(a[0]) - order.indexOf(b[0]))
   const date = customEntryDates
+  const contactDetails = <div className="portfolio-contact-details">
+                  <p className="portfolio-contact-eyebrow">{layout('contact') === 'form-first' ? 'Direct contact' : 'Let’s connect'}</p>
+                  <h3 className="portfolio-contact-invitation">Have something<br />in mind?</h3>
+                  <p className="portfolio-contact-description">A project, an opportunity, or just a hello.<br />I’d love to hear from you.</p>
+                  <h3 className="portfolio-contact-direct-title">Prefer email?</h3>
+                  {email && <CopyEmailButton email={email} variant="text" />}
+                  <PortfolioContactLinks email="" links={links} />
+                </div>
   return (
     <article
       className="portfolio-site"
@@ -97,8 +107,10 @@ export default function PortfolioPreview({
       data-web-source={template.source ? template.id : undefined}
       data-has-projects={settings.projects !== false && projects.length > 0 ? 'true' : 'false'}
       data-custom-font={design.font && design.font !== 'template' ? 'true' : undefined}
+      data-custom-text={design.textCustom ? 'true' : undefined}
+      data-color-mode={design.palette || 'template'}
       data-custom-palette={design.palette && design.palette !== 'template' ? 'true' : undefined}
-      data-custom-accent={design.accentCustom || (design.palette && design.palette !== 'template') ? 'true' : undefined}
+      data-custom-accent={design.accentCustom ? 'true' : undefined}
       data-custom-body={design.bodySize !== undefined ? 'true' : undefined}
       data-custom-title={design.titleSize !== undefined ? 'true' : undefined}
       data-custom-heading={design.headingSize !== undefined ? 'true' : undefined}
@@ -127,94 +139,12 @@ export default function PortfolioPreview({
       style={portfolioDesignStyle(settings)}
     >
       {activeDetail ? <PortfolioEntryDetail ownerName={personal.fullName} item={activeDetail} settings={settings} publicSlug={publicSlug} onBack={()=>setPreviewDetail('')} /> : <div className="portfolio-frame">
-        <nav
-          aria-label="Portfolio navigation"
-          className="portfolio-nav"
-          data-menu-open={menuOpen}
-          onBlur={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false)
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape' && menuOpen) {
-              event.stopPropagation()
-              setMenuOpen(false)
-              menuButton.current?.focus()
-            }
-          }}
-        >
-          <span className="font-semibold">{personal.fullName || 'Your name'}</span>
-          {sections.length > 0 && (
-            <button
-              ref={menuButton}
-              type="button"
-              className="portfolio-menu-toggle"
-              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              aria-expanded={menuOpen}
-              aria-controls={`portfolio-menu-${instance}`}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <Icon name={menuOpen ? 'close' : 'menu'} className="h-5 w-5" />
-            </button>
-          )}
-          {menuOpen && (
-            <button
-              type="button"
-              tabIndex={-1}
-              className="portfolio-menu-backdrop"
-              aria-label="Dismiss navigation menu"
-              onClick={() => {
-                setMenuOpen(false)
-                menuButton.current?.focus({ preventScroll: true })
-              }}
-            />
-          )}
-          <div
-            id={`portfolio-menu-${instance}`}
-            className="portfolio-nav-links flex flex-wrap gap-4"
-          >
-            {sections.map(([key, title]) => (
-              <a
-                key={key}
-                href={target(key)}
-                aria-current={activeSection === key ? 'location' : undefined}
-                onClick={() => {
-                  setActiveSection(key)
-                  setMenuOpen(false)
-                  menuButton.current?.focus({ preventScroll: true })
-                }}
-              >
-                <span className="portfolio-menu-icon" aria-hidden="true">
-                  <Icon
-                    name={
-                      {
-                        about: 'user',
-                        projects: 'folder',
-                        experience: 'briefcase',
-                        education: 'education',
-                        skills: 'skills',
-                        contact: 'mail',
-                        certifications: 'file',
-                        languages: 'skills',
-                      }[key]
-                    }
-                    className="h-4 w-4"
-                  />
-                </span>
-                {title}
-              </a>
-            ))}
-          </div>
-          {settings.resumeDownload && (
-            <ResumeDownloadButton
-              profile={resumeProfile || profile}
-              className="portfolio-nav-download"
-            />
-          )}
-        </nav>
+        <PortfolioNavigation sidebar={template.id === 'strata'} name={personal.fullName || 'Your name'} sections={sections} target={target} />
         <div className="portfolio-body">
           <PortfolioHero
             template={template.id}
             personal={personal}
+            resumeProfile={resumeProfile || profile}
             settings={settings}
             layout={layout('hero')}
             projects={projects}
@@ -222,14 +152,16 @@ export default function PortfolioPreview({
             target={target}
             skills={skills}
           />
-          {sections.map(([key, title, entries], sectionIndex) => (
+          {sections.filter(([key])=>key!=='contact').map(([key, title, entries], sectionIndex) => (
             <section
               key={key}
               id={target(key).slice(1)}
               className="portfolio-section"
               data-layout={layout(key)}
-              data-custom-layout={settings.sectionLayouts?.[key] && settings.sectionLayouts[key] !== 'template' ? 'true' : undefined}
+              data-custom-layout={(settings.sectionLayouts?.[key] ?? (isExtraSection(key) && !hasCustomSection ? settings.sectionLayouts?.custom : undefined)) && layout(key) !== 'template' ? 'true' : undefined}
               data-section={key}
+              data-section-kind={isExtraSection(key) && !skillGroups.has(key) ? 'custom' : undefined}
+              data-section-style={skillGroups.has(key) ? 'skills' : undefined}
               data-design-selected={selectedSection === key || undefined}
             >
               
@@ -295,14 +227,18 @@ export default function PortfolioPreview({
                   ))}
                 </div>
               )}
-              {key === 'custom' && <div className="portfolio-custom-entries">{entries.map((entry)=>{
+              {isExtraSection(key) && !skillGroups.has(key) && <div className="portfolio-custom-entries space-y-7">{entries.map((entry)=>{
                 const item=details.find((detail)=>detail.key===`custom:${entry.id}`)
                 const image=item && settings.detailPages?.[item.key]?.enabled ? detailImages(item,settings)[0] : ''
-                return <div key={entry.id} className="portfolio-custom-entry">
-                  {image && <img src={image} alt={`${entry.name || 'Entry'} preview`} className="portfolio-project-image" loading="lazy" />}
-                  {entry.name && <h3>{entry.name}</h3>}{entry.subtitle && <p className="mt-2">{entry.subtitle}</p>}
-                  <div className="mt-3">{settings.detailPages?.[`custom:${entry.id}`]?.enabled ? <p>{summaryText(entry.content).slice(0,240)}{summaryText(entry.content).length>240 ? '…' : ''}</p> : <SummaryText content={entry.content} />}</div>
-                  <div className="mt-4 flex flex-wrap gap-3">{detailLink('custom',entry)}{profileLinkHref(entry.url) && <a href={profileLinkHref(entry.url)} target="_blank" rel="noopener noreferrer" className="portfolio-text-link">Open link</a>}</div>
+                return <div key={entry.id} className="portfolio-timeline">
+                  <p className="text-xs leading-6 text-muted">{date(entry)}</p>
+                  <div>
+                    {image && <img src={image} alt={`${entry.name || 'Entry'} preview`} className="portfolio-project-image" loading="lazy" />}
+                    {entry.name && <h3>{entry.name}</h3>}
+                    {(entry.subtitle || entry.location) && <p className="mt-1 text-sm text-muted">{[entry.subtitle,entry.location].filter(Boolean).join(' · ')}</p>}
+                    <div className="mt-3">{settings.detailPages?.[`custom:${entry.id}`]?.enabled ? <p>{summaryText(entry.content).slice(0,240)}{summaryText(entry.content).length>240 ? '…' : ''}</p> : <SummaryText content={entry.content} />}</div>
+                    <div className="mt-4 flex flex-wrap gap-3">{detailLink('custom',entry)}{profileLinkHref(entry.url) && <a href={profileLinkHref(entry.url)} target="_blank" rel="noopener noreferrer" className="portfolio-text-link">Open link</a>}</div>
+                  </div>
                 </div>
               })}</div>}
               {['experience', 'education'].includes(key) && (
@@ -351,8 +287,8 @@ export default function PortfolioPreview({
                 </div>
               )}
               {key === 'languages' && <ul className="portfolio-skills" aria-label="Languages">{entries.map((entry) => <li key={entry.id} className="portfolio-skill"><h3>{entry.name}</h3><p className="mt-2 text-sm text-muted">{entry.level}</p><SummaryText content={entry.content} /></li>)}</ul>}
-              {key === 'skills' && (
-                <ul className="portfolio-skills" aria-label="Skills">
+              {(key === 'skills' || skillGroups.has(key)) && (
+                <ul className="portfolio-skills" aria-label={title}>
                   {entries.map((entry) => (
                     <li key={entry.id} className="portfolio-skill">
                       <div className="portfolio-skill-heading">
@@ -366,24 +302,37 @@ export default function PortfolioPreview({
                           <SummaryText content={entry.content} />
                         </div>
                       )}
+                      {skillGroups.has(key) && detailLink('custom',entry)}
                     </li>
                   ))}
                 </ul>
               )}
-              {key === 'contact' && (
-                <div>
-                  <p className="mb-5 text-muted">
-                    Have a project or an opportunity in mind? Let’s talk.
-                  </p>
-                  <PortfolioContactLinks email={email} links={links} />
-                  {publicSlug && <ContactForm slug={publicSlug} />}
-                </div>
-              )}
             </section>
           ))}
-          <footer className="portfolio-footer">
-            © {new Date().getFullYear()} {personal.fullName || 'Your name'}
-            <span>Made with Linkfolio{!template.original && template.source && <> · Design adapted from <a href={template.source} target="_blank" rel="noopener noreferrer">{template.reference} ({template.name})</a></>}</span>
+          <footer className="portfolio-contact-footer">
+            {sections.some(([key])=>key==='contact') && <section
+              id={target('contact').slice(1)}
+              className="portfolio-section"
+              data-section="contact"
+              data-layout={layout('contact')}
+              data-custom-layout={settings.sectionLayouts?.contact && settings.sectionLayouts.contact !== 'template' ? 'true' : undefined}
+              data-design-selected={selectedSection === 'contact' || undefined}
+            >
+              <div className="mb-7"><h2>{template.id === 'nocturne' && <span className="developer-section-number">{String(sections.length).padStart(2,'0')} / </span>}{settings.sectionTitles?.contact?.trim() || 'Contact'}</h2></div>
+              <div className="portfolio-contact-grid">
+                {layout('contact') === 'form-first' ? <>
+                  <ContactForm slug={publicSlug} preview={!publicSlug} />
+                  {contactDetails}
+                </> : <>
+                  {contactDetails}
+                  <ContactForm slug={publicSlug} preview={!publicSlug} />
+                </>}
+              </div>
+            </section>}
+            <div className="portfolio-footer">
+              © {new Date().getFullYear()} {personal.fullName || 'Your name'}
+              <span>Made with Linkfolio{!template.original && template.source && <> · Design adapted from <a href={template.source} target="_blank" rel="noopener noreferrer">{template.reference} ({template.name})</a></>}</span>
+            </div>
           </footer>
         </div>
       </div>}
