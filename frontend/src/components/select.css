@@ -1,0 +1,26 @@
+.linkfolio-app button.lf-select-trigger { display:inline-flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-width:0; min-height:44px; padding:10px 14px; border:1px solid var(--app-border-strong); border-radius:9px; background:var(--app-inset); color:var(--app-text); text-align:left; font-size:13px; font-weight:400; cursor:pointer; transition:border-color 140ms,background-color 140ms; }
+.linkfolio-app .lf-select-trigger > span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.linkfolio-app .lf-select-trigger:hover:not(:disabled),.linkfolio-app .lf-select-trigger[aria-expanded='true'] { border-color:var(--app-accent); background:var(--app-selected); }
+.linkfolio-app .lf-select-trigger:focus-visible { outline:2px solid var(--app-focus); outline-offset:2px; }
+.linkfolio-app .lf-select-trigger:disabled { opacity:.55; cursor:not-allowed; }
+.linkfolio-app .lf-select-chevron { position:static; flex:none; width:15px; height:15px; color:var(--app-muted); }
+.linkfolio-app .lf-select-trigger[aria-expanded='true'] .lf-select-chevron { transform:rotate(180deg); }
+.linkfolio-app.lf-select-menu { position:fixed; z-index:3000; box-sizing:border-box; min-height:0; margin:0; padding:5px; overflow-y:auto; overscroll-behavior:contain; border:1px solid var(--app-border-strong); border-radius:10px; background:var(--app-inset); color:var(--app-text); box-shadow:0 8px 28px color-mix(in srgb,var(--app-text) 15%,transparent); font-family:var(--app-font); scrollbar-width:thin; scrollbar-color:var(--app-scrollbar) transparent; }
+.lf-select-menu .lf-select-option { display:flex; align-items:center; gap:9px; min-height:38px; padding:8px 10px; border-radius:6px; font-size:13px; line-height:1.5; font-weight:400; cursor:pointer; overflow-wrap:anywhere; }
+.lf-select-menu .lf-select-option[data-active='true'] { background:color-mix(in srgb,var(--app-accent) 15%,var(--app-inset)); }
+.lf-select-menu .lf-select-option[aria-selected='true'] { color:var(--app-accent); font-weight:600; }
+.lf-select-menu .lf-select-option[aria-disabled='true'] { opacity:.45; cursor:not-allowed; }
+.lf-select-menu .lf-select-check { display:grid; place-items:center; flex:0 0 16px; color:var(--app-accent); }
+.lf-select-menu .lf-select-check svg { width:14px; height:14px; }
+.editor-workspace .document-setting-control .lf-select-trigger { min-height:48px; }
+.editor-workspace .document-setting-control:has(.lf-select-trigger) > svg { display:none; }
+.linkfolio-app .library-select .lf-select-trigger { width:auto; min-width:160px; }
+.linkfolio-app .analytics-controls .analytics-portfolio-select { width:320px; max-width:100%; background:var(--app-surface); border-color:var(--app-border-strong); }
+.linkfolio-app.lf-select-menu.analytics-filter-menu { padding:7px; border-radius:12px; background:var(--app-surface); box-shadow:0 10px 24px color-mix(in srgb,var(--app-text) 12%,transparent); }
+.analytics-filter-menu .lf-select-option { min-height:44px; padding:10px 12px; gap:10px; border-radius:7px; }
+.analytics-filter-menu .lf-select-option > span:last-child { min-width:0; overflow-wrap:normal; }
+.analytics-filter-menu .lf-select-option[aria-selected='true'] { background:var(--app-selected); }
+.analytics-filter-menu .lf-select-option[data-active='true'] { box-shadow:inset 0 0 0 1px var(--app-border-strong); background:var(--app-inset); }
+.analytics-filter-menu .lf-select-option + .lf-select-option { margin-top:3px; }
+@media(max-width:600px) { .linkfolio-app .analytics-controls .analytics-portfolio-select { width:auto; flex:1; } }
+@media(prefers-reduced-motion:reduce) { .linkfolio-app .lf-select-trigger { transition:none; } }

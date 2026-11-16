@@ -1,0 +1,53 @@
+.linkfolio-app .public-home .shell { max-width:1200px; padding-inline:28px; }
+.linkfolio-app .public-home .app-landing-navbar { max-width:1200px; width:calc(100% - 48px); margin:24px auto 0; border-radius:14px; }
+.linkfolio-app .public-home .app-landing-navbar > .shell { padding-inline:24px; }
+.linkfolio-app .public-home .home-signin-button { padding:11px 20px; border:1px solid var(--app-border-strong); border-radius:9px; background:var(--app-raised); }
+.linkfolio-app .public-home .home-signin-button:hover { background:var(--app-selected); text-decoration:none; }
+.linkfolio-app .public-home .app-hero { gap:64px; padding-block:72px; }
+.linkfolio-app .public-eyebrow { display:inline-block; font-size:11px; line-height:1.6; letter-spacing:.13em; font-weight:650; color:var(--app-accent); }
+.linkfolio-app .public-home .app-hero h1 { margin-top:22px; font-weight:600; font-size:clamp(42px,4.6vw,64px); line-height:1.08; letter-spacing:-.055em; }
+.linkfolio-app .public-home .app-hero > div:first-child > p { font-size:16px; line-height:1.85; max-width:440px; }
+.home-hero-benefits { display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:24px; font-size:11px; color:var(--app-muted); }
+.home-hero-benefits > span { display:flex; align-items:center; gap:6px; }
+.home-hero-benefits svg { width:13px; height:13px; color:var(--app-accent); }
+.linkfolio-app .public-home .app-hero > .home-hero-preview { transform:none; border-radius:16px; background:var(--app-surface); border-color:var(--app-border-strong); box-shadow:0 16px 44px color-mix(in srgb,var(--app-text) 7%,transparent); }
+.linkfolio-app .home-hero-preview > div:first-child { padding:15px 24px; background:var(--app-inset); font-size:12px; }
+.home-preview-tag { font-size:10px; color:var(--app-muted); }
+.home-preview-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--app-border); padding-top:18px; margin-top:22px; color:var(--app-accent); font-size:11px; }
+.home-preview-footer > span { display:flex; align-items:center; gap:7px; }
+.home-preview-footer svg { width:14px; height:14px; }
+.linkfolio-app .app-auth > .auth-navigation { width:calc(100% - 48px); max-width:1060px; margin:24px auto 0; border:0; border-radius:0; background:transparent; }
+.linkfolio-app .auth-navigation .shell { max-width:none; padding-inline:0; }
+.linkfolio-app .auth-header-actions > .auth-home-button { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:44px; padding:10px 14px; border:0; border-radius:9px; background:transparent; color:var(--app-accent); font-size:14px; font-weight:600; text-decoration:none; }
+.linkfolio-app .auth-header-actions > .auth-home-button:hover { background:var(--app-selected); color:var(--app-accent); }
+.linkfolio-app .auth-header-actions > .auth-home-button:focus-visible { outline:2px solid var(--app-accent); outline-offset:3px; }
+.linkfolio-app .app-auth main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; width:calc(100% - 48px); max-width:1060px; margin:48px auto; padding:0; border:0; border-radius:0; box-shadow:none; background:transparent; gap:80px; }
+.auth-introduction { padding:20px 0; }
+.linkfolio-app .auth-introduction h2 { margin-top:20px; font-size:clamp(32px,3.3vw,46px); line-height:1.13; font-weight:600; letter-spacing:-.045em; }
+.auth-introduction > p { margin-top:20px; max-width:390px; font-size:14px; line-height:1.85; color:var(--app-muted); }
+.auth-benefits { display:grid; gap:22px; margin-top:32px; }
+.auth-benefits > div { display:flex; gap:14px; align-items:center; }
+.auth-benefits > div > span { display:grid; place-items:center; width:42px; height:42px; flex:none; border-radius:10px; background:var(--app-selected); color:var(--app-accent); }
+.auth-benefits h3 { font-size:13px; font-weight:600; }
+.auth-benefits p { margin-top:3px; font-size:12px; line-height:1.6; color:var(--app-muted); }
+.auth-introduction-note { display:block; margin-top:32px; padding-top:22px; border-top:1px solid var(--app-border); max-width:390px; color:var(--app-muted); font-size:12px; }
+.linkfolio-app .app-auth .auth-form-panel { width:100%; max-width:460px; padding:32px; border:1px solid var(--app-border-strong); border-radius:16px; background:var(--app-surface); }
+.linkfolio-app .app-auth .auth-form-panel h1 { font-size:28px; line-height:1.25; font-weight:650; letter-spacing:-.035em; }
+.linkfolio-app .app-auth .auth-form-panel input { border-radius:9px; background:var(--app-raised); border-color:var(--app-border-strong); font-size:14px; }
+.linkfolio-app .app-auth .auth-form-panel input[aria-invalid='true'] { border-color:var(--app-danger); }
+.linkfolio-app .app-auth .auth-form-panel > h1:focus:not(:focus-visible) { outline:none; }
+.linkfolio-app .app-auth .auth-form-panel .button { min-height:46px; border-radius:9px; }
+.linkfolio-app .app-auth footer { padding:16px 24px 24px; font-size:12px; }
+@media(max-width:900px) { .linkfolio-app .app-auth main { grid-template-columns:1fr; max-width:460px; gap:0; margin-block:32px; }.auth-introduction { display:none; }.linkfolio-app .public-home .app-hero { gap:36px; padding-block:48px; } }
+@media(max-width:540px) { .linkfolio-app .public-home .shell { padding-inline:20px; }.linkfolio-app .public-home .app-landing-navbar,.linkfolio-app .app-auth > .auth-navigation { width:calc(100% - 24px); margin-top:12px; }.linkfolio-app .auth-navigation .shell { padding-inline:14px; }.linkfolio-app .auth-header-actions > .auth-home-button { padding:9px 12px; font-size:12px; }.linkfolio-app .app-auth main { width:calc(100% - 24px); margin-block:24px; }.linkfolio-app .app-auth .auth-form-panel { padding:24px; }.linkfolio-app .public-home .app-landing-navbar > .shell { padding-inline:16px; } }
+.linkfolio-app dialog.auth-popup { position:fixed; inset:0; width:calc(100% - 32px); max-width:480px; max-height:calc(100dvh - 48px); margin:auto; padding:0; overflow-y:auto; overscroll-behavior:contain; border:1px solid var(--app-border-strong); border-radius:18px; background:var(--app-surface); color:var(--app-text); box-shadow:0 24px 80px #0004; scrollbar-width:thin; scrollbar-color:var(--app-scrollbar) transparent; }
+.auth-popup::backdrop { background:#101b16a6; backdrop-filter:blur(5px); }
+.auth-popup-header { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 24px; border-bottom:1px solid var(--app-border); background:var(--app-surface); }
+.linkfolio-app .auth-popup-close { display:grid; place-items:center; width:36px; height:36px; flex:none; border:1px solid var(--app-border); border-radius:50%; background:var(--app-raised); color:var(--app-muted); }
+.linkfolio-app .auth-popup-close:hover { background:var(--app-selected); color:var(--app-accent); border-color:var(--app-accent); }
+.auth-popup-content { padding:28px 32px 32px; }
+.auth-popup-content h1 { font-size:28px; font-weight:650; letter-spacing:-.035em; line-height:1.25; outline:none; }
+.linkfolio-app .auth-popup-content input { min-height:48px; border-radius:9px; background:var(--app-raised); border-color:var(--app-border-strong); font-size:14px; }
+.linkfolio-app .auth-popup-content input[aria-invalid='true'] { border-color:var(--app-danger); }
+.auth-popup-content .button { min-height:46px; border-radius:9px; }
+@media(max-width:540px) { .linkfolio-app dialog.auth-popup { max-height:calc(100dvh - 24px); width:calc(100% - 24px); }.auth-popup-header { padding:16px 20px; }.auth-popup-content { padding:24px; } }

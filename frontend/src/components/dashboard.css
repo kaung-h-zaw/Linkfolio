@@ -1,0 +1,33 @@
+.linkfolio-app .dashboard-cards .dashboard-stats { gap:16px; }
+.linkfolio-app .dashboard-cards .dashboard-stat { display:flex; flex-direction:row; align-items:center; gap:16px; min-height:116px; padding:22px; border-radius:12px; background:var(--app-surface); }
+.dashboard-cards .dashboard-stat-copy { display:flex; flex:1; min-width:0; flex-direction:column; gap:8px; }
+.dashboard-cards .dashboard-stat .dashboard-stat-label { margin:0; font-size:13px; color:var(--app-muted); }
+.dashboard-cards .dashboard-stat .dashboard-stat-number { font-size:30px; line-height:1; }
+.dashboard-cards .dashboard-stat .dashboard-icon { width:42px; height:42px; flex-basis:42px; color:var(--app-accent); border:0; }
+.dashboard-cards .dashboard-stat .dashboard-arrow { display:block; width:14px; opacity:0; transition:opacity 140ms; }
+.dashboard-cards .dashboard-stat:hover .dashboard-arrow,.dashboard-cards .dashboard-stat:focus-visible .dashboard-arrow { opacity:1; }
+.linkfolio-app .dashboard-cards .dashboard-content-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-top:24px; align-items:stretch; }
+.dashboard-cards .dashboard-recent { grid-column:span 3; }
+.linkfolio-app .dashboard-cards .dashboard-panel { padding:22px; border-radius:12px; }
+.dashboard-cards .dashboard-panel-heading { align-items:center; margin-bottom:20px; }
+.dashboard-cards .dashboard-panel-heading p { margin-top:5px; font-size:13px; }
+.linkfolio-app .dashboard-cards .dashboard-document-grid { gap:12px; }
+.linkfolio-app .dashboard-cards .dashboard-document { padding:18px; gap:16px; border:1px solid var(--app-border); border-radius:10px; background:var(--app-raised); }
+.linkfolio-app .dashboard-cards .dashboard-document:hover { border-color:var(--app-accent); background:var(--app-inset); box-shadow:none; }
+.dashboard-cards .dashboard-recent-icon { width:48px; height:56px; border-radius:8px; background:var(--app-surface); }
+.linkfolio-app .dashboard-cards .dashboard-document-info { padding:0; }
+.linkfolio-app .dashboard-cards .dashboard-document-meta { justify-content:flex-start; gap:10px; }
+.linkfolio-app .dashboard-cards .dashboard-document h3 { margin-top:5px; font-size:15px; font-weight:600; }
+.dashboard-cards .dashboard-document-info p { font-size:11px; margin-top:6px; }
+.dashboard-cards .dashboard-document-open { display:inline-flex; align-items:center; gap:8px; color:var(--app-accent); font-size:12px; flex:none; }
+.dashboard-cards .dashboard-document-open svg { width:15px; height:15px; }
+.linkfolio-app .dashboard-cards .dashboard-side-cards { display:grid; grid-template-columns:1fr; gap:14px; }
+.dashboard-cards .dashboard-side-cards > .dashboard-panel { display:flex; flex-direction:column; }
+.dashboard-cards .dashboard-side-cards .dashboard-actions { flex:1; align-content:start; }
+.dashboard-cards .dashboard-actions { display:grid; gap:8px; }
+.linkfolio-app .dashboard-cards .dashboard-action { padding:12px; border:1px solid var(--app-border); border-radius:9px; background:var(--app-raised); }
+.dashboard-cards .dashboard-action .dashboard-icon { border:0; background:transparent; color:var(--app-accent); width:30px; flex-basis:30px; }
+.dashboard-cards .dashboard-action small { font-size:11px; margin-top:3px; }
+.dashboard-cards .dashboard-action:hover strong { text-decoration:none; }
+@media(max-width:1200px) { .linkfolio-app .dashboard-cards .dashboard-content-grid { grid-template-columns:1fr; }.dashboard-cards .dashboard-recent { grid-column:auto; }.linkfolio-app .dashboard-cards .dashboard-actions { grid-template-columns:repeat(3,minmax(0,1fr)); }.dashboard-cards .dashboard-action > .dashboard-arrow { display:none; } }
+@media(max-width:700px) { .linkfolio-app .dashboard-cards .dashboard-stat { padding:16px; gap:10px; }.dashboard-cards .dashboard-stat .dashboard-arrow { display:none; }.linkfolio-app .dashboard-cards .dashboard-panel { padding:16px; }.linkfolio-app .dashboard-cards .dashboard-actions { grid-template-columns:1fr; }.linkfolio-app .dashboard-cards .dashboard-import { padding:0; }.dashboard-cards .dashboard-document-open { font-size:0; gap:0; }.linkfolio-app .dashboard-cards .dashboard-document { padding:14px; }.dashboard-cards .dashboard-stat .dashboard-icon { width:32px; height:32px; flex-basis:32px; } }
