@@ -86,10 +86,22 @@ test('admin reports include every required total without exposing password hashe
   assert.equal(res.body.users.length,2)
   assert.equal(res.body.report.users,1)
   assert.equal(res.body.report.administrators,1)
+  assert.equal(res.body.report.premiumUsers,0)
   assert.deepEqual(res.body.accountSummary.users,{total:1,active:1,disabled:0,premium:0,free:1})
   assert.deepEqual(res.body.accountSummary.administrators,{total:1,active:1,disabled:0})
   for (const user of res.body.users) {
     assert.equal(user.password_hash,undefined)
     assert.equal(typeof user.disabled,'boolean')
   }
+})
+test('Premium users and paid upgrades exclude admins and count members separately from payment events',async t => {
+  const {db,models,req,res}=fixture(t)
+  db.prepare("UPDATE users SET plan='premium'").run()
+  for(const [id,userId] of [['admin-payment','admin'],['member-payment-1','owner'],['member-payment-2','owner']]) db.prepare('INSERT INTO payments(id,user_id,provider,status,created_at) VALUES(?,?,?,?,?)').run(id,userId,'demo','paid','2026-11-16')
+  await controller.index(req,res)
+  assert.equal(res.body.report.premiumUsers,1)
+  assert.equal(res.body.accountSummary.users.premium,1)
+  assert.equal(res.body.report.administrators,1)
+  assert.equal(res.body.report.paidUpgrades,2)
+  assert.equal((await models.Payment.countPaid()).n,2)
 })

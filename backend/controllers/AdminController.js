@@ -32,6 +32,7 @@ const AdminController = {
         messages: report.message_count,
         views: report.view_count,
         paidUpgrades: report.paid_upgrade_count,
+        premiumUsers: report.premium_user_count,
         resumes: report.resume_count,
         portfolios: report.portfolio_count,
       },

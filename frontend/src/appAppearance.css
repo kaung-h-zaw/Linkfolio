@@ -199,18 +199,18 @@ html[data-app-theme-changing] .linkfolio-app *:not(:where(.resume-document,.resu
     color:var(--app-text);
     border:1px solid var(--app-control-border);
   }
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish) {
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish) {
     background:transparent;
     color:var(--app-text);
     border-color:var(--app-control-border);
   }
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):hover:not(:disabled),
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):hover:not(:disabled),
   :scope :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):hover:not(:disabled) {
     background:var(--app-control-hover);
     color:var(--app-text);
     border-color:var(--app-border-strong);
   }
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):active:not(:disabled),
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):active:not(:disabled),
   :scope :is(.button-outline,.resume-card-edit,.resume-card-download-button,.portfolio-card-publish):active:not(:disabled) { background:var(--app-control-active); }
   :scope :is(.button-green,.button-dark,.bg-accent,.editor-save-button):active:not(:disabled) { background:var(--app-primary-active); border-color:var(--app-primary-active); }
   :scope .account-appearance-options > button { background:transparent; }
@@ -220,9 +220,9 @@ html[data-app-theme-changing] .linkfolio-app *:not(:where(.resume-document,.resu
 }
 
 @scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent) { border-color:var(--app-primary); }
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent):hover:not(:disabled) { border-color:var(--app-primary-hover); }
-  :scope :is(.app-workspace,.editor-workspace) :is(.button-green,.button-dark,.bg-accent,.editor-save-button):active:not(:disabled) { background:var(--app-primary-active); border-color:var(--app-primary-active); }
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-green,.button-dark,.bg-accent) { border-color:var(--app-primary); }
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-green,.button-dark,.bg-accent):hover:not(:disabled) { border-color:var(--app-primary-hover); }
+  :scope :is(.app-workspace,.editor-workspace,.admin-workspace) :is(.button-green,.button-dark,.bg-accent,.editor-save-button):active:not(:disabled) { background:var(--app-primary-active); border-color:var(--app-primary-active); }
 }
 
 /* Warm light-mode navigation follows the reference without changing its layout. */

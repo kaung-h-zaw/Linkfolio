@@ -40,7 +40,8 @@ export default function Select({ children, value, defaultValue, onChange, disabl
       const height = Math.min(300,Math.max(80,options.length * 40 + 12))
       const upward = below < Math.min(height,160) && above > below
       const maxHeight = Math.max(0,Math.min(300,upward ? above : below)-gap)
-      setPosition({left:Math.max(8,Math.min(rect.left,window.innerWidth - Math.min(rect.width,window.innerWidth-16) - 8)),width:Math.min(rect.width,window.innerWidth-16),maxHeight, ...(upward ? {bottom:window.innerHeight-rect.top+gap} : {top:rect.bottom+gap})})
+      const width = Math.min(Math.max(rect.width,240),window.innerWidth-16)
+      setPosition({left:Math.max(8,Math.min(rect.left,window.innerWidth-width-8)),width,maxHeight, ...(upward ? {bottom:window.innerHeight-rect.top+gap} : {top:rect.bottom+gap})})
     }
     function outside(event) {
       if (!trigger.current?.contains(event.target) && !menu.current?.contains(event.target)) setOpen(false)

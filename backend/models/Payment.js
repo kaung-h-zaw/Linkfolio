@@ -36,7 +36,7 @@ function createPaymentModel(db) {
         .get(id, userId)
     },
     countPaid() {
-      return db.prepare("SELECT COUNT(*) AS n FROM payments WHERE status = 'paid'").get()
+      return db.prepare("SELECT COUNT(*) AS n FROM payments p JOIN users u ON u.id = p.user_id WHERE p.status = 'paid' AND u.role = 'user'").get()
     },
   }
   return Payment

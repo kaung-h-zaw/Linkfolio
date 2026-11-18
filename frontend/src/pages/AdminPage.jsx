@@ -11,7 +11,7 @@ import { isSelectableTemplate, templateNames } from '../lib/templateCatalog'
 import './admin.css'
 
 const sections = [['overview','Overview & reports','grid'],['users','User accounts','user'],['templates','Templates','window'],['plans','Subscription plans','spark'],['profile','Admin settings','personal']]
-const metrics = {users:['Registered users','user'],resumes:['Resumes','file'],portfolios:['Portfolios','window'],published:['Published portfolios','external'],messages:['Contact messages','mail'],views:['Portfolio views','eye'],paidUpgrades:['Paid upgrades','spark'],documents:['Saved documents','folder']}
+const metrics = {users:['Registered users','user'],resumes:['Resumes','file'],portfolios:['Portfolios','window'],published:['Published portfolios','external'],messages:['Contact messages','mail'],views:['Portfolio views','eye'],premiumUsers:['Premium users','spark'],documents:['Saved documents','folder']}
 const descriptions = {overview:'Review platform activity and manage your workspace.',users:'Find accounts, manage access, and remove users when needed.',templates:'Manage template availability and Premium access.',plans:'Manage document allowances and Premium availability.',reports:'Review current system totals by report type.',profile:'Manage your profile, security, and appearance.'}
 
 function DeleteUserDialog({ account, onClose, onDelete }) {
@@ -48,6 +48,11 @@ export default function AdminPage() {
   const [deleting,setDeleting] = useState(null)
   const [updated,setUpdated] = useState(null)
   useEffect(() => {
+    if (!notice) return
+    const timer = setTimeout(() => setNotice(''),4000)
+    return () => clearTimeout(timer)
+  },[notice])
+  useEffect(() => {
     const controller=new AbortController()
     api('/admin',{signal:controller.signal}).then(result => {setData(result);setError('');setUpdated(new Date())}).catch(cause => {if(cause.name!=='AbortError')setError(cause.message)}).finally(() => {if(!controller.signal.aborted)setLoading(false)})
     return () => controller.abort()
@@ -57,13 +62,14 @@ export default function AdminPage() {
     try {await work();setData(await api('/admin'));setUpdated(new Date());setNotice(success)}
     catch(cause) {setError(cause.message);throw cause} finally {setBusy(false)}
   }
-  const action=(work,success) => {if(!busy)mutate(work,success).catch(() => {})}
+  const action=async(work,success) => {if(busy)return false;try {await mutate(work,success);return true}catch{return false}}
   const navigate=id => {setParams(id==='overview'?{}:{section:id});setNotice('')}
   const refresh=() => {if(!busy&&!loading){setLoading(true);setAttempt(value=>value+1)}}
   const templates=(data?.templates||[]).filter(isSelectableTemplate).filter(template=>template.kind===kind)
-  const reportKeys=report==='all'?Object.keys(metrics):report==='accounts'?['users','paidUpgrades']:report==='content'?['resumes','portfolios','documents','published']:['views','messages','published']
+  const reportKeys=report==='all'?Object.keys(metrics):report==='accounts'?['users','premiumUsers']:report==='content'?['resumes','portfolios','documents','published']:['views','messages','published']
   function downloadReport() {
     const rows=reportKeys.flatMap(key=>key==='users' ? [['Registered users',data.report.users??0,updated.toISOString()],['Administrators',data.report.administrators??0,updated.toISOString()]] : [[metrics[key][0],data.report[key]??0,updated.toISOString()]])
+    if (report==='all'||report==='accounts') rows.push(['Paid upgrades (user payment events)',data.report.paidUpgrades??0,updated.toISOString()])
     const csv=[['Metric','Total','Generated at'],...rows].map(row=>row.join(',')).join('\r\n')
     const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})), link=document.createElement('a')
     link.href=url;link.download=`linkfolio-${report}-report.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
@@ -71,7 +77,7 @@ export default function AdminPage() {
   return <div className="admin-workspace" data-section={section}>
     <aside className="admin-sidebar"><Logo to="/admin" label="Linkfolio administration" /><span className="admin-sidebar-caption">ADMINISTRATION</span><nav aria-label="Administration">{sections.map(([id,label,icon])=><button type="button" key={id} onClick={()=>navigate(id)} aria-current={section===id?'page':undefined}><Icon name={icon}/><span>{label}</span></button>)}</nav><div className="admin-sidebar-account"><strong>{user.fullName}</strong><small>Administrator</small></div></aside>
     <main className="admin-main"><header className="admin-page-heading"><div><span className="admin-eyebrow">LINKFOLIO ADMIN</span><h1 tabIndex={-1}>{section==='overview'?'Platform overview':sections.find(([id])=>id===section)[1]}</h1><p>{descriptions[section]}</p></div><button type="button" disabled={busy||loading} className="button button-outline" onClick={refresh}><Icon name="refresh"/>{loading?'Refreshing…':'Refresh'}</button></header>
-      {error&&<p role="alert" className="admin-notice admin-error">{error}</p>}{notice&&<p role="status" className="admin-notice"><Icon name="check"/>{notice}</p>}{!data&&loading&&<p role="status">Loading administration data…</p>}{!data&&error&&<button type="button" className="button button-outline" onClick={refresh}>Try again</button>}
+      {error&&<p role="alert" className="admin-notice admin-error">{error}</p>}{notice&&<p role="status" className="admin-notice"><Icon name="check"/><span>{notice}</span><button type="button" aria-label="Dismiss notification" onClick={()=>setNotice('')}><Icon name="close"/></button></p>}{!data&&loading&&<p role="status">Loading administration data…</p>}{!data&&error&&<button type="button" className="button button-outline" onClick={refresh}>Try again</button>}
       {data&&<>
         {section==='overview'&&<>
           <div className="admin-report-toolbar">

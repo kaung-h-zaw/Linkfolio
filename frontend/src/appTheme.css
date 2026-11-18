@@ -915,8 +915,21 @@
 .account-appearance-options { gap:8px; margin-top:16px; }
 .account-appearance-options > button { min-height:72px; }
 .account-appearance-note { margin-top:11px; }
+.user-account-settings { grid-template-areas:'profile appearance' 'signout plan' 'delete delete'; gap:16px 20px; }
+.user-account-settings > .account-profile-card { grid-area:profile; }
+.user-account-settings > .account-appearance { grid-area:appearance; }
+.user-account-settings > .account-signout-card { grid-area:signout; }
+.user-account-settings > .account-plan-card { grid-area:plan; }
+.user-account-settings > .account-delete-card { grid-area:delete; }
+.linkfolio-app .user-account-settings > :is(form,section) { padding:22px; border-radius:12px; box-shadow:none; }
+.user-account-settings .account-profile-card { gap:18px; }
+.user-account-settings > .account-signout-card { min-height:94px; padding-block:18px; }
+.user-account-settings h2 { font-size:17px; font-weight:650; }
+.user-account-settings .account-signout-card h2,.user-account-settings .account-delete-card h2 { font-size:16px; }
+.user-account-settings .account-appearance-options > button { min-height:78px; }
 @media(max-width:1100px) {
   .account-card-grid { grid-template-columns:1fr; }
+  .user-account-settings { grid-template-areas:'profile' 'appearance' 'signout' 'plan' 'delete'; }
   .account-setting-column:first-child,.account-setting-column:last-of-type { grid-template-rows:none; }
   .message-mail-layout { grid-template-columns:170px minmax(0,1fr); gap:0; }
   .message-list-panel .message-open-button { grid-template-columns:8px 135px minmax(0,1fr) auto; gap:8px; padding-right:38px; }

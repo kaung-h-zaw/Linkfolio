@@ -2,6 +2,7 @@ import AppThemeControl from '../components/AppThemeControl'
 import Icon from '../components/Icon'
 import WorkspaceHeader from '../components/WorkspaceHeader'
 import DashboardCards from '../components/DashboardCards'
+import AccountProfileCard from '../components/AccountProfileCard'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import RemovePremiumDialog from '../components/RemovePremiumDialog'
@@ -38,6 +39,11 @@ export default function WorkspacePage({ view = 'dashboard' }) {
   const [removePremiumOpen, setRemovePremiumOpen] = useState(false)
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
   useEffect(() => {
+    if (!notice || view !== 'account') return
+    const timer = setTimeout(() => setNotice(''),4000)
+    return () => clearTimeout(timer)
+  },[notice,view])
+  useEffect(() => {
     let active = true
     async function load() {
       try {
@@ -71,7 +77,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
     }
   }, [view, attempt, params, setUser])
   async function action(work, success) {
-    if (busy) return
+    if (busy) return false
     setBusy(true)
     setError('')
     setNotice('')
@@ -79,8 +85,10 @@ export default function WorkspacePage({ view = 'dashboard' }) {
       await work()
       if (success) setNotice(success)
       setAttempt((n) => n + 1)
+      return true
     } catch (e) {
       setError(e.message)
+      return false
     } finally {
       setBusy(false)
     }
@@ -117,64 +125,24 @@ export default function WorkspacePage({ view = 'dashboard' }) {
         {view === 'analytics' && data && <PortfolioAnalytics analytics={analytics} onRefresh={async () => setData(await api('/analytics'))} />}
         {view === 'messages' && <MessageInbox />}
         {view === 'account' && (
-          <div className="account-card-grid">
-          <div className="account-setting-column">
-          <form
-            className="account-profile-card rounded-lg border border-line bg-white p-6"
-            onSubmit={(event) => {
-              event.preventDefault()
-              const fullName = new FormData(event.currentTarget).get('fullName')
-              action(async () => {
-                const result = await api('/account', { method: 'PATCH', body: { fullName } })
-                setUser(result.user)
-              }, 'Account name updated. Edit your saved resumes to update the name shown on them.')
-            }}
-          >
-            <div className="account-card-heading">
-              <span className="account-card-icon"><Icon name="user" className="h-4 w-4" /></span>
-              <div><h2 className="text-xl font-semibold">Profile details</h2><p className="mt-1 text-sm text-muted">Your account identity and sign-in email.</p></div>
-            </div>
-            <label className="block text-sm font-medium">
-              Full name
-              <input
-                name="fullName"
-                required
-                maxLength={120}
-                defaultValue={user.fullName}
-                className="mt-2 min-h-12 w-full rounded border border-line px-3"
-              />
-            </label>
-            <p className="account-email-row"><span>Email address</span><strong>{user.email}</strong></p>
-            <div className="account-profile-actions">
-              <button disabled={busy} className="button button-green">
-                <Icon name="save" className="h-4 w-4"/>Save account
-              </button>
-              <Link to="/forgot-password" className="text-sm text-accent underline">
-                Change your password
-              </Link>
-            </div>
-          </form>
+          <div className="account-card-grid user-account-settings">
+          <AccountProfileCard user={user} busy={busy} onSave={fullName => action(async () => {
+            const result = await api('/account', { method: 'PATCH', body: { fullName } })
+            setUser(result.user)
+          }, 'Account name updated. Edit your saved resumes to update the name shown on them.')} />
+          <AppThemeControl />
           <section className="account-signout-card">
             <div><h2 className="font-semibold">Sign out</h2><p className="mt-1 text-sm text-muted">End your session on this device.</p></div>
             <button type="button" disabled={busy} onClick={() => action(async () => { await logout() })} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
+          </section>
+          <section className="account-plan-card account-signout-card">
+              <div><h2 className="font-semibold">Your plan</h2><p className="mt-1 text-sm text-muted">{user.plan === 'premium' ? 'Premium account' : 'Free account'}</p></div>
+              {user.plan === 'premium' ? <button type="button" disabled={busy} onClick={() => setRemovePremiumOpen(true)} className="button button-outline disabled:opacity-50">Manage plan</button> : <Link to="/premium" className="button button-green">Explore Premium</Link>}
           </section>
           <section className="account-delete-card">
             <div><h2 className="font-semibold">Delete account</h2><p className="mt-1 text-sm text-muted">Permanently delete your account and all saved work.</p></div>
             <button type="button" disabled={busy} onClick={() => setDeleteAccountOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="trash" className="h-4 w-4"/>Delete account</button>
           </section>
-          </div>
-          <div className="account-setting-column">
-          <section className="account-plan-card rounded-lg border border-line bg-white p-6">
-              <div className="account-card-heading">
-                <span className="account-card-icon"><Icon name="spark" className="h-4 w-4" /></span>
-                <div><h2 className="text-xl font-semibold">Your plan</h2><p className="mt-1 text-sm text-muted">Your current Linkfolio membership.</p></div>
-              </div>
-              <div className="account-plan-status"><span className="account-plan-dot" aria-hidden="true" />{user.plan === 'premium' ? 'Premium account' : 'Free account'}</div>
-              <p className="mt-2 text-sm leading-6 text-muted">{user.plan === 'premium' ? 'Switching to Free keeps your saved work.' : 'Get more room for your work and access Premium templates.'}</p>
-              {user.plan === 'premium' ? <button type="button" disabled={busy} onClick={() => setRemovePremiumOpen(true)} className="button button-outline mt-4 disabled:opacity-50">Manage plan</button> : <Link to="/premium" className="button button-green mt-4">Explore Premium</Link>}
-          </section>
-          <AppThemeControl />
-          </div>
           {removePremiumOpen && <RemovePremiumDialog onClose={() => setRemovePremiumOpen(false)} onConfirm={async () => {
             const result = await api('/billing/downgrade', { method: 'POST' })
             setUser(result.user)

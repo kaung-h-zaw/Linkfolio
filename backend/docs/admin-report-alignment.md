@@ -25,6 +25,8 @@ Account-directory refinement: Users and Administrators now appear in separate ro
 
 Role separation also applies to the overview and CSV reports. Registered-user totals count `role = user`; administrators have a separate count. Account status summaries are grouped by role, and Free/Premium membership totals include members only. The underlying platform content/activity aggregates remain platform-wide.
 
+The overview now displays **Premium users**, counting current Premium member accounts rather than payment events. Paid-upgrade events remain in the All metrics and Accounts CSV exports with an explicit payment-event label. Administrator accounts and their payments are excluded from both membership and paid-upgrade calculations; repeated payments from one member do not increase the Premium-user count.
+
 ## Remaining scope difference
 
 The final report's alternative flow says administrators *may add, edit or delete templates and plans*. This version edits the existing catalog and controls availability. It does **not** create/upload arbitrary template renderers, permanently delete template definitions, or create/delete billing tiers. Templates are compiled React renderers and subscriptions use the application's existing Free/Premium entitlement and checkout paths. Availability switches do not constitute full catalog CRUD. Full support for that alternative requires a separately designed renderer/catalog and billing-tier lifecycle; the interface does not present nonfunctional Add/Delete buttons or claim that this is implemented.
