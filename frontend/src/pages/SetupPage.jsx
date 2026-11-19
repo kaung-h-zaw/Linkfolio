@@ -77,8 +77,6 @@ export default function SetupPage({ importOpen = false }) {
       else await deleteResume(resume.id)
       setStorage({ resumes: readResumes(), error: false })
       setPendingDelete(null)
-    } catch (error) {
-      throw error
     } finally {
       setBusy(false)
     }

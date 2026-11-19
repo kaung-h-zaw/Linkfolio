@@ -28,7 +28,6 @@ export default function PortfolioPanel({
   styleHistory, customizationTab, onCustomizationTabChange, selectedSection, onSelectSection,
   onChange,
   mode = 'content',
-  projects = [],
   personal = {},
   profile,
   resumes = [],

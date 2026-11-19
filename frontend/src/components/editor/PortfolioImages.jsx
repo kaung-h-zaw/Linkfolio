@@ -48,6 +48,7 @@ export function ImageField({ label, help, value, onChange }) {
 }
 export default function PortfolioImages({ settings, onChange, personal = {} }) {
   const images = settings.images || {}
+  const set = (key, value) => onChange({ ...settings, images: { ...images, [key]: value } })
   const mode = images.portraitSource || (images.portrait ? 'custom' : 'resume')
   const portrait = resolvePortfolioPortrait(settings,personal)
   return <section className="space-y-4 rounded-md border border-line bg-white p-5">

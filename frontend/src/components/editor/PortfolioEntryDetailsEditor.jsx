@@ -70,7 +70,6 @@ export default function PortfolioEntryDetailsEditor({profile,settings,onChange})
   return <section className="resume-design-card portfolio-detail-pages" aria-label="Detail pages">
     <h2 className="font-semibold">Detail pages</h2>
     <div className="portfolio-detail-entry-list">{enabled.map(item=>{
-      const config=settings.detailPages?.[item.key]||{}
       return <div key={item.key} className="portfolio-detail-entry-row"><Icon name={item.kind==='projects'?'folder':'file'} className="h-5 w-5 text-muted"/><span className="min-w-0 flex-1"><strong>{item.title}</strong><small>Detail page added</small></span><button type="button" aria-label={`Edit details for ${item.title}`} className="button button-outline" onClick={()=>setEditing(item.key)}><Icon name="edit" className="h-4 w-4"/>Edit details</button><button type="button" className="entry-form-action entry-form-delete" aria-label={`Remove detail page for ${item.title}`} title="Remove detail page" onClick={()=>update(item.key,{enabled:false})}><Icon name="trash" className="h-4 w-4"/></button></div>
     })}</div>
     {available.length>0&&<button type="button" className="button button-outline portfolio-detail-add" onClick={()=>setChoosing(true)}><Icon name="plus" className="h-4 w-4"/>Add detail page</button>}
