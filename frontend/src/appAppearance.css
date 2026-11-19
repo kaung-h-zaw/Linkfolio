@@ -69,6 +69,8 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
   :scope :is(.bg-white,dialog,.resume-design-card,.editor-entry-card,.personal-overview,.library-empty-state,.plan-benefits-card) { background-color:var(--app-surface); color:var(--app-text); border-color:var(--app-border); }
   :scope .bg-paper { background-color:var(--app-canvas); }
   :scope .bg-sage { background-color:var(--app-selected); }
+  :scope .bg-slate-100 { background-color:var(--app-inset); }
+  :scope .bg-slate-300 { background-color:var(--app-control-active); }
   :scope .border-line { border-color:var(--app-border); }
   :scope :is(.bg-accent,.button-green,.editor-save-button) { background:var(--app-primary); color:var(--app-on-primary); border-color:var(--app-primary); }
   :scope :is(.bg-accent,.button-green,.editor-save-button):hover:not(:disabled) { background:var(--app-primary-hover); border-color:var(--app-primary-hover); }
@@ -126,6 +128,7 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
   :scope :is(.portfolio-template-dialog,.resume-template-dialog-minimal,.resume-template-preview-dialog)::backdrop { background:var(--app-backdrop); }
   :scope :is(.editor-entry-card,.resume-design-card,.personal-overview,.dashboard-panel,.dashboard-stat) { border-radius:var(--app-radius); box-shadow:none; }
   :scope :is(.text-slate-500,.text-gray-500,.text-slate-600,.text-gray-600) { color:var(--app-muted); }
+  :scope .text-slate-400 { color:var(--app-muted); }
   :scope :is(.border-slate-200,.border-gray-200,.border-slate-300,.border-gray-300) { border-color:var(--app-border); }
 }
 
