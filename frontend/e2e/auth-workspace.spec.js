@@ -1,0 +1,37 @@
+import { test, expect } from '@playwright/test'
+
+test('AUTH-UI-01 register and load an empty workspace with screenshot evidence', async ({ page }) => {
+  await page.goto('/register')
+  await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible()
+  await page.getByLabel('Full Name').fill('Chapter Six Test User')
+  await page.getByLabel('Email').fill(`chapter-six-${Date.now()}@example.test`)
+  await page.getByLabel('Password', { exact: true }).fill('ChapterSixPass123!')
+  await page.getByLabel('Confirm Password', { exact: true }).fill('ChapterSixPass123!')
+  await page.getByRole('button', { name: /create account/i }).click()
+  await expect(page).toHaveURL(/\/setup/)
+  await expect(page.getByRole('heading', { name: 'My resumes' })).toBeVisible()
+  await page.screenshot({ path: 'test-results/artifacts/authenticated-empty-workspace.png', fullPage: true })
+})
+
+test('RES-PDF-01 export a resume from the editor as a PDF download', async ({ page }) => {
+  await page.goto('/register')
+  await page.getByLabel('Full Name').fill('PDF Evidence User')
+  await page.getByLabel('Email').fill(`pdf-evidence-${Date.now()}@example.test`)
+  await page.getByLabel('Password', { exact: true }).fill('ChapterSixPass123!')
+  await page.getByLabel('Confirm Password', { exact: true }).fill('ChapterSixPass123!')
+  await page.getByRole('button', { name: /create account/i }).click()
+  await expect(page).toHaveURL(/\/setup/)
+  await page.getByRole('button', { name: 'Create resume' }).click()
+  await page.getByRole('button', { name: 'Create a new resume' }).click()
+  await expect(page.getByRole('heading', { name: 'Choose a resume template' })).toBeVisible()
+  await page.getByRole('button', { name: /Preview .* template/ }).first().click()
+  await page.getByRole('button', { name: 'Use this template' }).click()
+  await expect(page).toHaveURL(/\/editor/)
+  await expect(page.getByRole('button', { name: 'Download resume' })).toBeVisible()
+  await page.screenshot({ path: 'test-results/artifacts/resume-editor-before-export.png', fullPage: true })
+  const downloadPromise = page.waitForEvent('download', { timeout: 60_000 })
+  await page.getByRole('button', { name: 'Download resume' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/\.pdf$/i)
+  await download.saveAs('test-results/artifacts/resume-export.pdf')
+})

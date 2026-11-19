@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "node --test",
+    "test": "node --test test/*.test.js",
     "admin": "node scripts/admin.js",
     "db:check": "node scripts/checkDatabase.js",
     "db:normalize": "node scripts/migrateRelational.js",
