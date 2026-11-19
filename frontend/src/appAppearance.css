@@ -44,6 +44,9 @@ html[data-app-theme='dark'] .linkfolio-app { color-scheme:dark; }
 .linkfolio-app .portfolio-site:not([data-custom-palette='true']) { color-scheme:normal; }
 html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
 .linkfolio-app :is(.app-workspace,.editor-workspace,.editor-layout,.workspace-main,#editor-content) { background:var(--app-canvas); color:var(--app-text); }
+.linkfolio-app .resume-import-dropzone { border-color:var(--app-border-strong); background:var(--app-raised); color:var(--app-text); }
+.linkfolio-app .resume-import-dropzone.is-dragging { border-color:var(--app-accent); background:var(--app-selected); }
+.linkfolio-app .resume-import-dropzone > .text-muted { color:var(--app-muted); }
 /* Keep the editor chrome on the same canvas tone as the workspace behind it. */
 .linkfolio-app .editor-workspace,
 .linkfolio-app .editor-workspace .editor-toolbar-shell,

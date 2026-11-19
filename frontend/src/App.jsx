@@ -40,9 +40,10 @@ function RouteUpdates() {
     document.title =
       titles[pathname] ||
       (pathname.startsWith('/p/') ? 'Portfolio — Linkfolio' : 'Page not found — Linkfolio')
+    const popupPaths = ['/login','/register','/forgot-password','/reset-password']
     if (previousPath.current !== pathname) {
-      if (!['/login','/register'].includes(pathname) && !['/login','/register'].includes(previousPath.current)) window.scrollTo(0, 0)
-      if (!['/login','/register'].includes(pathname) && !['/login','/register'].includes(previousPath.current)) document.querySelector('h1')?.focus({ preventScroll: true })
+      if (!popupPaths.includes(pathname) && !popupPaths.includes(previousPath.current)) window.scrollTo(0, 0)
+      if (!popupPaths.includes(pathname) && !popupPaths.includes(previousPath.current)) document.querySelector('h1')?.focus({ preventScroll: true })
       previousPath.current = pathname
     }
   }, [pathname])
@@ -68,9 +69,10 @@ export default function App() {
 
 function AppRoutes() {
   const location = useLocation()
-  const authPopup = ['/login','/register'].includes(location.pathname)
+  const authPopup = ['/login','/register','/forgot-password','/reset-password'].includes(location.pathname)
+  const backgroundLocation = location.state?.backgroundLocation || (authPopup ? '/' : location)
   return <>
-        <Routes location={authPopup ? '/' : location}>
+        <Routes location={authPopup ? backgroundLocation : location}>
           <Route path="/" element={<Home />} />
           <Route
             path="/setup"
@@ -133,6 +135,8 @@ function AppRoutes() {
         {authPopup && <Routes location={location}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<PasswordPage />} />
+          <Route path="/reset-password" element={<PasswordPage reset />} />
         </Routes>}
   </>
 }

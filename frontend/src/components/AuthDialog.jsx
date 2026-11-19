@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Logo } from './Navbar'
 import Icon from './Icon'
 
 export default function AuthDialog({ children, titleId }) {
   const dialog = useRef(null)
   const navigate = useNavigate()
-  const close = () => navigate('/', { replace: true })
+  const location = useLocation()
+  const close = () => navigate(location.state?.backgroundLocation || '/', { replace: true })
 
   useLayoutEffect(() => {
     const element = dialog.current
@@ -31,7 +32,9 @@ export default function AuthDialog({ children, titleId }) {
     }}>
     <header className="auth-popup-header">
       <Logo />
-      <button type="button" onClick={close} aria-label="Close and return to home" title="Close (Escape)" className="auth-popup-close"><Icon name="close" className="h-5 w-5" /></button>
+      <div className="flex items-center gap-3">
+        <button type="button" onClick={close} aria-label="Close and return to home" title="Close (Escape)" className="auth-popup-close"><Icon name="close" className="h-5 w-5" /></button>
+      </div>
     </header>
     <section className="auth-popup-content" aria-labelledby={titleId}>{children}</section>
   </dialog>

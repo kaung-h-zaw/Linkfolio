@@ -120,7 +120,7 @@ export default function PortfolioPanel({
             )}
 
           </section>
-          <PortfolioImages settings={settings} onChange={onChange} projects={projects} personal={personal} />
+          <PortfolioImages settings={settings} onChange={onChange} personal={personal} />
           <PortfolioEntryDetailsEditor profile={profile} settings={settings} onChange={onChange} />
           <PortfolioResumeAttachment settings={settings} onChange={onChange} />
         </>

@@ -5,7 +5,7 @@ import AuthDialog from './AuthDialog'
 import './publicPages.css'
 
 export default function AuthLayout({ children, titleId }) {
-  if (titleId === 'login-title' || titleId === 'register-title') return <AuthDialog titleId={titleId}>{children}</AuthDialog>
+  if (['login-title', 'register-title', 'password-title', 'reset-password-title'].includes(titleId)) return <AuthDialog titleId={titleId}>{children}</AuthDialog>
   return (
     <div className="app-auth flex min-h-svh flex-col bg-white">
       <a href="#auth-content" className="skip-link">

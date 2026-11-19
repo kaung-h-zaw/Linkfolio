@@ -61,6 +61,7 @@ import {
   FiCalendar,
   FiClock,
   FiInbox,
+  FiLock,
 } from 'react-icons/fi'
 const icons = {
   sun:FiSun,
@@ -134,6 +135,7 @@ const icons = {
   calendar: FiCalendar,
   clock: FiClock,
   inbox: FiInbox,
+  lock: FiLock,
 }
 export default function Icon({ name, className = 'h-5 w-5', style }) {
   const Glyph = icons[name] || FiFileText

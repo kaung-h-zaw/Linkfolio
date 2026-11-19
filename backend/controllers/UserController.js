@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const { digest, hashPassword, publicUser, sessionCookie, token } = require('../security')
+const { checkPassword, digest, hashPassword, publicUser, sessionCookie, token } = require('../security')
 const { email, password, requireValue, text } = require('../validation')
 const createSession = require('../helpers/createSession')
 
@@ -37,6 +37,25 @@ const UserController = {
   me: async (req, res) => {
     // requireAuth already found this user before calling this controller.
     return res.json({ user: publicUser(req.user) })
+  },
+  changePassword: async (req, res) => {
+    const { User, Session, PasswordReset, transaction } = req.app.locals.models
+    requireValue(
+      typeof req.body.currentPassword === 'string' && req.body.currentPassword.length >= 1 && req.body.currentPassword.length <= 256,
+      'Enter your current password.',
+    )
+    const currentMatches = await checkPassword(req.body.currentPassword, req.user.password_hash)
+    requireValue(currentMatches, 'Your current password is incorrect.', 401)
+    const nextPassword = password(req.body.password)
+    requireValue(nextPassword !== req.body.currentPassword, 'Choose a password different from your current one.')
+    const hash = await hashPassword(nextPassword)
+    await transaction(async () => {
+      await User.updatePassword(hash, req.user.id)
+      await Session.deleteByUserId(req.user.id)
+      await PasswordReset.deleteByUserId(req.user.id)
+      await createSession(req, res, req.user.id)
+    })
+    res.json({ message: 'Your password has been changed.' })
   },
   logout: async (req, res) => {
     const { Session } = req.app.locals.models
@@ -77,6 +96,21 @@ const UserController = {
       } else result.demoResetUrl = url
     }
     res.json(result)
+  },
+  devResetPassword: async (req, res) => {
+    const { User, Session, PasswordReset, transaction } = req.app.locals.models
+    requireValue(!req.app.locals.config.production, 'This password reset option is only available in local development.', 404)
+    const address = email(req.body.email)
+    const secret = password(req.body.password)
+    const user = await User.findActiveByEmail(address)
+    requireValue(user, 'No active account was found for this email.')
+    const hash = await hashPassword(secret)
+    await transaction(async () => {
+      await User.updatePassword(hash, user.id)
+      await Session.deleteByUserId(user.id)
+      await PasswordReset.deleteByUserId(user.id)
+    })
+    res.json({ message: 'Password updated. Sign in with your new password.' })
   },
   resetPassword: async (req, res) => {
     const { User, Session, PasswordReset, transaction } = req.app.locals.models

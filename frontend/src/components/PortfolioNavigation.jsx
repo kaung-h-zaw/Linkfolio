@@ -64,7 +64,7 @@ export default function PortfolioNavigation({ name, sections, target, sidebar=fa
   }}>
     <a ref={owner} className="portfolio-nav-name" href={target('hero')} title={name} aria-label={`Back to top — ${displayName}`} onClick={()=>choose('')}><span className="portfolio-nav-monogram" aria-hidden="true">{portfolioInitials(displayName)}</span><span className="portfolio-nav-wordmark">{displayName}</span></a>
     <div className="portfolio-nav-primary">
-      {sections.slice(0,visibleCount).map(([key,title])=><a className="portfolio-nav-primary-link" key={key} href={target(key)} aria-current={active===key?'location':undefined} onClick={()=>choose(key)}>{title}</a>)}
+      {sections.slice(0,visibleCount).map(([key,title])=><a className="portfolio-nav-primary-link" key={key} href={target(key)} aria-current={active===key?'location':undefined} onClick={()=>choose(key)}>{sidebar&&<Icon name={sectionIcons[key] || (isCustomSection(key)?'custom':key)} className="portfolio-nav-section-icon" aria-hidden="true"/>}<span>{title}</span></a>)}
       {overflow && <button ref={more} type="button" className="portfolio-nav-more" aria-expanded={open} aria-controls={id} onClick={()=>setOpen(value=>!value)}>More<Icon name={open?'up':'down'} className="h-4 w-4" /></button>}
     </div>
     {sections.length > 0 && <button ref={mobileToggle} type="button" className="portfolio-menu-toggle" aria-label={open?'Close navigation menu':'Open navigation menu'} aria-expanded={open} aria-controls={id} onClick={()=>setOpen(value=>!value)}><Icon name={open?'close':'menu'} className="h-5 w-5" /></button>}

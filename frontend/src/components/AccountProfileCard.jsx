@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import Icon from './Icon'
+import ChangePasswordDialog from './ChangePasswordDialog'
 
 export default function AccountProfileCard({ user, busy, onSave, className = '' }) {
+  const [passwordOpen, setPasswordOpen] = useState(false)
   const [editing,setEditing] = useState(false)
   const [name,setName] = useState(user.fullName)
   const [saving,setSaving] = useState(false)
@@ -24,7 +25,7 @@ export default function AccountProfileCard({ user, busy, onSave, className = '' 
     finish()
   }
 
-  return <form className={`account-profile-card rounded-lg border border-line bg-white p-6 ${className}`} onSubmit={async event => {
+  return <><form className={`account-profile-card rounded-lg border border-line bg-white p-6 ${className}`} onSubmit={async event => {
     event.preventDefault()
     if (!editing || pending || !name.trim()) return
     setSaving(true)
@@ -38,7 +39,7 @@ export default function AccountProfileCard({ user, busy, onSave, className = '' 
     <p className="account-email-row"><span>Email address</span><strong title={user.email}>{user.email}</strong></p>
     <div className="account-profile-actions">
       {editing ? <><button type="submit" disabled={pending || !name.trim()} className="button button-green"><Icon name="save" className="h-4 w-4"/>{saving ? 'Saving…' : 'Save account'}</button><button type="button" disabled={pending} onClick={cancel} className="button button-outline">Cancel</button></> : <button ref={editButton} type="button" disabled={pending} onClick={() => {setName(user.fullName);setEditing(true)}} className="button button-outline"><Icon name="edit" className="h-4 w-4"/>Edit profile</button>}
-      <Link to="/forgot-password" className="text-sm text-accent underline">Change your password</Link>
+      <button type="button" onClick={() => setPasswordOpen(true)} className="text-sm text-accent underline">Change your password</button>
     </div>
-  </form>
+  </form>{passwordOpen && <ChangePasswordDialog onClose={() => setPasswordOpen(false)} />}</>
 }

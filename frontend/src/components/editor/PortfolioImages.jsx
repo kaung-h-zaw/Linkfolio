@@ -46,13 +46,12 @@ export function ImageField({ label, help, value, onChange }) {
     </dialog>
   </div>
 }
-export default function PortfolioImages({ settings, onChange, projects = [], personal = {} }) {
+export default function PortfolioImages({ settings, onChange, personal = {} }) {
   const images = settings.images || {}
   const mode = images.portraitSource || (images.portrait ? 'custom' : 'resume')
   const portrait = resolvePortfolioPortrait(settings,personal)
-  const set = (key,value) => onChange({ ...settings,images:{ ...images,[key]:value } })
   return <section className="space-y-4 rounded-md border border-line bg-white p-5">
-    <div><h2 className="font-semibold">Portfolio images</h2><p className="mt-2 text-xs leading-5 text-muted">Add images of your projects and an optional personal photo.</p></div>
+    <div><h2 className="font-semibold">Portfolio images</h2><p className="mt-2 text-xs leading-5 text-muted">Add an optional personal photo. Add project images in each project’s detail page.</p></div>
     <fieldset className="space-y-4 rounded-md border border-line p-4">
       <legend className="px-1 text-sm font-semibold">Personal photo</legend>
       <label className="flex min-h-10 items-center gap-3 text-sm"><input type="checkbox" checked={images.showPortrait !== false} onChange={(event) => set('showPortrait',event.target.checked)} className="accent-accent" />Show personal photo</label>
@@ -65,7 +64,5 @@ export default function PortfolioImages({ settings, onChange, projects = [], per
         {mode === 'custom' && <ImageField label="Portrait image" help="Choose a photo for your portfolio." value={images.portrait} onChange={(value) => onChange({ ...settings, images: { ...images, portrait: value, portraitSource: 'custom' } })} />}
       </> : <p className="text-xs text-muted">Your personal photo is hidden. Your uploaded image is kept for when you turn it on again.</p>}
     </fieldset>
-    {projects.map((project) => <ImageField key={project.id} label={`Project image: ${project.name || 'Untitled project'}`} help="Add a screenshot or photo of this project." value={images.projects?.[project.id]} onChange={(value) => set('projects',{ ...images.projects,[project.id]:value })} />)}
-    {!projects.length && <p className="text-xs text-muted">Add projects in your resume to upload their images here.</p>}
   </section>
 }

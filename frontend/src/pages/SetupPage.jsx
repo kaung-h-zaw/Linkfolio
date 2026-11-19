@@ -11,6 +11,7 @@ import CreatePortfolioDialog from '../components/CreatePortfolioDialog'
 import CreateResumeDialog from '../components/CreateResumeDialog'
 import { hydrateProfile } from '../lib/profile'
 import { readResumes, refreshResumesOnOpen, subscribeResumes, saveResume, deleteResume, removePortfolio } from '../lib/resumeStorage'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 export default function SetupPage({ importOpen = false }) {
   const [params] = useSearchParams()
@@ -31,14 +32,15 @@ export default function SetupPage({ importOpen = false }) {
   const [busy, setBusy] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [resumeCreateOpen, setResumeCreateOpen] = useState(false)
-  async function createFromResume(resume) {
+  const [pendingDelete, setPendingDelete] = useState(null)
+  async function createFromResume(resume, template) {
     if (busy) return
     setBusy(true)
     setActionError('')
     try {
       const copy = {
         ...hydrateProfile(resume), id:crypto.randomUUID(), kind:'portfolio',
-        name:`${resume.personal?.fullName || 'My'} — Portfolio`, portfolio:{...defaultPortfolio,sourceResume:{id:resume.id,name:resume.name}},
+        name:`${resume.personal?.fullName || 'My'} — Portfolio`, portfolio:{...defaultPortfolio,template,sourceResume:{id:resume.id,name:resume.name}},
       }
       delete copy.publication
       delete copy.updatedAt
@@ -64,19 +66,19 @@ export default function SetupPage({ importOpen = false }) {
     }
   }
   async function remove(resume) {
-    if (
-      !window.confirm(
-        `Delete ${portfolio ? 'this portfolio and its messages and analytics' : 'this resume and any linked portfolio'}? This cannot be undone.`,
-      )
-    )
-      return
+    setPendingDelete(resume)
+  }
+  async function confirmRemove() {
+    const resume = pendingDelete
+    if (!resume) return
     setBusy(true)
     try {
       if (portfolio && resume.kind !== 'portfolio') await removePortfolio(resume.id)
       else await deleteResume(resume.id)
       setStorage({ resumes: readResumes(), error: false })
+      setPendingDelete(null)
     } catch (error) {
-      setActionError(error.message)
+      throw error
     } finally {
       setBusy(false)
     }
@@ -120,13 +122,6 @@ export default function SetupPage({ importOpen = false }) {
             <WorkspaceHeader title="My portfolios" icon="window" actions={<button type="button" disabled={busy} onClick={() => { setActionError(''); setCreateOpen(true) }} className="button button-green disabled:opacity-50"><Icon name="plus" className="h-4 w-4" />Create portfolio</button>}><p className="workspace-header-count">{portfolios.length} {portfolios.length === 1 ? 'portfolio' : 'portfolios'}</p></WorkspaceHeader>
             <DocumentLibrary key="portfolios" records={portfolios} portfolio busy={busy} onCreate={() => { setActionError(''); setCreateOpen(true) }} onDelete={remove} />
           </>
-        ) : gallery ? (
-          <TemplateGallery
-            embedded
-            hasStarted
-            onBack={() => navigate('/setup')}
-            onChoose={(template) => navigate(`/editor?template=${template.id}`)}
-          />
         ) : (
           <>
             <WorkspaceHeader title="My resumes" icon="file" actions={<><Link to="/resume/import" className="button button-outline"><Icon name="upload" className="h-4 w-4"/>Import resume</Link><button type="button" onClick={() => setResumeCreateOpen(true)} className="button button-green"><Icon name="plus" className="h-4 w-4" />Create resume</button></>}><p className="workspace-header-count">{resumes.length} {resumes.length === 1 ? 'resume' : 'resumes'}</p></WorkspaceHeader>
@@ -134,6 +129,7 @@ export default function SetupPage({ importOpen = false }) {
           </>
         )}
       </main>
+      {!portfolio && !importOpen && gallery && <TemplateGallery modal hasStarted onBack={() => navigate('/setup')} onChoose={(template) => navigate(`/editor?template=${template.id}`)} />}
       {!portfolio && !importOpen && resumeCreateOpen && (
         <CreateResumeDialog
           onClose={() => setResumeCreateOpen(false)}
@@ -142,7 +138,13 @@ export default function SetupPage({ importOpen = false }) {
         />
       )}
       {importOpen && <ImportResumePage />}
-      {portfolio && createOpen && <CreatePortfolioDialog resumes={resumes} busy={busy} error={actionError} onResume={createFromResume} onBlank={() => navigate('/portfolio/editor/design')} onClose={() => setCreateOpen(false)} />}
+      {portfolio && createOpen && <CreatePortfolioDialog resumes={resumes} busy={busy} error={actionError} onResume={createFromResume} onClose={() => setCreateOpen(false)} />}
+      {pendingDelete && <ConfirmDialog
+        title={`Delete this ${portfolio ? 'portfolio' : 'resume'}?`}
+        description={`Delete ${portfolio ? 'this portfolio and its messages and analytics' : 'this resume and any linked portfolio'}? This cannot be undone.`}
+        onConfirm={confirmRemove}
+        onClose={() => setPendingDelete(null)}
+      />}
     </div>
   )
 }

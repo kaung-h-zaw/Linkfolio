@@ -230,7 +230,6 @@ export default function ResumePreview({
       data-heading-case={design?.headingCase}
       data-underline={design?.underline}
       data-link-blue={design?.linkBlue}
-      data-link-icon={design?.linkIcon ? design.linkIconStyle || 'chain' : undefined}
       data-footer={Boolean(design?.footerPages || (design?.footerEmail && personal.email) || (design?.footerName && personal.fullName))}
       data-entry-layout={design?.entryLayout}
       data-meta-position={design?.metadataPosition}

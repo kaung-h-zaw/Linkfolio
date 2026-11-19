@@ -3,6 +3,7 @@ import { useMessages } from '../lib/messagesContext'
 import { api } from '../lib/api'
 import Icon from './Icon'
 import './messageInbox.css'
+import ConfirmDialog from './ConfirmDialog'
 
 const timestamp = (value) => new Date(value).toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' })
 
@@ -15,6 +16,7 @@ export default function MessageInbox() {
   const [copiedEmail, setCopiedEmail] = useState('')
   const [query, setQuery] = useState('')
   const [checkedIds, setCheckedIds] = useState([])
+  const [confirmAction, setConfirmAction] = useState(null)
   const selected = messages.find((message) => message.id === selectedId)
   const inbox = messages.filter((message) => !message.deleted_at)
   const trash = messages.filter((message) => message.deleted_at)
@@ -48,16 +50,35 @@ export default function MessageInbox() {
     } catch (actionFailure) { setActionError(actionFailure.message) }
     finally { setBusy(false) }
   }
+  async function runConfirmed(path, after) {
+    if (busy) return
+    setBusy(true); setActionError('')
+    try {
+      await api(path, { method:'DELETE' })
+      await refresh()
+      after?.()
+    } catch (actionFailure) {
+      setActionError(actionFailure.message)
+      throw actionFailure
+    } finally { setBusy(false) }
+  }
   const changeStatus = (message, status) => run(`/messages/${message.id}`, { method:'PATCH', body:{ status } })
   const moveToTrash = (message) => run(`/messages/${message.id}`, { method:'DELETE' }, () => setSelectedId(null))
   const restore = (message) => run(`/messages/${message.id}`, { method:'PATCH', body:{ action:'restore' } }, () => setSelectedId(null))
   const destroy = (message) => {
-    if (!window.confirm('Delete this message permanently? This cannot be undone.')) return
-    run(`/messages/${message.id}/permanent`, { method:'DELETE' }, () => setSelectedId(null))
+    setConfirmAction({
+      title: 'Delete this message permanently?',
+      description: 'This message will be permanently deleted. This action cannot be undone.',
+      onConfirm: () => runConfirmed(`/messages/${message.id}/permanent`, () => setSelectedId(null)),
+    })
   }
   const emptyTrash = () => {
-    if (!trash.length || !window.confirm(`Permanently delete ${trash.length} ${trash.length === 1 ? 'message' : 'messages'} from Trash?`)) return
-    run('/messages/trash', { method:'DELETE' }, () => setSelectedId(null))
+    if (!trash.length) return
+    setConfirmAction({
+      title: 'Empty Trash?',
+      description: `Permanently delete ${trash.length} ${trash.length === 1 ? 'message' : 'messages'} from Trash? This action cannot be undone.`,
+      onConfirm: () => runConfirmed('/messages/trash', () => setSelectedId(null)),
+    })
   }
   function open(message) {
     setCopiedEmail('')
@@ -133,5 +154,6 @@ export default function MessageInbox() {
         </article> : <div className="message-preview-empty"><span><Icon name="mail"/></span><h3>Select a message</h3><p>Choose a message from the list to read it here.</p></div>}
       </section>
     </div>
+    {confirmAction && <ConfirmDialog {...confirmAction} onClose={() => setConfirmAction(null)} />}
   </section>
 }

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import PortfolioEntryDetail from './PortfolioEntryDetail'
 import { portfolioCustomSections, portfolioExtraSections, portfolioDetailEntries, detailImages } from '../lib/portfolioContent'
 import { portfolioDesignStyle, portfolioOrder } from '../lib/portfolioDesign'
-import { portfolioImageSource } from '../lib/portfolioImages'
 import ContactForm from './ContactForm'
 import CopyEmailButton from './CopyEmailButton'
 import PortfolioContactLinks from './PortfolioContactLinks'
@@ -40,6 +39,10 @@ export default function PortfolioPreview({
     const key=`${kind}:${entry.id}`
     if(!settings.detailPages?.[key]?.enabled) return null
     return publicSlug ? <Link to={`/p/${encodeURIComponent(publicSlug)}/${kind}/${encodeURIComponent(entry.id)}`} className="portfolio-button">View details</Link> : <button type="button" className="portfolio-button" onClick={()=>setPreviewDetail(key)}>View details</button>
+  }
+  function projectImage(entry) {
+    const item=details.find((detail)=>detail.key===`projects:${entry.id}`)
+    return item ? detailImages(item,settings)[0] : ''
   }
   const target = (key) => publicSlug ? `#${key}` : `#portfolio-${instance}-${key}`
   const template = getPortfolioTemplate(settings.template)
@@ -186,7 +189,7 @@ export default function PortfolioPreview({
                 <div className="portfolio-projects">
                   {entries.map((entry, index) => (
                     <div key={entry.id} className="portfolio-project">
-                      {portfolioImageSource(settings.images?.projects?.[entry.id]) && <img className="portfolio-project-image" src={portfolioImageSource(settings.images.projects[entry.id])} alt={`${entry.name || 'Project'} preview`} loading="lazy" />}
+                      {projectImage(entry) && <img className="portfolio-project-image" src={projectImage(entry)} alt={`${entry.name || 'Project'} preview`} loading="lazy" />}
                       {['showcase', 'atelier', 'canvas', 'horizon'].includes(template.id) && (
                         <div className="portfolio-project-art" aria-hidden="true">
                           <span>{String(index + 1).padStart(2, '0')}</span>

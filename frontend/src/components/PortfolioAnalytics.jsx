@@ -14,6 +14,7 @@ function lastVisit(value, includeYear = false) {
 
 function AnalyticsBarChart({ rows }) {
   const [range, setRange] = useState(7)
+  const [hovered, setHovered] = useState(null)
   const totals = new Map()
   const localDateKey = (value) => {
     const date = new Date(value)
@@ -61,7 +62,7 @@ function AnalyticsBarChart({ rows }) {
         <div className="analytics-line-legend"><span><i className="views"/>Views</span><span><i className="clicks"/>Link clicks</span></div>
       </div>
     </div>
-    <div className="analytics-line-wrap">
+    <div className="analytics-line-wrap" onMouseLeave={()=>setHovered(null)}>
       <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Bar chart of views and link clicks over the past ${range} days`}>
         {ticks.map((value) => {
           const y = top + chartHeight - value / max * chartHeight
@@ -71,15 +72,18 @@ function AnalyticsBarChart({ rows }) {
           const center = left + step * index + step / 2
           const viewsHeight = item.views / max * chartHeight
           const clicksHeight = item.clicks / max * chartHeight
-          const displayedViewsHeight = viewsHeight || 2
-          const displayedClicksHeight = clicksHeight || 2
-          return <g key={item.key}>
+          const displayedViewsHeight = item.views ? Math.max(viewsHeight,12) : 2
+          const displayedClicksHeight = item.clicks ? Math.max(clicksHeight,12) : 2
+          const tooltipY=Math.max(top+30,top+chartHeight-Math.max(displayedViewsHeight,displayedClicksHeight)-8)
+          return <g key={item.key} className="analytics-chart-day" tabIndex={0} role="group" aria-label={`${item.label}: ${item.views} views, ${item.clicks} link clicks`} onMouseEnter={()=>setHovered({item,center,tooltipY})} onFocus={()=>setHovered({item,center,tooltipY})} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setHovered(null)}}>
+            <rect className="analytics-chart-hit-area" x={center-step/2} y={top} width={step} height={chartHeight} />
             <rect className="analytics-bar analytics-bar-views" x={center-barWidth-1} y={top+chartHeight-displayedViewsHeight} width={barWidth} height={displayedViewsHeight} rx="4"><title>{item.label}: {item.views} views</title></rect>
             <rect className="analytics-bar analytics-bar-clicks" x={center+1} y={top+chartHeight-displayedClicksHeight} width={barWidth} height={displayedClicksHeight} rx="4"><title>{item.label}: {item.clicks} link clicks</title></rect>
             {(index % labelEvery === 0 || index === series.length - 1) && <text className="analytics-axis-label" x={center} y={height-12} textAnchor="middle">{item.label}</text>}
           </g>
         })}
       </svg>
+      {hovered&&<div role="status" className="analytics-hover-tooltip" style={{left:`${hovered.center/width*100}%`,top:`${hovered.tooltipY/height*100}%`}}><strong>{hovered.item.label}</strong><span>{number(hovered.item.views)} views</span><span>{number(hovered.item.clicks)} link clicks</span></div>}
     </div>
   </section>
 }

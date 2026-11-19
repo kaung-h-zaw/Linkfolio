@@ -6,10 +6,16 @@ import { selectableResumeTemplates, sampleProfile } from './resumeTemplates'
 import { useTemplateAccess } from '../lib/templateAccess'
 import { Link } from 'react-router-dom'
 
-export default function TemplateGallery({selected,onChoose,onBack,hasStarted,embedded=false}) {
+export default function TemplateGallery({selected,onChoose,onBack,hasStarted,embedded=false,modal=false}) {
   const [filter,setFilter]=useState('All templates')
   const [preview,setPreview]=useState(null)
-  const access=useTemplateAccess(),dialog=useRef(null)
+  const access=useTemplateAccess(),dialog=useRef(null),galleryDialog=useRef(null)
+  useEffect(()=>{
+    if(!modal)return
+    const element=galleryDialog.current,previous=document.activeElement,overflow=document.body.style.overflow
+    element.showModal();document.body.style.overflow='hidden'
+    return()=>{element.close();document.body.style.overflow=overflow;previous?.focus({preventScroll:true})}
+  },[modal])
   useEffect(()=>{
     if(!preview)return
     const element=dialog.current,previous=document.activeElement,overflow=document.body.style.overflow
@@ -17,10 +23,9 @@ export default function TemplateGallery({selected,onChoose,onBack,hasStarted,emb
     return ()=>{element.close();document.body.style.overflow=overflow;previous?.focus()}
   },[preview])
   const templates=selectableResumeTemplates.filter(template=>filter==='All templates'||template.category===filter)
-  return <div className={`resume-template-gallery ${embedded?'':'standalone-template-gallery'}`}>
-    {!embedded&&<header className="gallery-brand"><Logo/>{hasStarted&&<button onClick={onBack} className="button button-outline">Back to editor</button>}</header>}
-    <div className="gallery-content">
-      {embedded&&hasStarted&&<button type="button" onClick={onBack} className="gallery-back"><Icon name="moveUp" className="h-4 w-4 -rotate-90"/>My resumes</button>}
+  const content=<div className="gallery-content">
+      {modal&&<div className="resume-template-modal-top"><span>NEW RESUME</span><button type="button" className="gallery-close" aria-label="Close template selection" onClick={onBack}><Icon name="close" className="h-5 w-5"/></button></div>}
+      {embedded&&hasStarted&&!modal&&<button type="button" onClick={onBack} className="gallery-back"><Icon name="moveUp" className="h-4 w-4 -rotate-90"/>My resumes</button>}
       <div className="gallery-heading"><h1 tabIndex={-1}>Choose a resume template</h1><p>Pick a layout to get started. Customize it as you go.</p></div>
       <div className="gallery-filters" role="group" aria-label="Template categories">
         {['All templates',...new Set(selectableResumeTemplates.map(template=>template.category))].map(category=><button key={category} type="button" aria-pressed={filter===category} onClick={()=>setFilter(category)}>{category}</button>)}
@@ -42,5 +47,9 @@ export default function TemplateGallery({selected,onChoose,onBack,hasStarted,emb
         </div>
       </dialog>}
     </div>
+  if(modal)return <dialog ref={galleryDialog} className="resume-template-picker-dialog" aria-label="Choose a resume template" onCancel={event=>{event.preventDefault();onBack()}} onClick={event=>{if(event.target===galleryDialog.current)onBack()}}><div className="resume-template-gallery resume-template-gallery-modal">{content}</div></dialog>
+  return <div className={`resume-template-gallery ${embedded?'':'standalone-template-gallery'}`}>
+    {!embedded&&<header className="gallery-brand"><Logo/>{hasStarted&&<button onClick={onBack} className="button button-outline">Back to editor</button>}</header>}
+    {content}
   </div>
 }

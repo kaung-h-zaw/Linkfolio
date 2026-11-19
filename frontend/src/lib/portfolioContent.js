@@ -13,7 +13,7 @@ export function portfolioCustomSections(profile, settings = {}) {
 }
 export function portfolioDetailEntries(profile,settings) {
   const projects=settings.projects !== false && !(profile.removedSections || []).includes('projects') ? visibleEntries(getProjects(profile),['name','subtitle','url','github']) : []
-  const custom=portfolioCustomSections(profile,settings).flatMap((section)=>section.entries.map((entry)=>({...entry,sectionTitle:settings.sectionTitles?.[section.type] || section.heading})))
+  const custom=portfolioCustomSections(profile,settings).filter((section)=>section.format!=='skills').flatMap((section)=>section.entries.map((entry)=>({...entry,sectionTitle:settings.sectionTitles?.[section.type] || section.heading})))
   return [...projects.map((entry)=>({key:`projects:${entry.id}`,kind:'projects',entry,title:entry.name || 'Project'})),...custom.map((entry)=>({key:`custom:${entry.id}`,kind:'custom',entry,title:entry.name || entry.sectionTitle || 'Details'}))]
 }
 export function validDetailPages(value) {
@@ -24,5 +24,5 @@ export function validDetailPages(value) {
   ) && JSON.stringify(value).length<2_000_000)
 }
 export function detailImages(item,settings) {
-  return [...new Set([...(item.kind==='projects' ? [settings.images?.projects?.[item.entry.id]] : []),...(settings.detailPages?.[item.key]?.images || [])].map(portfolioImageSource).filter(Boolean))]
+  return [...new Set((settings.detailPages?.[item.key]?.images || []).map(portfolioImageSource).filter(Boolean))]
 }

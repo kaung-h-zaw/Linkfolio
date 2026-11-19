@@ -214,7 +214,7 @@
 .editor-workspace .heading-style-preview:is([data-heading-style='band'],[data-heading-style='box'],[data-heading-style='overline']) i { left:50%; transform:translateX(-50%); }
 .editor-workspace .heading-style-preview[data-heading-style='short']::after { right:auto; width:24px; border-bottom-width:2px; }
 .editor-workspace .resume-color-targets { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
-.editor-workspace .resume-color-targets button { display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 4px; border:1px solid var(--color-line,var(--app-border)); border-radius:10px; color:var(--color-muted,var(--app-muted)); font-size:12px; cursor:pointer; transition:background .15s,border-color .15s; }
+.editor-workspace .resume-color-targets button { display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 4px; border:1px solid var(--app-border); border-radius:10px; color:var(--app-muted); font-size:12px; cursor:pointer; transition:background .15s,border-color .15s; }
 .editor-workspace .resume-color-targets button:hover { background:var(--app-raised); }
 .editor-workspace .resume-color-targets button[aria-pressed='true'] { background:var(--app-selected); border-color:var(--app-border-strong); color:var(--app-accent); font-weight:600; }
 .editor-workspace .resume-color-area-preview { display:block; width:30px; height:38px; border:1px solid currentColor; border-radius:3px; position:relative; overflow:hidden; }
@@ -534,7 +534,9 @@ html:has(.editor-workspace)::-webkit-scrollbar-corner, .editor-workspace ::-webk
 /* Keep formatting controls legible and the complete editing card softly rounded. */
 .linkfolio-app .editor-workspace .entry-edit-form { overflow:hidden; border-radius:14px; }
 .editor-workspace .entry-edit-form > .editor-form-footer { border-radius:0 0 14px 14px; }
-.editor-workspace .entry-rich-text-box { overflow:hidden; border-radius:10px; }
+.editor-workspace .entry-rich-text-box { overflow:hidden; border-radius:10px; background:var(--app-raised); color:var(--app-text); }
+.editor-workspace .entry-format-toolbar { background:var(--app-surface); border-color:var(--app-border); }
+.editor-workspace .entry-rich-text-box [contenteditable='true'] { background:transparent; color:var(--app-text); }
 .editor-workspace .entry-format-toolbar button { color:var(--app-text); cursor:pointer; border-radius:7px; }
 .editor-workspace .entry-format-toolbar button svg { width:18px; height:18px; stroke-width:2.4; }
 .editor-workspace .entry-format-toolbar button:hover { color:var(--app-accent); background:var(--app-selected); }
@@ -680,7 +682,17 @@ html:has(.editor-workspace)::-webkit-scrollbar-corner, .editor-workspace ::-webk
 .editor-workspace .portfolio-detail-entry-row { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:16px; border-radius:12px; background:var(--app-raised); }
 .editor-workspace .portfolio-detail-entry-row strong { display:block; font-size:14px; font-weight:600; }
 .editor-workspace .portfolio-detail-entry-row small { display:block; margin-top:4px; font-size:12px; color:var(--app-muted); }
-.portfolio-detail-dialog { margin:auto; width:min(680px,94vw); max-height:90dvh; overflow-y:auto; border:1px solid var(--app-border); border-radius:20px; background:var(--app-surface); color:var(--app-text); padding:24px; box-shadow:0 24px 80px #102a202b; }
+.editor-workspace .portfolio-detail-add { display:flex; width:100%; justify-content:center; margin-top:14px; }
+.portfolio-detail-picker-list { display:grid; gap:8px; max-height:min(56dvh,480px); overflow-y:auto; }
+.portfolio-detail-picker-option { display:grid; grid-template-columns:24px minmax(0,1fr) 18px; align-items:center; gap:12px; width:100%; min-height:64px; padding:12px 14px; border:1px solid var(--app-border); border-radius:10px; background:var(--app-raised); color:var(--app-text); text-align:left; }
+.portfolio-detail-picker-option:hover { border-color:var(--app-border-strong); background:var(--app-selected); }
+.portfolio-detail-picker-option > span { min-width:0; }
+.portfolio-detail-picker-option strong,.portfolio-detail-picker-option small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.portfolio-detail-picker-option strong { font-size:14px; font-weight:600; }
+.portfolio-detail-picker-option small { margin-top:4px; color:var(--app-muted); font-size:12px; }
+.portfolio-detail-picker-option > svg:last-child { color:var(--app-muted); }
+.portfolio-detail-dialog { margin:auto; width:min(680px,94vw); max-height:90dvh; overflow-y:auto; scrollbar-width:none; border:1px solid var(--app-border); border-radius:20px; background:var(--app-surface); color:var(--app-text); padding:24px; box-shadow:0 24px 80px #102a202b; }
+.editor-workspace .portfolio-detail-dialog::-webkit-scrollbar { display:none; width:0; height:0; }
 .portfolio-detail-dialog::backdrop { background:#15241e66; }
 .portfolio-detail-form-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:24px; }
 .portfolio-detail-form-heading h2 { font-size:22px; font-weight:700; margin-top:4px; }
@@ -718,6 +730,8 @@ html:has(.editor-workspace)::-webkit-scrollbar-corner, .editor-workspace ::-webk
 .linkfolio-app .editor-workspace #editor-preview[data-preview-kind='portfolio'] { margin:0; border:0; border-radius:0; box-shadow:none; }
 .editor-workspace .portfolio-preview-fit .portfolio-nav.portfolio-adaptive-nav { padding-block:8px; }
 .editor-workspace .portfolio-preview-fit .portfolio-adaptive-nav :is(.portfolio-nav-primary-link,.portfolio-nav-more) { min-height:34px; padding-block:6px; }
+.editor-workspace .portfolio-preview-fit .portfolio-site[data-web-source='strata'] .portfolio-nav.portfolio-adaptive-nav { padding-block:28px; }
+.editor-workspace .portfolio-preview-fit .portfolio-site[data-web-source='strata'] .portfolio-adaptive-nav :is(.portfolio-nav-primary-link,.portfolio-nav-more) { min-height:42px; padding-block:9px; font-size:14px; }
 
 /* Shared resume/portfolio design tabs stay reachable in either scrolling panel. */
 .editor-workspace .resume-customization-groups { position:relative; gap:0; }

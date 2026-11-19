@@ -126,7 +126,7 @@ export default function ImportResumePage() {
             {tab === 'file' ? (
               <div id="import-panel-file" role="tabpanel" aria-labelledby="import-tab-file" onDragOver={(event) => { event.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)}
                 onDrop={(event) => { event.preventDefault(); setDragging(false); const file = event.dataTransfer.files[0]; if (file) process(file) }}
-                className={`flex min-h-56 flex-col items-center justify-center rounded-lg border-2 border-dashed p-5 text-center ${dragging ? 'border-accent bg-sage' : 'border-slate-300 bg-paper/50'}`}>
+                className={`resume-import-dropzone flex min-h-56 flex-col items-center justify-center rounded-lg border-2 border-dashed p-5 text-center ${dragging ? 'is-dragging' : ''}`}>
                 <p className="text-sm text-muted">Choose a file or drag and drop it here</p>
                 <button type="button" onClick={() => fileInput.current.click()} className="button button-green mt-5">Select Resume</button>
                 <input ref={fileInput} aria-label="Resume file" type="file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp" className="sr-only" tabIndex={-1}

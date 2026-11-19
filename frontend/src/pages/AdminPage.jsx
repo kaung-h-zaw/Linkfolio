@@ -5,6 +5,7 @@ import { Logo } from '../components/Navbar'
 import Select from '../components/Select'
 import AdminAccountDirectory from '../components/AdminAccountDirectory'
 import AdminSettings from '../components/AdminSettings'
+import ConfirmDialog from '../components/ConfirmDialog'
 import { useAuth } from '../lib/authContext'
 import { api } from '../lib/api'
 import { isSelectableTemplate, templateNames } from '../lib/templateCatalog'
@@ -46,6 +47,7 @@ export default function AdminPage() {
   const [report,setReport] = useState('all')
   const [attempt,setAttempt] = useState(0)
   const [deleting,setDeleting] = useState(null)
+  const [signOutOpen,setSignOutOpen] = useState(false)
   const [updated,setUpdated] = useState(null)
   useEffect(() => {
     if (!notice) return
@@ -93,9 +95,10 @@ export default function AdminPage() {
         {section==='users'&&<AdminAccountDirectory accounts={data.users} currentUserId={user.id} busy={busy} onDelete={setDeleting} onStatusChange={account => action(()=>api(`/admin/users/${account.id}`,{method:'PATCH',body:{disabled:!account.disabled}}),account.disabled?'Account enabled.':'Account disabled and sessions ended.')} />}
         {section==='templates'&&<section className="admin-panel admin-template-panel"><div className="admin-panel-heading"><div><h2>{kind==='resume'?'Resume templates':'Portfolio templates'} <span className="admin-badge">{templates.length}</span></h2><p>Manage availability and Premium access.</p></div><div className="admin-tabs" role="group" aria-label="Template type">{['resume','portfolio'].map(type=><button type="button" key={type} aria-pressed={kind===type} onClick={()=>setKind(type)}><Icon name={type==='resume'?'file':'window'}/>{type==='resume'?'Resume':'Portfolio'}{kind===type&&<Icon name="check"/>}</button>)}</div></div><div className="admin-template-grid">{templates.map(template=><form className="admin-template" key={`${template.kind}-${template.id}-${template.name}`} onSubmit={event=>{event.preventDefault();const form=new FormData(event.currentTarget);action(()=>api(`/admin/templates/${template.kind}/${template.id}`,{method:'PATCH',body:{name:form.get('name'),enabled:form.has('enabled'),premium:form.has('premium')}}),'Template settings saved.')}}><div className="admin-template-heading"><span className="admin-metric-icon"><Icon name={kind==='resume'?'file':'window'}/></span><span className={`admin-badge ${template.enabled?'is-active':''}`}>{template.enabled?'Available':'Unavailable'}</span></div><label>Template name<input name="name" required maxLength={120} defaultValue={template.name||templateNames[kind][template.id]}/></label><div className="admin-template-options"><label><input name="enabled" type="checkbox" defaultChecked={Boolean(template.enabled)}/>Available</label><label><input name="premium" type="checkbox" defaultChecked={Boolean(template.premium)}/>Premium only</label></div><button disabled={busy} className="button button-outline"><Icon name="save"/>Save changes</button></form>)}</div></section>}
         {section==='plans'&&<div className="admin-plan-grid">{data.plans.filter(plan=>['free','premium'].includes(plan.id)).map(plan=><section className="admin-panel" key={`${plan.id}-${plan.resume_limit}-${plan.portfolio_limit}-${plan.enabled}`}><div className="admin-panel-heading"><div><span className="admin-eyebrow">{plan.id==='premium'?'PAID MEMBERSHIP':'STARTER MEMBERSHIP'}</span><h2>{plan.name}</h2></div><Icon name={plan.id==='premium'?'spark':'user'}/></div><form className="admin-plan-form" onSubmit={event=>{event.preventDefault();const form=new FormData(event.currentTarget);action(()=>api(`/admin/plans/${plan.id}`,{method:'PATCH',body:{resumeLimit:Number(form.get('resumeLimit')),portfolioLimit:Number(form.get('portfolioLimit')),enabled:plan.id==='free'||form.has('enabled')}}),`${plan.name} settings saved.`)}}>{[['resumeLimit','Resume limit',plan.resume_limit],['portfolioLimit','Portfolio limit',plan.portfolio_limit]].map(([name,label,value])=><label key={name}>{label}<input name={name} type="number" min="1" max="100" required defaultValue={value}/></label>)}{plan.id==='premium'?<label className="admin-check"><input type="checkbox" name="enabled" defaultChecked={Boolean(plan.enabled)}/>Allow Premium upgrades</label>:<p className="admin-muted">Free remains available for new accounts.</p>}<button disabled={busy} className="button button-green"><Icon name="save"/>Save {plan.name} settings</button></form></section>)}</div>}
-        {section==='profile'&&<AdminSettings user={user} busy={busy} onSave={fullName=>action(async()=>{const result=await api('/account',{method:'PATCH',body:{fullName}});setUser(result.user)},'Your profile has been updated.')} onLogout={()=>logout()}/>}
+        {section==='profile'&&<AdminSettings user={user} busy={busy} onSave={fullName=>action(async()=>{const result=await api('/account',{method:'PATCH',body:{fullName}});setUser(result.user)},'Your profile has been updated.')} onLogout={()=>setSignOutOpen(true)}/>}
       </>}
     </main>
     {deleting&&<DeleteUserDialog account={deleting} onClose={()=>setDeleting(null)} onDelete={email=>mutate(()=>api(`/admin/users/${deleting.id}`,{method:'DELETE',body:{email}}),'User and associated data deleted.')}/>}
+    {signOutOpen&&<ConfirmDialog icon="logout" title="Sign out?" description="You’ll be signed out of Linkfolio on this device." confirmLabel="Sign out" busyLabel="Signing out…" onConfirm={logout} onClose={()=>setSignOutOpen(false)}/>}
   </div>
 }

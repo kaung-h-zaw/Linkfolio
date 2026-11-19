@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import RemovePremiumDialog from '../components/RemovePremiumDialog'
 import DeleteAccountDialog from '../components/DeleteAccountDialog'
+import ConfirmDialog from '../components/ConfirmDialog'
 import PortfolioAnalytics from '../components/PortfolioAnalytics'
 import MessageInbox from '../components/MessageInbox'
 import SetupSidebar from '../components/SetupSidebar'
@@ -38,6 +39,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
   const [checkout, setCheckout] = useState(null)
   const [removePremiumOpen, setRemovePremiumOpen] = useState(false)
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
+  const [signOutOpen, setSignOutOpen] = useState(false)
   useEffect(() => {
     if (!notice || view !== 'account') return
     const timer = setTimeout(() => setNotice(''),4000)
@@ -112,7 +114,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
           </div>
         )}
         {notice && (
-          <p role="status" className="mt-6 rounded border border-line bg-white p-4 text-sm">
+          <p role="status" className="mt-6 mb-6 rounded border border-line bg-white p-4 text-sm">
             {notice}
           </p>
         )}
@@ -133,7 +135,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
           <AppThemeControl />
           <section className="account-signout-card">
             <div><h2 className="font-semibold">Sign out</h2><p className="mt-1 text-sm text-muted">End your session on this device.</p></div>
-            <button type="button" disabled={busy} onClick={() => action(async () => { await logout() })} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
+            <button type="button" disabled={busy} onClick={() => setSignOutOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
           </section>
           <section className="account-plan-card account-signout-card">
               <div><h2 className="font-semibold">Your plan</h2><p className="mt-1 text-sm text-muted">{user.plan === 'premium' ? 'Premium account' : 'Free account'}</p></div>
@@ -242,6 +244,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
           </>
         )}
       </main>
+      {signOutOpen && <ConfirmDialog icon="logout" title="Sign out?" description="You’ll be signed out of Linkfolio on this device." confirmLabel="Sign out" busyLabel="Signing out…" onConfirm={logout} onClose={() => setSignOutOpen(false)} />}
     </div>
   )
 }

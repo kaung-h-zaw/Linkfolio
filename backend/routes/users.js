@@ -9,8 +9,10 @@ const router = express.Router()
 router.post('/register', rateLimit('register', 10, 900_000), UserController.register)
 router.post('/login', rateLimit('login', 30, 900_000), UserController.login)
 router.get('/me', requireAuth, UserController.me)
+router.post('/change-password', requireAuth, rateLimit('change-password', 10, 900_000), UserController.changePassword)
 router.post('/logout', UserController.logout)
 router.post('/forgot-password', rateLimit('reset', 10, 900_000), UserController.forgotPassword)
+router.post('/dev-reset-password', rateLimit('dev-reset', 5, 900_000), UserController.devResetPassword)
 router.post('/reset-password', rateLimit('reset-submit', 20, 900_000), UserController.resetPassword)
 
 module.exports = router

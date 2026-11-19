@@ -331,7 +331,7 @@
 .analytics-line-legend i { width:20px; height:3px; border-radius:999px; }
 .analytics-line-legend .views { background:var(--app-accent); }
 .analytics-line-legend .clicks { background:#7f8da3; }
-.analytics-line-wrap { margin-top:14px; overflow-x:auto; }
+.analytics-line-wrap { position:relative; margin-top:14px; overflow-x:auto; }
 .analytics-line-wrap svg { display:block; width:100%; min-width:600px; height:auto; overflow:visible; }
 .analytics-grid-line { stroke:var(--app-border); stroke-width:1; }
 .analytics-axis-label { fill:var(--app-muted); font-size:11px; }
@@ -345,6 +345,12 @@
 .analytics-bar:hover { opacity:.78; }
 .analytics-bar-views { fill:var(--app-accent); }
 .analytics-bar-clicks { fill:#7f8da3; }
+.analytics-chart-day { outline:none; }
+.analytics-chart-hit-area { fill:transparent; pointer-events:all; }
+.analytics-chart-day:focus .analytics-chart-hit-area { stroke:var(--app-accent); stroke-width:1; stroke-dasharray:3 3; }
+.analytics-hover-tooltip { position:absolute; z-index:2; display:grid; gap:3px; min-width:120px; padding:9px 11px; border:1px solid var(--app-border-strong); border-radius:8px; background:var(--app-raised); color:var(--app-text); box-shadow:0 8px 24px #0003; font-size:12px; pointer-events:none; transform:translate(-50%,-100%); }
+.analytics-hover-tooltip strong { margin-bottom:2px; font-weight:650; }
+.analytics-hover-tooltip span { color:var(--app-muted); white-space:nowrap; }
 .analytics-no-activity { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:40px 12px; text-align:center; color:var(--app-muted); }.analytics-no-activity h3 { color:var(--app-text); font-size:16px; }.analytics-no-activity p { max-width:360px; font-size:13px; line-height:1.8; }.analytics-counting-note { padding:18px 22px; font-size:13px; color:var(--app-muted); }.analytics-counting-note summary { cursor:pointer; color:var(--app-text); }.analytics-counting-note p { margin-top:16px; max-width:900px; line-height:1.9; }
 @media(max-width:1250px) { .library-workspace-grid,.analytics-content-grid { grid-template-columns:1fr; } }
 @media(max-width:950px) { .linkfolio-app .library-wide-card { grid-template-columns:1fr; }.library-resume-preview { max-width:190px; }.library-website-preview { max-width:240px; } }
@@ -978,6 +984,13 @@
 
 /* Template selection keeps the design and its action visible together. */
 .standalone-template-gallery { min-height:100svh; padding:24px; background:var(--app-canvas,var(--app-raised)); }
+.resume-template-picker-dialog { width:min(1120px,96vw); max-height:90dvh; margin:auto; overflow-y:auto; border:1px solid var(--app-border); border-radius:18px; background:var(--app-surface); color:var(--app-text); padding:0; box-shadow:0 24px 80px #102a202b; }
+.resume-template-picker-dialog::backdrop { background:var(--app-backdrop); }
+.resume-template-gallery-modal .gallery-content { max-width:none; padding:22px 28px 28px; }
+.resume-template-modal-top { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.resume-template-modal-top > span { color:var(--app-accent); font-size:11px; font-weight:700; letter-spacing:.14em; }
+.resume-template-gallery-modal .gallery-heading h1 { font-size:24px; }
+.resume-template-gallery-modal .gallery-filters { margin-top:18px; }
 .gallery-brand { display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto 26px; }
 .resume-template-gallery { container-type:inline-size; }
 .gallery-content { max-width:1080px; margin:0 auto; }

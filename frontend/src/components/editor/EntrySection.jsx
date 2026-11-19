@@ -8,7 +8,6 @@ export default function EntrySection({
   const [open, setOpen] = useState(defaultOpen)
   const [selected, setSelected] = useState(null)
   const [renaming, setRenaming] = useState(false)
-  const [undo, setUndo] = useState(null)
   const root = useRef(null)
   const heading = useRef(null)
   const id = useId()
@@ -45,7 +44,6 @@ export default function EntrySection({
     edit(next.id)
   }
   function remove(entryId) {
-    setUndo(section)
     onChange({ ...section, entries:section.entries.filter((item) => item.id !== entryId) })
     if (entry?.id === entryId) done()
   }
@@ -102,6 +100,5 @@ export default function EntrySection({
         </div>
       </div>
     </section>}
-    {undo && <p role="status" className="mt-3 text-xs text-muted">Entry deleted. <button type="button" onClick={() => { onChange({ ...section,entries:undo.entries }); setUndo(null) }} className="min-h-9 px-2 font-semibold text-accent underline">Undo deletion</button></p>}
   </div>
 }

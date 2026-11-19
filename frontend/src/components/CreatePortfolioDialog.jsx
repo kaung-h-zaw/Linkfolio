@@ -1,10 +1,15 @@
 import Select from "./Select"
 import { useEffect, useRef, useState } from 'react'
 import Icon from './Icon'
+import PortfolioTemplatePicker from './editor/PortfolioTemplatePicker'
+import { defaultPortfolio } from '../lib/portfolio'
+import { hydrateProfile } from '../lib/profile'
 
-export default function CreatePortfolioDialog({ resumes, busy, error, onResume, onBlank, onClose }) {
+export default function CreatePortfolioDialog({ resumes, busy, error, onResume, onClose }) {
   const dialog = useRef(null)
   const [resumeId, setResumeId] = useState(resumes[0]?.id || '')
+  const [templateOpen, setTemplateOpen] = useState(false)
+  const selectedResume = resumes.find((item) => item.id === resumeId)
   useEffect(() => {
     const element = dialog.current
     const previousFocus = document.activeElement
@@ -28,18 +33,15 @@ export default function CreatePortfolioDialog({ resumes, busy, error, onResume, 
     {error && <p role="alert" className="mt-5 text-sm text-red-700">{error}</p>}
     <form className="mt-6 rounded-lg border border-line p-5" onSubmit={(event) => {
       event.preventDefault()
-      const resume = resumes.find((item) => item.id === resumeId)
-      if (resume && !busy) onResume(resume)
+      if (selectedResume && !busy) setTemplateOpen(true)
     }}>
       <div className="flex items-center gap-3"><Icon name="file" className="h-5 w-5 text-accent" /><h3 className="font-semibold">Start from a resume</h3></div>
       <p className="mt-2 text-sm leading-6 text-muted">Use your saved details to get started.</p>
       {resumes.length ? <>
         <label className="mt-4 block text-sm font-medium">Choose a resume<Select aria-label="Choose a resume" disabled={busy} value={resumeId} onChange={(event) => setResumeId(event.target.value)} className="mt-2 min-h-11 w-full rounded-md border border-line bg-white px-3 text-sm font-normal">{resumes.map((resume) => <option key={resume.id} value={resume.id}>{resume.name}</option>)}</Select></label>
-        <button disabled={busy} className="button button-green mt-4 w-full disabled:opacity-50">{busy ? 'Creating portfolio…' : 'Create from resume'}<Icon name="arrow" className="h-4 w-4" /></button>
-      </> : <p className="mt-3 text-xs text-muted">Save or import a resume to use this option.</p>}
+        <button disabled={busy || !selectedResume} className="button button-green mt-4 w-full disabled:opacity-50">Choose a portfolio style<Icon name="arrow" className="h-4 w-4" /></button>
+      </> : <p className="mt-3 text-xs text-muted">Create or import a resume first, then use it to build your portfolio.</p>}
     </form>
-    <button type="button" disabled={busy} onClick={onBlank} className="mt-4 flex w-full items-center gap-4 rounded-lg border border-line p-5 text-left hover:border-accent hover:bg-paper disabled:opacity-50">
-      <Icon name="window" className="h-5 w-5 shrink-0 text-accent" /><span className="min-w-0 flex-1"><span className="block font-semibold">Start fresh</span><span className="mt-1 block text-sm leading-6 text-muted">Choose a design and add your own content.</span></span><Icon name="arrow" className="h-4 w-4 shrink-0 text-muted" />
-    </button>
+    {templateOpen&&selectedResume&&<PortfolioTemplatePicker value={defaultPortfolio.template} profile={hydrateProfile(selectedResume)} settings={defaultPortfolio} onChange={(template)=>{setTemplateOpen(false);onResume(selectedResume,template)}} onClose={()=>setTemplateOpen(false)}/>}
   </dialog>
 }

@@ -11,7 +11,7 @@ export default function ResumeStylePresets({ design, template, onChange }) {
     <p className="mb-4 text-sm text-muted">Change typography and accents while keeping your layout and sections.</p>
     <div className="resume-style-presets" role="group" aria-label="Resume style presets">
       {options.map(option => <button key={option.id} type="button" aria-label={`${option.name} style`} aria-pressed={matchesPreset(design,option.values)} onClick={()=>onChange({...design,...option.values})}>
-        <span className="resume-style-sample" aria-hidden="true" style={{fontFamily:option.values.font === 'template' ? template?.font : option.values.font,color:option.values.color || template?.color}}>Aa</span>
+        <span className="resume-style-sample" aria-hidden="true" style={{fontFamily:option.values.font === 'template' ? template?.font : option.values.font,color:option.values.color || template?.color,background:'#fff',padding:'0 6px',borderRadius:4,boxShadow:'0 0 0 1px #d8dde3'}}>Aa</span>
         <span className="font-semibold">{option.name}</span><span className="text-xs text-muted">{option.description}</span>
       </button>)}
     </div>

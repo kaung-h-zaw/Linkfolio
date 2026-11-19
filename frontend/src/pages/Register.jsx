@@ -157,9 +157,9 @@ export default function Register() {
                         [field.name]: !visible[field.name],
                       })
                     }
-                    className="absolute inset-y-1 right-1 min-w-16 rounded px-3 text-xs font-semibold text-accent hover:bg-sage/60"
+                    className="absolute inset-y-1 right-1 flex min-w-10 items-center justify-center rounded px-2 text-accent hover:bg-sage/60"
                   >
-                    {visible[field.name] ? 'Hide' : 'Show'}
+                    <Icon name={visible[field.name] ? 'hidden' : 'eye'} className="h-4 w-4" />
                   </button>
                 )}
               </div>
