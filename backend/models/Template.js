@@ -1,5 +1,5 @@
 // Model: only database reads and writes belong in this file.
-const { requireValue } = require('../validation')
+const { requireValue } = require('../utils/validation.js')
 
 function createTemplateModel(db) {
   const Template = {

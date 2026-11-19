@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Icon from './Icon'
-import { api } from '../lib/api'
+import { api } from '../services/api'
 
 export default function ChangePasswordDialog({ onClose }) {
   const dialog = useRef(null)

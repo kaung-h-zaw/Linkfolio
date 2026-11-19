@@ -1,6 +1,6 @@
 const { randomUUID } = require('node:crypto')
-const { publicUser } = require('../security')
-const { requireValue, text } = require('../validation')
+const { publicUser } = require('../utils/security.js')
+const { requireValue, text } = require('../utils/validation.js')
 const now = () => new Date().toISOString()
 const { fulfill } = require('../services/paymentService')
 

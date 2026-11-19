@@ -1,4 +1,4 @@
-const { requireValue, text, validateDocument } = require('../validation')
+const { requireValue, text, validateDocument } = require('../utils/validation.js')
 const { resolvePortfolioSource } = require('../../frontend/src/lib/portfolioSource.js')
 const now = () => new Date().toISOString()
 

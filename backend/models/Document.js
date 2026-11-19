@@ -1,6 +1,6 @@
 // Model: only database reads and writes belong in this file.
-const { requireValue } = require('../validation')
-const { saveRelationalDocument, materializeDocument } = require('../relationalContent')
+const { requireValue } = require('../utils/validation.js')
+const { saveRelationalDocument, materializeDocument } = require('../database/relationalContent.js')
 
 function createDocumentModel(db) {
   const Document = {

@@ -1,6 +1,6 @@
 const { randomUUID } = require('node:crypto')
-const { hashPassword, checkPassword, token } = require('../security')
-const { requireValue } = require('../validation')
+const { hashPassword, checkPassword, token } = require('../utils/security.js')
+const { requireValue } = require('../utils/validation.js')
 
 // Unknown emails still run a password check, keeping failed logins similar in timing.
 const dummyHash = hashPassword(token())

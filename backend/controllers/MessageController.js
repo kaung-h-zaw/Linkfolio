@@ -1,4 +1,4 @@
-const { requireValue } = require('../validation')
+const { requireValue } = require('../utils/validation.js')
 
 // Controller: validate the request, call models, and send a JSON response.
 const MessageController = {

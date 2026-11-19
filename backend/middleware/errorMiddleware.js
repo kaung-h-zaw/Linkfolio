@@ -1,4 +1,4 @@
-const { HttpError } = require('../validation')
+const { HttpError } = require('../utils/validation.js')
 
 function errorMiddleware(error, req, res, next) {
   if (res.headersSent) return next(error)

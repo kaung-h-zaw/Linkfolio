@@ -6,7 +6,7 @@ const { getEducation, getSkills } = require('../../frontend/src/lib/educationSki
 const { getProjects, getCertifications, getLanguages } = require('../../frontend/src/lib/additionalSections.js')
 const { resolvePortfolioPortrait } = require('../../frontend/src/lib/portfolioImages.js')
 const { randomUUID } = require('node:crypto')
-const { email, requireValue, text } = require('../validation')
+const { email, requireValue, text } = require('../utils/validation.js')
 const { resolvePortfolioSource } = require('../../frontend/src/lib/portfolioSource.js')
 const now = () => new Date().toISOString()
 

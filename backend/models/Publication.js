@@ -1,7 +1,7 @@
 // Model: only database reads and writes belong in this file.
-const { requireValue } = require('../validation')
+const { requireValue } = require('../utils/validation.js')
 const { randomInt } = require('node:crypto')
-const { materializeDocument } = require('../relationalContent')
+const { materializeDocument } = require('../database/relationalContent.js')
 
 function createPublicationModel(db) {
   const Publication = {

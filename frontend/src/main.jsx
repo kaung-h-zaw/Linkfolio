@@ -7,7 +7,7 @@ import './appTheme.css'
 import './editorWorkspace.css'
 import './resumeThemes.css'
 import App from './App.jsx'
-import AppAppearanceProvider from './components/AppAppearanceProvider'
+import AppAppearanceProvider from './controllers/AppearanceController'
 import './appAppearance.css'
 
 createRoot(document.getElementById('root')).render(

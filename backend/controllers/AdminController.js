@@ -1,5 +1,5 @@
-const { publicUser } = require('../security')
-const { requireValue, text } = require('../validation')
+const { publicUser } = require('../utils/security.js')
+const { requireValue, text } = require('../utils/validation.js')
 
 // Controller: validate the request, call models, and send a JSON response.
 const AdminController = {

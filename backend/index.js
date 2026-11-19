@@ -3,7 +3,7 @@ const { resolve } = require('node:path')
 const { existsSync } = require('node:fs')
 const { createApp } = require('./app')
 const { serveClient } = require('./web')
-const { openConfiguredDatabase } = require('./configuredDatabase')
+const { openConfiguredDatabase } = require('./database/configured.js')
 
 async function start() {
   const port = Number(process.env.PORT || 3001)

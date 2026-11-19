@@ -1,4 +1,4 @@
-const { text, requireValue } = require('../validation')
+const { text, requireValue } = require('../utils/validation.js')
 const { parseResumeText } = require('../../frontend/src/lib/resumeParsing/resumeParser.mjs')
 const { parseWithAI } = require('../services/resumeParsing')
 

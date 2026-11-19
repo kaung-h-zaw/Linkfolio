@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import Icon from './Icon'
-import { api } from '../lib/api'
+import { api } from '../services/api'
 export default function ContactForm({ slug, preview = false }) {
   const previewHint = useId()
   const [busy, setBusy] = useState(false)

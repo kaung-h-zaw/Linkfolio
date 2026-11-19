@@ -1,4 +1,4 @@
-const { digest, sessionCookie } = require('../security')
+const { digest, sessionCookie } = require('../utils/security.js')
 
 // Find the account for the session, then let the controller use req.user.
 async function requireAuth(req, res, next) {

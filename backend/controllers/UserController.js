@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer')
-const { checkPassword, digest, hashPassword, publicUser, sessionCookie, token } = require('../security')
-const { email, password, requireValue, text } = require('../validation')
+const { checkPassword, digest, hashPassword, publicUser, sessionCookie, token } = require('../utils/security.js')
+const { email, password, requireValue, text } = require('../utils/validation.js')
 const createSession = require('../helpers/createSession')
 
 // Controller: validate the request, call models, and send a JSON response.

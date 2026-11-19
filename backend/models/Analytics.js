@@ -1,5 +1,5 @@
 // Model: only database reads and writes belong in this file.
-const { materializeDocument } = require('../relationalContent')
+const { materializeDocument } = require('../database/relationalContent.js')
 
 function createAnalyticsModel(db) {
   const Analytics = {

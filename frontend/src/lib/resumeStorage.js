@@ -14,7 +14,7 @@ import {
 import { validEducation, validSkills, getEducation, getSkills } from './educationSkills'
 import { validExperience, getExperience } from './experience'
 import { validSummary, getSummary } from './summary'
-import { api } from './api'
+import { api } from '../services/api'
 import { hydrateProfile } from './profile'
 
 function validLinks(links) {

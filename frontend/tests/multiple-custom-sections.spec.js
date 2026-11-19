@@ -1,0 +1,56 @@
+import {test,expect} from './fixtures.js'
+import {sampleProfile} from '../src/components/resumeTemplates.js'
+import {textDocument} from '../src/lib/summary.js'
+import {openSectionCard} from './helpers/designControls.js'
+const headers={'X-Linkfolio-Request':'1'}
+test('custom sections can be added repeatedly, styled independently and saved without padded entry gaps',async({page},testInfo)=>{
+  await page.request.post('/api/auth/register',{headers,data:{fullName:'Custom sections',email:`multi-${crypto.randomUUID()}@example.com`,password:'custom sections password'}})
+  const id=crypto.randomUUID()
+  const description=textDocument('Recognised for community work.')
+  description.content.push({type:'paragraph',content:[]},{type:'paragraph',content:[]})
+  const awards={type:'custom',heading:'Awards',format:'standard',entries:[{id:crypto.randomUUID(),name:'Community award',subtitle:'Foundation',visible:true,startDate:'2025-11',content:description},{id:crypto.randomUUID(),name:'Innovation grant',subtitle:'Tech fund',visible:true,startDate:'2024-08',content:textDocument('Built an open source tool.')}]}
+  expect((await page.request.put(`/api/documents/${id}`,{headers,data:{...sampleProfile,id,kind:'resume',name:'Multiple custom sections',templateId:'essential',extraContent:[awards]}})).status()).toBe(200)
+  await page.goto(`/editor?resume=${id}`)
+  await page.getByRole('button',{name:'Add Content',exact:true}).click()
+  await page.getByRole('dialog').getByRole('button',{name:'Add Custom section',exact:true}).click()
+  await page.getByLabel('Section name',{exact:true}).fill('Volunteering')
+  await page.getByRole('button',{name:'Continue',exact:true}).click()
+  await page.getByLabel('Title',{exact:true}).fill('Community mentor')
+  await page.getByRole('textbox',{name:'Description',exact:true}).fill('Mentored new developers.')
+  await page.getByRole('button',{name:'Done',exact:true}).click()
+  await expect(page.getByRole('button',{name:'Awards',exact:true})).toBeVisible()
+  await expect(page.getByRole('button',{name:'Volunteering',exact:true})).toBeVisible()
+  const preview=page.locator('#editor-preview .resume-page')
+  const first=preview.locator('[data-section=custom]').first()
+  const gap=await first.locator('.resume-extra-entries').evaluate(el=>{
+    const [a,b]=el.children
+    return {actual:b.getBoundingClientRect().top-a.getBoundingClientRect().bottom,expected:parseFloat(getComputedStyle(el).rowGap),empty:el.querySelectorAll('p:has(>br:only-child)').length}
+  })
+  expect(gap.empty).toBe(0)
+  expect(Math.abs(gap.actual-gap.expected)).toBeLessThan(2)
+  expect(gap.actual).toBeLessThan(25)
+  await page.getByRole('button',{name:'Design',exact:true}).click()
+  const awardsCard=await openSectionCard(page,'custom')
+  await awardsCard.getByRole('button',{name:'Custom section layout: Two columns',exact:true}).click()
+  const second=page.locator('[data-section-customization^="custom_"]')
+  await expect(second).toContainText('Volunteering')
+  await expect(second.getByRole('button',{name:'Custom section layout: List',exact:true})).toHaveAttribute('aria-pressed','true')
+  await expect(first).toHaveAttribute('data-content-layout','columns')
+  await page.getByRole('button',{name:'Save',exact:true}).click()
+  await expect(page.locator('.editor-navigation-bar').getByRole('status')).toContainText('Saved to your account')
+  await page.reload()
+  await expect(preview.locator('[data-section^="custom_"]')).toContainText('Community mentor')
+  await expect(first).toHaveAttribute('data-content-layout','columns')
+  await page.screenshot({path:testInfo.outputPath('multiple-custom-sections.png')})
+  await page.getByRole('button',{name:'Content',exact:true}).click()
+  const card=page.locator('#editor-content section').filter({has:page.getByRole('button',{name:'Volunteering',exact:true})}).last()
+  await card.getByRole('button',{name:'Volunteering',exact:true}).click()
+  await card.getByRole('button',{name:'Remove section',exact:true}).click()
+  await page.getByRole('button',{name:'Save',exact:true}).click()
+  await expect(page.locator('.editor-navigation-bar').getByRole('status')).toContainText('Saved to your account')
+  await page.reload()
+  await expect(page.getByRole('button',{name:'Volunteering',exact:true})).toHaveCount(0)
+  await expect(page.getByRole('button',{name:'Awards',exact:true})).toBeVisible()
+  await page.setViewportSize({width:320,height:900})
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+})

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMessages } from '../lib/messagesContext'
-import { api } from '../lib/api'
+import { api } from '../services/api'
 import Icon from './Icon'
 import './messageInbox.css'
 import ConfirmDialog from './ConfirmDialog'

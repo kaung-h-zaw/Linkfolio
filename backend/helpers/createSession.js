@@ -1,4 +1,4 @@
-const { digest, sessionCookie, token } = require('../security')
+const { digest, sessionCookie, token } = require('../utils/security.js')
 
 // Cookies contain a random session token, never the user's password.
 async function createSession(req, res, userId) {
