@@ -9,6 +9,7 @@
     "test": "node --test test/*.test.js",
     "admin": "node scripts/admin.js",
     "db:check": "node scripts/checkDatabase.js",
+    "db:seed-demo": "node scripts/seedDemo.js",
     "db:normalize": "node scripts/migrateRelational.js",
     "db:import": "node scripts/migrateSqlite.js",
     "lint": "node ../frontend/node_modules/eslint/bin/eslint.js . --max-warnings=0"

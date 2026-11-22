@@ -231,15 +231,22 @@ function ResumeEditor({ params, mode }) {
     setSummarySection(value)
     setNotice('Unsaved changes')
   }
-  const sourceId=isPortfolio?(portfolio.sourceResume?.id||(draft.kind!=='portfolio'?draft.id:null)):null
+  const sourceId=isPortfolio?(portfolio.sourceResume?.id||(draft.kind!=='portfolio'?draft.id:null)):draft.id
+  const pendingExternalRefresh = useRef(false)
+  const editorDirty = useRef(false)
   useEffect(()=>{
-    if(!sourceId)return
+    if(!sourceId || draft.error)return
     let active=true
     const sync=()=>{
       if(!active)return
       const source=readResumes().find(item=>item.id===sourceId&&item.kind!=='portfolio')
       if(!source)return
+      // A resume can be updated outside this tab (for example by demo seeding).
+      // Refresh the editor only while it is clean, so a server refresh never
+      // overwrites changes currently being made here.
+      if(!isPortfolio && editorDirty.current)return
       const content=resumeContent(source)
+      if(!isPortfolio)pendingExternalRefresh.current=true
       setPersonal(content.personal);setSummarySection(content.summarySection);setExperienceSection(content.experienceSection)
       setEducationSection(content.educationSection);setSkillsSection(content.skillsSection);setProjectsSection(content.projectsSection)
       setCertificationsSection(content.certificationsSection);setLanguagesSection(content.languagesSection)
@@ -250,7 +257,7 @@ function ResumeEditor({ params, mode }) {
     sync()
     const stopRefresh=refreshResumesOnOpen()
     return ()=>{active=false;unsubscribe();stopRefresh()}
-  },[sourceId, setResumeStyle])
+  },[sourceId, setResumeStyle, isPortfolio, draft.error])
   const [notice, setNotice] = useState('')
   function updatePersonal(value) {
     if (value.photo && value.photo !== personal.photo) setResumeStyle(current => ({ ...current, design:{ ...current.design, photoShow:true } }))
@@ -261,6 +268,13 @@ function ResumeEditor({ params, mode }) {
   const snapshot = JSON.stringify(isPortfolio ? {portfolio} : {profile,templateDesigns:resumeStyle.templateDesigns})
   const [savedSnapshot, setSavedSnapshot] = useState(snapshot)
   const hasUnsavedChanges = !draft.error && snapshot !== savedSnapshot
+  useEffect(() => { editorDirty.current = hasUnsavedChanges }, [hasUnsavedChanges])
+  useEffect(() => {
+    if (!pendingExternalRefresh.current) return
+    pendingExternalRefresh.current = false
+    setSavedSnapshot(snapshot)
+    setNotice('')
+  }, [snapshot])
   const [confirmLeaving, setConfirmLeaving] = useState(false)
   useEffect(() => {
     if (!hasUnsavedChanges) return
@@ -526,7 +540,7 @@ function ResumeEditor({ params, mode }) {
           data-preview-kind={isPortfolio ? 'portfolio' : 'resume'}
           id="editor-preview"
           aria-label={isPortfolio ? 'Portfolio preview' : 'Resume preview'}
-          className={`${view === 'preview' ? 'flex' : 'hidden'} min-h-0 min-w-0 flex-col border-line bg-[#eef0f2] md:flex md:border-l`}
+          className={`${view === 'preview' ? 'flex' : 'hidden'} min-h-0 min-w-0 flex-col border-line bg-paper md:flex md:border-l`}
         >
           <div
             className="sr-only"

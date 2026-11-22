@@ -12,7 +12,7 @@ export default function SetupSidebar({ active, mobileCompact = true }) {
   const { user } = useAuth()
   const { unread = 0 } = useMessages() || {}
   return (
-    <aside data-compact={mobileCompact ? 'true' : undefined} data-menu-open={menuOpen} className="app-sidebar border-b border-line bg-[#eef1f5] px-5 py-5 md:sticky md:top-0 md:flex md:h-dvh md:w-56 md:shrink-0 md:flex-col md:border-r md:border-b-0 md:px-5 md:py-8 lg:w-64">
+    <aside data-compact={mobileCompact ? 'true' : undefined} data-menu-open={menuOpen} className="app-sidebar border-b border-line bg-white px-5 py-5 md:sticky md:top-0 md:flex md:h-dvh md:w-56 md:shrink-0 md:flex-col md:border-r md:border-b-0 md:px-5 md:py-8 lg:w-64">
       <div className="sidebar-brand-row"><Logo to="/dashboard" label="Linkfolio dashboard" /><div className="sidebar-brand-actions">{mobileCompact && <button ref={menuToggle} type="button" className="sidebar-menu-toggle" aria-label={menuOpen ? 'Close workspace menu' : 'Open workspace menu'} aria-expanded={menuOpen} aria-controls={menuId} onClick={() => setMenuOpen((open) => !open)}><Icon name={menuOpen ? 'close' : 'menu'} className="h-4 w-4" />Menu</button>}</div></div>
       <nav id={menuId} onKeyDown={(event) => { if (event.key === 'Escape') { setMenuOpen(false); menuToggle.current?.focus() } }} aria-label="Workspace" className="mt-6 flex flex-wrap gap-2 md:mt-12 md:flex-col">
         {[
@@ -43,7 +43,7 @@ export default function SetupSidebar({ active, mobileCompact = true }) {
         <p className="mt-1 text-xs text-muted">
           {user?.plan === 'premium' ? 'Premium' : 'Free'} account
         </p>
-        <Link to="/account" className="mt-3 inline-block min-h-10 py-2 text-sm text-accent">Account settings</Link>
+        <Link to="/account" className="mt-3 inline-block min-h-10 py-2 text-sm text-ink underline underline-offset-4 hover:text-accent">Account settings</Link>
       </div>
     </aside>
   )

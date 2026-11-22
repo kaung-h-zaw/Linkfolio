@@ -3,6 +3,7 @@ import { profileLinkHref } from '../lib/profileLinks'
 
 // Render supported document nodes as React elements, never saved HTML.
 function Node({ node }) {
+  if (!node || typeof node !== 'object') return null
   if (node.type === 'text') {
     return (node.marks || []).reduce((text, mark, index) => {
       if (mark.type === 'bold') return <strong key={index}>{text}</strong>

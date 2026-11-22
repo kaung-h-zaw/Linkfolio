@@ -96,8 +96,8 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
 @scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
   :scope :is(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),textarea,select) { border-color:var(--app-border-strong) !important; }
   :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button { border-color:var(--app-border); }
-  :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button[aria-pressed='true'] { border-color:var(--app-accent); box-shadow:0 0 0 1px var(--app-accent); }
-  :scope .resume-template-minimal-card[aria-pressed='true'] .resume-template-minimal-preview { border-color:var(--app-accent); box-shadow:0 0 0 1px var(--app-accent); }
+  :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button[aria-pressed='true'] { border-color:var(--app-control-border); box-shadow:0 0 0 1px var(--app-control-border); }
+  :scope .resume-template-minimal-card[aria-pressed='true'] .resume-template-minimal-preview { border-color:var(--app-control-border); box-shadow:0 0 0 1px var(--app-control-border); }
   :scope [class*='hover:bg-white']:hover { background-color:var(--app-inset); }
 }
 .linkfolio-app .app-auth.bg-white { background:var(--app-canvas); }
@@ -139,12 +139,13 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
   :scope .app-hero > div:last-child { transform:none; box-shadow:none; }
 }
 .linkfolio-app .app-sidebar nav a > svg { color:var(--app-muted); }
-.linkfolio-app .app-sidebar nav a:is([aria-current='page'],:hover) > svg { color:var(--app-accent); }
+.linkfolio-app .app-sidebar nav a[aria-current='page'] > svg { color:var(--app-focus); }
+.linkfolio-app .app-sidebar nav a:hover > svg { color:var(--app-accent); }
 .account-appearance-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:20px; }
 .account-appearance-options > button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; min-height:86px; padding:12px 8px; border:1px solid var(--app-border); border-radius:var(--app-radius); background:var(--app-raised); color:var(--app-muted); font-size:13px; cursor:pointer; }
 .account-appearance-options > button:hover { background:var(--app-inset); color:var(--app-text); }
-.account-appearance-options > button[aria-pressed='true'] { border-color:var(--app-accent); background:var(--app-selected); color:var(--app-text); font-weight:600; }
-.account-appearance-options > button[aria-pressed='true'] > svg { color:var(--app-accent); }
+.account-appearance-options > button[aria-pressed='true'] { border-color:var(--app-control-border); background:var(--app-selected); color:var(--app-text); font-weight:600; }
+.account-appearance-options > button[aria-pressed='true'] > svg { color:var(--app-focus); }
 .account-appearance-note { margin-top:14px; color:var(--app-muted); font-size:11px; line-height:1.6; }
 
 /* Account cards need a visible hierarchy on the warm light canvas. */

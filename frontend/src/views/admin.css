@@ -13,7 +13,7 @@
 .admin-sidebar svg { width:16px; height:16px; flex:none; }
 .admin-sidebar nav button:hover { background:var(--app-inset); color:var(--app-text); }
 .admin-sidebar nav button[aria-current='page'] { background:var(--app-nav-selected); color:var(--app-text); font-weight:600; }
-.admin-sidebar nav button[aria-current='page'] svg { color:var(--app-accent); }
+.admin-sidebar nav button[aria-current='page'] svg { color:var(--app-focus); }
 .admin-sidebar-account { margin-top:auto; padding-top:28px; }
 .admin-sidebar-account strong { display:block; font-size:12px; overflow-wrap:anywhere; }
 .admin-sidebar-account small { display:block; font-size:11px; color:var(--app-muted); margin-top:3px; }
@@ -128,8 +128,8 @@
 .admin-tabs { display:flex; gap:4px; padding:4px; border-radius:9px; background:var(--app-inset); }
 .admin-tabs button { display:flex; align-items:center; justify-content:center; gap:8px; min-width:130px; min-height:42px; padding:8px 14px; border:1px solid transparent; border-radius:7px; font-size:13px; color:var(--app-muted); }
 .admin-tabs button svg { width:15px; height:15px; flex:none; }
-.admin-workspace .admin-tabs button[aria-pressed='true'] { background:var(--app-selected); color:var(--app-text); border-color:var(--app-accent); font-weight:650; }
-.admin-workspace .admin-tabs button[aria-pressed='true'] svg { color:var(--app-accent); }
+.admin-workspace .admin-tabs button[aria-pressed='true'] { background:var(--app-selected); color:var(--app-text); border-color:var(--app-control-border); font-weight:650; }
+.admin-workspace .admin-tabs button[aria-pressed='true'] svg { color:var(--app-focus); }
 .admin-tabs button:not([aria-pressed='true']):hover { background:var(--app-raised); color:var(--app-text); }
 .admin-template-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
 .admin-template { padding:14px; border:1px solid var(--app-border); border-radius:10px; background:var(--app-raised); }

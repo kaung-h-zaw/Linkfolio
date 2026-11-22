@@ -8,6 +8,9 @@ export function textDocument(text = '') {
   }
 }
 export function summaryText(node) {
+  // Optional relational fields can be absent on older or partially populated
+  // documents. Treat them as empty content so a preview remains renderable.
+  if (!node || typeof node !== 'object') return ''
   if (node.type === 'text') return node.text || ''
   return (node.content || [])
     .map(summaryText)

@@ -39,7 +39,7 @@ export default function AccountProfileCard({ user, busy, onSave, className = '' 
     <p className="account-email-row"><span>Email address</span><strong title={user.email}>{user.email}</strong></p>
     <div className="account-profile-actions">
       {editing ? <><button type="submit" disabled={pending || !name.trim()} className="button button-green"><Icon name="save" className="h-4 w-4"/>{saving ? 'Saving…' : 'Save account'}</button><button type="button" disabled={pending} onClick={cancel} className="button button-outline">Cancel</button></> : <button ref={editButton} type="button" disabled={pending} onClick={() => {setName(user.fullName);setEditing(true)}} className="button button-outline"><Icon name="edit" className="h-4 w-4"/>Edit profile</button>}
-      <button type="button" onClick={() => setPasswordOpen(true)} className="text-sm text-accent underline">Change your password</button>
+      <button type="button" onClick={() => setPasswordOpen(true)} className="text-sm text-ink underline underline-offset-4 hover:text-accent">Change your password</button>
     </div>
   </form>{passwordOpen && <ChangePasswordDialog onClose={() => setPasswordOpen(false)} />}</>
 }
