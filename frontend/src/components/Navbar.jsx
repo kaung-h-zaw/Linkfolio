@@ -30,7 +30,7 @@ export default function Navbar() {
         <Logo />
         <nav
           aria-label="Main navigation"
-          className="hidden items-center gap-8 text-sm font-medium md:flex"
+          className="hidden items-center gap-8 whitespace-nowrap text-sm font-medium min-[1025px]:flex"
         >
           {links.map(([label, href]) => (
             <a key={href} href={href} className="nav-link">
@@ -38,7 +38,7 @@ export default function Navbar() {
             </a>
           ))}
         </nav>
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-6 whitespace-nowrap min-[1025px]:flex">
           <Link className="home-signin-button nav-link text-sm font-medium" to="/login">
             Sign in
           </Link>
@@ -53,7 +53,7 @@ export default function Navbar() {
         <button
           ref={toggle}
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-md border border-line md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-md border border-line min-[1025px]:hidden"
           aria-label={open ? 'Close navigation' : 'Open navigation'}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -66,7 +66,7 @@ export default function Navbar() {
         <nav
           id="mobile-menu"
           aria-label="Mobile navigation"
-          className="shell flex flex-col gap-1 border-t border-line py-4 md:hidden"
+          className="shell flex flex-col gap-1 border-t border-line py-4 min-[1025px]:hidden"
           onKeyDown={(event) => {
             if (event.key === 'Escape') {
               setOpen(false)

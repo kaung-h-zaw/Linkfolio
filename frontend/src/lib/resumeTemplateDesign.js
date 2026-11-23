@@ -1,12 +1,19 @@
 import { getDesign, validDesign } from './resumeDesign.js'
 
+const retiredResumeTemplates = {
+  classic:'flowcv-classic-serif', slate:'flowcv-precision-line', essential:'flowcv-precision-line',
+  canvas:'flowcv-rose-letter', studio:'flowcv-atlantic-blue', editorial:'flowcv-editorial-rule',
+  grid:'flowcv-precision-line', avenue:'flowcv-classic-serif', folio:'flowcv-precision-line',
+}
+
 export function validTemplateDesigns(value) {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length <= 100 &&
     Object.entries(value).every(([key,design]) => /^[a-zA-Z0-9_-]{1,50}$/.test(key) && !['__proto__','constructor','prototype'].includes(key) && validDesign(design)))
 }
 
 export function resumeStyleFromDocument(document, templates) {
-  const templateId = document.templateId || 'flowcv-classic-serif'
+  const storedTemplateId = document.templateId || 'flowcv-classic-serif'
+  const templateId = retiredResumeTemplates[storedTemplateId] || storedTemplateId
   return {
     templateId,
     design:getDesign({...templates.find(template => template.id === templateId)?.defaults,...(document.design || document.templateDesigns?.[templateId])}),

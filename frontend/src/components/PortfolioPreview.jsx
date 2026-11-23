@@ -186,7 +186,7 @@ export default function PortfolioPreview({
                 </div>
               )}
               {key === 'projects' && (
-                <div className="portfolio-projects">
+                <div className="portfolio-projects" data-project-parity={entries.length % 2 ? 'odd' : 'even'}>
                   {entries.map((entry, index) => (
                     <div key={entry.id} className="portfolio-project">
                       {projectImage(entry) && <img className="portfolio-project-image" src={projectImage(entry)} alt={`${entry.name || 'Project'} preview`} loading="lazy" />}

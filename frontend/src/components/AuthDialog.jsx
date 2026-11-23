@@ -36,6 +36,6 @@ export default function AuthDialog({ children, titleId }) {
         <button type="button" onClick={close} aria-label="Close and return to home" title="Close (Escape)" className="auth-popup-close"><Icon name="close" className="h-5 w-5" /></button>
       </div>
     </header>
-    <section className="auth-popup-content" aria-labelledby={titleId}>{children}</section>
+    <section className="auth-popup-content" aria-labelledby={titleId} tabIndex={0}>{children}</section>
   </dialog>
 }

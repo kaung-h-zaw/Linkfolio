@@ -133,17 +133,17 @@ export default function WorkspacePage({ view = 'dashboard' }) {
             setUser(result.user)
           }, 'Account name updated. Edit your saved resumes to update the name shown on them.')} />
           <AppThemeControl />
-          <section className="account-signout-card">
-            <div><h2 className="font-semibold">Sign out</h2><p className="mt-1 text-sm text-muted">End your session on this device.</p></div>
-            <button type="button" disabled={busy} onClick={() => setSignOutOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
-          </section>
           <section className="account-plan-card account-signout-card">
               <div><h2 className="font-semibold">Your plan</h2><p className="mt-1 text-sm text-muted">{user.plan === 'premium' ? 'Premium account' : 'Free account'}</p></div>
               {user.plan === 'premium' ? <button type="button" disabled={busy} onClick={() => setRemovePremiumOpen(true)} className="button button-outline disabled:opacity-50">Manage plan</button> : <Link to="/premium" className="button button-green">Explore Premium</Link>}
           </section>
           <section className="account-delete-card">
-            <div><h2 className="font-semibold">Delete account</h2><p className="mt-1 text-sm text-muted">Permanently delete your account and all saved work.</p></div>
-            <button type="button" disabled={busy} onClick={() => setDeleteAccountOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="trash" className="h-4 w-4"/>Delete account</button>
+            <div><p className="account-delete-eyebrow">Danger zone</p><h2 className="font-semibold">Delete account</h2><p className="mt-1 text-sm text-muted">Permanently delete your account and all saved work.</p></div>
+            <button type="button" disabled={busy} onClick={() => setDeleteAccountOpen(true)} className="button account-delete-action disabled:opacity-50"><Icon name="trash" className="h-4 w-4"/>Delete account</button>
+          </section>
+          <section className="account-signout-card">
+            <div><h2 className="font-semibold">Sign out</h2><p className="mt-1 text-sm text-muted">End your session on this device.</p></div>
+            <button type="button" disabled={busy} onClick={() => setSignOutOpen(true)} className="button button-outline disabled:opacity-50"><Icon name="logout" className="h-4 w-4"/>Sign out</button>
           </section>
           {removePremiumOpen && <RemovePremiumDialog onClose={() => setRemovePremiumOpen(false)} onConfirm={async () => {
             const result = await api('/billing/downgrade', { method: 'POST' })

@@ -11,7 +11,13 @@ import { api } from '../services/api'
 import { isSelectableTemplate, templateNames } from '../lib/templateCatalog'
 import './admin.css'
 
-const sections = [['overview','Overview & reports','grid'],['users','User accounts','user'],['templates','Templates','window'],['plans','Subscription plans','spark'],['profile','Admin settings','personal']]
+const sections = [
+  ['overview', 'Overview & reports', 'grid', 'Overview'],
+  ['users', 'User accounts', 'user', 'Accounts'],
+  ['templates', 'Templates', 'window', 'Templates'],
+  ['plans', 'Subscription plans', 'spark', 'Plans'],
+  ['profile', 'Admin settings', 'personal', 'Settings'],
+]
 const metrics = {users:['Registered users','user'],resumes:['Resumes','file'],portfolios:['Portfolios','window'],published:['Published portfolios','external'],messages:['Contact messages','mail'],views:['Portfolio views','eye'],premiumUsers:['Premium users','spark'],documents:['Saved documents','folder']}
 const descriptions = {overview:'Review platform activity and manage your workspace.',users:'Find accounts, manage access, and remove users when needed.',templates:'Manage template availability and Premium access.',plans:'Manage document allowances and Premium availability.',reports:'Review current system totals by report type.',profile:'Manage your profile, security, and appearance.'}
 
@@ -38,6 +44,8 @@ export default function AdminPage() {
   const { user, logout, setUser } = useAuth()
   const [params,setParams] = useSearchParams()
   const section = sections.some(([id]) => id === params.get('section')) ? params.get('section') : 'overview'
+  const workspace = useRef(null)
+  const pageHeading = useRef(null)
   const [data,setData] = useState(null)
   const [error,setError] = useState('')
   const [notice,setNotice] = useState('')
@@ -49,6 +57,11 @@ export default function AdminPage() {
   const [deleting,setDeleting] = useState(null)
   const [signOutOpen,setSignOutOpen] = useState(false)
   const [updated,setUpdated] = useState(null)
+  useEffect(() => {
+    workspace.current?.scrollTo({ top: 0, behavior: 'instant' })
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    pageHeading.current?.focus({ preventScroll: true })
+  }, [section])
   useEffect(() => {
     if (!notice) return
     const timer = setTimeout(() => setNotice(''),4000)
@@ -76,9 +89,40 @@ export default function AdminPage() {
     const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})), link=document.createElement('a')
     link.href=url;link.download=`linkfolio-${report}-report.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
   }
-  return <div className="admin-workspace" data-section={section}>
-    <aside className="admin-sidebar"><Logo to="/admin" label="Linkfolio administration" /><span className="admin-sidebar-caption">ADMINISTRATION</span><nav aria-label="Administration">{sections.map(([id,label,icon])=><button type="button" key={id} onClick={()=>navigate(id)} aria-current={section===id?'page':undefined}><Icon name={icon}/><span>{label}</span></button>)}</nav><div className="admin-sidebar-account"><strong>{user.fullName}</strong><small>Administrator</small></div></aside>
-    <main className="admin-main"><header className="admin-page-heading"><div><span className="admin-eyebrow">LINKFOLIO ADMIN</span><h1 tabIndex={-1}>{section==='overview'?'Platform overview':sections.find(([id])=>id===section)[1]}</h1><p>{descriptions[section]}</p></div><button type="button" disabled={busy||loading} className="button button-outline" onClick={refresh}><Icon name="refresh"/>{loading?'Refreshing…':'Refresh'}</button></header>
+  return <div ref={workspace} className="admin-workspace" data-section={section}>
+    <aside className="admin-sidebar">
+      <Logo to="/admin" label="Linkfolio administration" />
+      <span className="admin-sidebar-caption">ADMINISTRATION</span>
+      <nav aria-label="Administration">
+        {sections.map(([id, label, icon, compactLabel]) => (
+          <button type="button" key={id} onClick={() => navigate(id)} aria-label={label} aria-current={section === id ? 'page' : undefined}>
+            <Icon name={icon} />
+            <span className="admin-nav-label">{label}</span>
+            <span className="admin-nav-compact-label" aria-hidden="true">{compactLabel}</span>
+          </button>
+        ))}
+      </nav>
+      <div className="admin-sidebar-account"><strong>{user.fullName}</strong><small>Administrator</small></div>
+    </aside>
+    <main className="admin-main">
+      <header className="admin-page-heading">
+        <span className="admin-eyebrow">LINKFOLIO ADMIN</span>
+        <div className="admin-title-row">
+          <h1 ref={pageHeading} tabIndex={-1}>{section === 'overview' ? 'Platform overview' : sections.find(([id]) => id === section)[1]}</h1>
+          <button
+            type="button"
+            className="admin-refresh"
+            aria-label="Refresh"
+            aria-busy={loading}
+            title={loading ? 'Refreshing…' : 'Refresh'}
+            disabled={busy || loading}
+            onClick={refresh}
+          >
+            <Icon name="refresh" />
+          </button>
+        </div>
+        <p>{descriptions[section]}</p>
+      </header>
       {error&&<p role="alert" className="admin-notice admin-error">{error}</p>}{notice&&<p role="status" className="admin-notice"><Icon name="check"/><span>{notice}</span><button type="button" aria-label="Dismiss notification" onClick={()=>setNotice('')}><Icon name="close"/></button></p>}{!data&&loading&&<p role="status">Loading administration data…</p>}{!data&&error&&<button type="button" className="button button-outline" onClick={refresh}>Try again</button>}
       {data&&<>
         {section==='overview'&&<>

@@ -117,7 +117,7 @@ export default function PortfolioSectionDesigns({ settings, profile, onChange, s
       {extra && !source[key]?.entries.length && <p className="text-sm text-muted">Add visible entries in your resume to show this section.</p>}
       <fieldset className="layout-visual-controls"><legend>Layout</legend><div className="entry-setting-choices portfolio-section-layouts">{[['template','Original'],...definition.options].map(([id,label])=><PortfolioLayoutChoice key={id} sectionKey={key} previewLayout={key==='contact' && id==='template' ? (getPortfolioTemplate(settings.template).layouts.contact === 'centered' ? 'form-first' : getPortfolioTemplate(settings.template).layouts.contact || 'split') : undefined} sectionTitle={definition.title} layout={id} label={label} selected={layout===id} onSelect={()=>change({...settings,sectionLayouts:{...settings.sectionLayouts,[key]:id}})} />)}</div></fieldset>
       {key==='projects'&&<details className="design-fine-group"><summary>Project cards</summary><div className="space-y-4 pt-4">{select('projectColumns','Project columns',{template:'Original',1:'One column',2:'Two columns',3:'Three columns'})}{range('projectGap','Project spacing',8,48)}</div></details>}
-      {['hero','projects'].includes(key)&&<PortfolioImageDesigns section={key} settings={settings} profile={profile} design={design} select={select} range={range} onChange={change}/>}
+      {key==='hero'&&<PortfolioImageDesigns section={key} settings={settings} profile={profile} design={design} select={select} range={range} onChange={change}/>}
     </section>
   })}</div>
 }

@@ -49,15 +49,13 @@ export default function PortfolioImageDesigns({section,settings,profile,design,s
         </label>}
       </div>
       </>}
-      {section !== 'hero' && <div className="space-y-4 border-t border-line pt-4"><h3 className="text-sm font-semibold">Project images</h3>
+      {section !== 'hero' && section !== 'projects' && <div className="space-y-4 border-t border-line pt-4"><h3 className="text-sm font-semibold">Project images</h3>
         {select('imageRatio','Project image proportions',{template:'Template default',landscape:'Landscape',square:'Square',portrait:'Portrait',natural:'Original proportions'})}
         {select('imageFit','Project image fit',{cover:'Fill and crop',contain:'Show whole image'})}
         {select('imageFrame','Project image frame',imageFrameOptions)}
         {select('imagePosition','Project image focal point',{center:'Center',top:'Top',bottom:'Bottom',left:'Left',right:'Right'})}
         {select('imageEffect','Project image color effect',imageEffectOptions)}
         {range('projectImageRadius','Project image corners',0,32)}
-      </div>}
-      {section !== 'projects' && <div className="space-y-4 border-t border-line pt-4">{select('heroPosition','Personal photo focal point',{center:'Center',top:'Top',bottom:'Bottom',left:'Left',right:'Right'})}
       </div>}
     </div>
   </details>

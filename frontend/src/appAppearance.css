@@ -167,6 +167,10 @@ html[data-app-theme='light'] .linkfolio-app .account-setting-column .account-app
 .account-delete-card { display:flex; align-items:center; justify-content:space-between; gap:18px; min-height:84px; padding:16px 18px; border:1px solid var(--app-border); border-radius:12px; background:var(--app-surface); }
 .account-delete-card h2 { font-size:14px; }
 .account-delete-card .button { flex:none; }
+.account-delete-card { border-color:color-mix(in srgb,var(--app-danger) 32%,var(--app-border)); background:color-mix(in srgb,var(--app-danger) 4%,var(--app-surface)); }
+.account-delete-eyebrow { margin-bottom:4px; color:var(--app-danger); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+.account-delete-card .account-delete-action { border:1px solid color-mix(in srgb,var(--app-danger) 48%,var(--app-border)); background:var(--app-danger-bg); color:var(--app-danger); }
+.account-delete-card .account-delete-action:hover:not(:disabled) { border-color:var(--app-danger); background:color-mix(in srgb,var(--app-danger) 14%,var(--app-surface)); }
 @media(max-width:767px) { .account-delete-card { align-items:flex-start; flex-direction:column; } }
 /* Apply a palette change in one paint instead of fading through low-contrast colors. */
 html[data-app-theme-changing] .linkfolio-app,
@@ -242,4 +246,47 @@ html[data-app-theme='light'] .linkfolio-app .app-sidebar nav a[aria-current='pag
   :scope .create-resume-option { background:transparent; color:var(--app-text); cursor:pointer; }
   :scope .create-resume-option:hover { background:var(--app-control-hover); border-color:var(--app-control-border); }
   :scope .create-resume-option:active { background:var(--app-control-active); }
+}
+
+/* Hide scrollbar chrome while keeping scroll containers interactive. */
+@media (max-width:1024px) {
+  * { scrollbar-width:none !important; scrollbar-color:transparent transparent !important; }
+  *::-webkit-scrollbar { display:none !important; width:0 !important; height:0 !important; }
+}
+
+/* The resume editor becomes a normal page flow on touch-sized screens. */
+@media (max-width:1023px) {
+  .linkfolio-app .editor-workspace { height:auto !important; min-height:100dvh; overflow:visible !important; }
+  .linkfolio-app .editor-workspace .editor-two-panel-layout { flex:none; min-height:0; grid-template-rows:auto; overflow:visible; }
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] #editor-content { max-height:none; overflow:visible; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true'] #editor-preview[data-preview-kind='resume'] { height:auto; min-height:0; overflow:visible; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true'] #editor-preview[data-preview-kind='resume'] > [aria-label='Scrollable resume document'] { display:block; height:auto; min-height:0; overflow:visible !important; touch-action:pan-y; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true'] #editor-preview[data-preview-kind='resume'] > [aria-label='Scrollable resume document'] > div:first-child { display:block !important; height:auto; min-height:0; overflow:visible; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true'] #editor-preview[data-preview-kind='resume'] [aria-label='Scrollable resume pages'] { display:block; height:auto; min-height:0; overflow:visible !important; touch-action:pan-y; }
+
+  /* Device preview needs a bounded stage to calculate its scale on touch screens. */
+  .linkfolio-app .editor-workspace[data-focused-preview='true']:has(#editor-preview[data-preview-kind='portfolio']) { height:100dvh !important; min-height:0; overflow:hidden !important; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true']:has(#editor-preview[data-preview-kind='portfolio']) .editor-two-panel-layout { display:grid; flex:1; grid-template-rows:minmax(0,1fr); min-height:0; margin:0; padding:0; overflow:hidden; }
+  .linkfolio-app .editor-workspace[data-focused-preview='true']:has(#editor-preview[data-preview-kind='portfolio']) #editor-preview { display:flex; width:100%; height:auto; min-height:0; margin:0; overflow:hidden; }
+}
+
+@media (max-width:767px) {
+  .linkfolio-app .editor-workspace .editor-toolbar-shell { position:sticky; top:0; z-index:30; padding:0 8px 8px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar { border-radius:0 0 12px 12px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-toolbar-main { grid-template-columns:auto minmax(0,1fr); align-items:center; gap:6px 8px; padding:6px 8px 8px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-back-link { grid-row:1; grid-column:1; min-width:66px; min-height:38px; padding:6px 8px; }
+  .linkfolio-app .editor-workspace .editor-back-link > span { display:inline; font-size:12px; }
+  .linkfolio-app .editor-workspace .editor-toolbar-actions { grid-row:1; grid-column:2; display:flex; align-items:center; justify-content:flex-end; gap:6px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-toolbar-actions .editor-nav-button { min-height:36px; padding:6px 9px; font-size:12px; }
+  .linkfolio-app .editor-workspace .toolbar-preview-label { display:inline !important; white-space:nowrap; }
+  .linkfolio-app .editor-workspace .editor-main-navigation { grid-row:2; grid-column:1/-1; margin-top:2px; padding-top:6px; border-top:1px solid var(--app-border); }
+  .linkfolio-app .editor-workspace .editor-panel-view-switch { display:flex; width:100%; gap:6px; }
+  .linkfolio-app .editor-workspace .editor-main-navigation .editor-panel-view-button { flex:1; min-height:40px; padding:7px 6px; font-size:12px; }
+}
+
+@media (max-width:380px) {
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-toolbar-main { column-gap:5px; padding-inline:6px; }
+  .linkfolio-app .editor-workspace .editor-toolbar-actions { gap:4px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-toolbar-actions .editor-nav-button { gap:5px; padding-inline:6px; font-size:11px; }
+  .linkfolio-app .editor-workspace .calm-editor-bar .editor-back-link { min-width:60px; padding-inline:6px; }
 }

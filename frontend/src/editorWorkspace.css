@@ -1,5 +1,6 @@
 /* Linkfolio editor: a single toolbar, open canvas, and focused editing cards. */
 .editor-workspace .portfolio-preview-toolbar { box-sizing:border-box; width:calc(100% - 32px); max-width:1440px; margin-inline:auto; padding:10px 0 0; }
+.portfolio-device-page { min-height:100vh; margin-inline:auto; background:#fff; }
 .editor-workspace .portfolio-preview-close { border-radius:50%; background:var(--app-surface); transition:background-color 140ms,border-color 140ms,color 140ms; }
 .editor-workspace .portfolio-preview-close:hover { background:var(--app-selected); border-color:var(--app-accent); color:var(--app-accent); }
 @media(max-width:600px) { .editor-workspace .portfolio-preview-toolbar { width:calc(100% - 24px); gap:8px; }.editor-workspace .portfolio-preview-toolbar [role='status'] { display:none; } }
@@ -160,6 +161,9 @@
 .linkfolio-app .editor-workspace .resume-template-card { display:block; }
 .editor-workspace .resume-template-montage { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; height:170px; padding:12px 12px 0; overflow:hidden; border-radius:10px; background:var(--app-inset); }
 .editor-workspace .resume-template-montage .template-thumbnail { position:relative; overflow:hidden; border:1px solid var(--app-border); border-bottom:0; border-radius:4px 4px 0 0; background:var(--app-surface); box-shadow:0 2px 8px #203b2b08; }
+.editor-workspace .portfolio-template-montage .template-thumbnail { container-type:inline-size; }
+.editor-workspace .portfolio-template-miniature { position:absolute; top:0; left:0; width:1024px; height:1000px; transform:scale(.17); transform-origin:top left; pointer-events:none; }
+.editor-workspace .portfolio-template-miniature .portfolio-site { width:1024px; max-width:none; min-height:1000px; }
 .editor-workspace .resume-template-card-footer { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
 .editor-workspace .resume-template-current { display:flex; align-items:center; gap:8px; min-width:0; font-size:13px; color:var(--app-muted); }
 .editor-workspace .resume-template-current span { overflow-wrap:anywhere; }
@@ -891,4 +895,34 @@ html:has(.editor-workspace)::-webkit-scrollbar-corner, .editor-workspace ::-webk
   .resume-template-minimal-scroll { padding:18px 16px; }
   .resume-template-minimal-grid { gap:20px 12px; }
   .resume-template-minimal-label { align-items:flex-start; min-height:48px; padding-top:10px; font-size:12px; }
+}
+
+/* Stack the editing form and live preview on tablets, where side-by-side panes are too narrow. */
+@media(max-width:1023px) {
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] .editor-two-panel-layout {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-template-rows:auto auto;
+    align-items:start;
+    flex:initial;
+    min-height:0;
+    gap:18px;
+    padding-inline:20px;
+  }
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] #editor-content {
+    min-height:0;
+    max-height:none;
+    overflow:visible;
+  }
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] #editor-preview {
+    position:relative;
+    top:auto;
+    height:min(72dvh,760px);
+    min-height:420px;
+    margin:0 0 24px;
+  }
+}
+@media(max-width:767px) {
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] .editor-two-panel-layout { gap:12px; padding-inline:12px; }
+  .linkfolio-app .editor-workspace[data-focused-preview='false'] #editor-preview { height:65dvh; min-height:360px; }
 }

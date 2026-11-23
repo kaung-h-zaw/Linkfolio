@@ -122,7 +122,7 @@ const resumes = [
       projectEntry('emily-project-2',{name:'Member Welcome Series',subtitle:'A useful first month for new members · lifecycle email, analytics',url:'https://emily-davis.example.com/welcome-series',startDate:'2023-04',endDate:'2023-09',content:richText('Reworked onboarding emails around the questions new members ask most often.','Mapped messages to the first month, added clear next steps, and created a simple review plan for subject lines and engagement.') }),
     ]},
     certificationsSection:{ heading:'Certifications', entries:[certificateEntry('emily-cert-1',{name:'Google Analytics Certification',issuer:'Google',issueDate:'2024-05',noExpiry:true})] },
-    portfolio:portfolio('macfolio','#bd5431','#ffffff','Useful stories, built around real audience needs.','I bring research, content, and channel planning together to help people understand what to do next.',[
+    portfolio:portfolio('freelancer','#ad7525','#eef2f8','Useful stories, built around real audience needs.','I bring research, content, and channel planning together to help people understand what to do next.',[
       {id:'emily-project-1',image:'/images/portfolio-desk.jpg',description:'The Community Program Launch brought partner organizations onto one clear campaign plan. I coordinated landing-page copy, email messages, and a reusable toolkit so local teams could share accurate sign-up information in their own channels.'},
       {id:'emily-project-2',image:'/images/portfolio-workspace.jpg',description:'Member Welcome Series reshaped the first month after signup around practical questions and timely next steps. I mapped the sequence, refined the message hierarchy, and set up a lightweight review plan for subject-line and engagement learning.'},
     ]),
@@ -141,7 +141,7 @@ const resumes = [
       projectEntry('david-project-2',{name:'Platform Migration Roadmap',subtitle:'A phased transition with visible dependencies · delivery planning',url:'https://david-wilson.example.com/platform-migration',startDate:'2023-01',endDate:'2023-11',content:richText('Coordinated a phased move from a legacy reporting platform to a shared service.','Mapped team dependencies, cutover milestones, and rollback owners into a roadmap that helped stakeholders review progress without losing operational detail.') }),
     ]},
     certificationsSection:{ heading:'Certifications', entries:[certificateEntry('david-cert-1',{name:'Certified ScrumMaster',issuer:'Scrum Alliance',issueDate:'2023-06',noExpiry:true})] },
-    portfolio:portfolio('press','#756741','#fffcf6','Clear plans for complex work.','I help cross-functional teams turn ambitious goals into visible milestones, thoughtful decisions, and steady delivery.',[
+    portfolio:portfolio('multiverse','#9055be','#f3e7fa','Clear plans for complex work.','I help cross-functional teams turn ambitious goals into visible milestones, thoughtful decisions, and steady delivery.',[
       {id:'david-project-1',image:'/images/portfolio-workspace.jpg',description:'Release Readiness Program introduced a shared launch review across product, engineering, support, and operations. The checklist made ownership, dependencies, risks, and rollout decisions visible while staying lightweight enough for teams to use every release.'},
       {id:'david-project-2',image:'/images/portfolio-analytics.jpg',description:'Platform Migration Roadmap organized a phased transition from a legacy reporting platform. I mapped dependencies and cutover milestones, clarified rollback ownership, and built a status view that gave stakeholders a practical picture of progress and risk.'},
     ]),
@@ -161,6 +161,7 @@ const messageData = [
   ['Riley Chen','riley.chen@example.net','Your campaign launch example is thoughtful. Are you open to a short conversation about a contract project?'],
   ['Casey Patel','casey.patel@example.net','I would like to learn more about your release readiness program and how you brought teams on board.'],
 ]
+const messageOwnerIndexes = [0, 0, 1, 2, 3, 4]
 const dailyActivity = [
   { views:[3,2,1,1,1], clicks:[1,1,0,1,0] },
   { views:[2,1,1,1,0], clicks:[1,0,1,0,0] },
@@ -237,10 +238,11 @@ function assertSeedIdentityAvailability(db) {
     const emailRow=emailQuery.get(user.email)
     if(emailRow&&emailRow.id!==user.id)throw new Error(`Email ${user.email} already belongs to a different existing account; no records were changed.`)
   }
-  for(const [id,kind] of [
-    ['flowcv-classic-serif','resume'],['flowcv-editorial-rule','resume'],['flowcv-precision-line','resume'],['flowcv-rose-letter','resume'],['flowcv-atlantic-blue','resume'],
-    ['miniport','portfolio'],['bento','portfolio'],['strata','portfolio'],['macfolio','portfolio'],['press','portfolio'],
-  ]){
+  const requiredTemplates = resumes.flatMap(resume => [
+    [resume.templateId, 'resume'],
+    [resume.portfolio.template, 'portfolio'],
+  ])
+  for(const [id,kind] of requiredTemplates){
     const template=db.prepare('SELECT enabled FROM templates WHERE id=? AND kind=?').get(id,kind)
     if(!template?.enabled)throw new Error(`Required demo template ${id} (${kind}) is unavailable.`)
   }
@@ -382,9 +384,10 @@ async function main(){
       }
       for(let index=0;index<messageData.length;index++){
         const messageId=mid(index+1);const existingMessage=await db.prepare('SELECT id,document_id,created_at FROM messages WHERE id=?').get(messageId)
-        const owner=users[index%4];const targetDoc=docId[owner.fullName];const [senderName,senderEmail,body]=messageData[index]
+        const owner=users[messageOwnerIndexes[index]];const targetDoc=docId[owner.fullName];const [senderName,senderEmail,body]=messageData[index]
         if(existingMessage){
-          if(existingMessage.document_id!==targetDoc)throw new Error(`Seed message ${messageId} has unexpected ownership; refusing to update it.`)
+          const previousTargetDoc = docId[users[index % 4].fullName]
+          if(existingMessage.document_id!==targetDoc && existingMessage.document_id!==previousTargetDoc)throw new Error(`Seed message ${messageId} has unexpected ownership; refusing to update it.`)
           if(existingMessage.created_at>='2025-06-01T00:00:00.000Z'&&existingMessage.created_at<'2025-06-07T00:00:00.000Z')await db.prepare('UPDATE messages SET created_at=? WHERE id=?').run(isoDaysAgo(10-index,10),messageId)
         }else await models.Message.create(messageId,targetDoc,senderName,senderEmail,body,isoDaysAgo(10-index,10))
       }

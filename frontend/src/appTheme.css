@@ -37,6 +37,7 @@
 .linkfolio-app .app-sidebar { background:var(--app-surface); border-color:var(--app-border); }
 .linkfolio-app .app-sidebar nav { gap:5px; }
 .linkfolio-app .app-sidebar nav a { position:relative; border-radius:9px; font-weight:400; }
+.linkfolio-app .app-sidebar .sidebar-nav-compact-label { display:none; }
 .linkfolio-app .app-sidebar nav a[aria-current='page'] { background:var(--app-selected); color:var(--app-text); box-shadow:none; font-weight:500; }
 .linkfolio-app .app-sidebar nav a[aria-current='page']::before { position:absolute; left:0; content:''; height:18px; width:3px; border-radius:4px; background:var(--app-inset); }
 .linkfolio-app .app-sidebar-account { border-color:var(--app-border); }
@@ -624,11 +625,18 @@
 }
 
 @media (max-width:600px) {
-  .analytics-redesign .refined-stat-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-  .analytics-summary-card { display:block; padding:14px 8px; }
+  .analytics-controls { width:100%; flex-wrap:nowrap; gap:8px; }
+  .analytics-controls > button { flex:none; width:auto; min-height:40px; padding:8px 11px; white-space:nowrap; }
+  .analytics-portfolio-filter { flex:1; min-width:0; gap:7px; }
+  .analytics-portfolio-filter > span { flex:none; }
+  .analytics-controls .analytics-portfolio-select { min-width:0; }
+  .analytics-redesign .refined-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .analytics-redesign .refined-stat-grid > .analytics-summary-card:last-child { grid-column:1/-1; }
+  .analytics-summary-card { display:block; min-width:0; padding:14px 12px; }
   .analytics-summary-card > .dashboard-icon { display:none; }
-  .analytics-summary-card h3 { min-height:36px; font-size:12px; line-height:18px; }
+  .analytics-summary-card h2 { min-height:0; font-size:12px; line-height:18px; }
   .analytics-summary-card .analytics-summary-number { font-size:28px; margin-top:8px; }
+  .analytics-summary-card .analytics-summary-date { font-size:20px !important; }
 }
 
 /* Forms use the page height; only the live preview has its own scroll area. */
@@ -783,6 +791,7 @@
 .message-inbox-icon { display:grid; place-items:center; width:30px; height:30px; color:var(--app-accent); }
 .message-inbox-header h2 { font-size:18px; }
 .message-inbox-header p { margin-top:3px; color:var(--app-muted); font-size:12px; }
+
 .message-header-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
 .message-folder-tabs { display:flex; gap:24px; padding:0; overflow-x:auto; border-bottom:1px solid var(--app-border); background:transparent; }
 .message-folder-tabs button { position:relative; display:flex; align-items:center; gap:7px; min-height:46px; padding:4px 1px; border-radius:0; color:var(--app-muted); font-size:12px; white-space:nowrap; }
@@ -921,12 +930,12 @@
 .account-appearance-options { gap:8px; margin-top:16px; }
 .account-appearance-options > button { min-height:72px; }
 .account-appearance-note { margin-top:11px; }
-.user-account-settings { grid-template-areas:'profile appearance' 'signout plan' 'delete delete'; gap:16px 20px; }
+.user-account-settings { grid-template-areas:'profile appearance' 'delete plan' 'signout signout'; gap:16px 20px; }
 .user-account-settings > .account-profile-card { grid-area:profile; }
 .user-account-settings > .account-appearance { grid-area:appearance; }
-.user-account-settings > .account-signout-card { grid-area:signout; }
 .user-account-settings > .account-plan-card { grid-area:plan; }
 .user-account-settings > .account-delete-card { grid-area:delete; }
+.user-account-settings > .account-signout-card:not(.account-plan-card) { grid-area:signout; }
 .linkfolio-app .user-account-settings > :is(form,section) { padding:22px; border-radius:12px; box-shadow:none; }
 .user-account-settings .account-profile-card { gap:18px; }
 .user-account-settings > .account-signout-card { min-height:94px; padding-block:18px; }
@@ -935,7 +944,7 @@
 .user-account-settings .account-appearance-options > button { min-height:78px; }
 @media(max-width:1100px) {
   .account-card-grid { grid-template-columns:1fr; }
-  .user-account-settings { grid-template-areas:'profile' 'appearance' 'signout' 'plan' 'delete'; }
+  .user-account-settings { grid-template-areas:'profile' 'appearance' 'delete' 'plan' 'signout'; }
   .account-setting-column:first-child,.account-setting-column:last-of-type { grid-template-rows:none; }
   .message-mail-layout { grid-template-columns:170px minmax(0,1fr); gap:0; }
   .message-list-panel .message-open-button { grid-template-columns:8px 135px minmax(0,1fr) auto; gap:8px; padding-right:38px; }
@@ -980,6 +989,79 @@
   .linkfolio-app .account-setting-column > :is(form,section) { padding:20px; }
   .account-signout-card { align-items:flex-start; }
   .dashboard-actions > a { min-width:0; flex-basis:100%; }
+}
+
+/* Use bottom navigation on phones and tablets. */
+@media(max-width:1024px) {
+  .linkfolio-app .app-workspace { display:block !important; }
+  .linkfolio-app .app-sidebar[data-compact='true'] {
+    position:relative !important;
+    top:auto !important;
+    width:auto !important;
+    height:auto !important;
+    min-height:0 !important;
+    margin:12px 16px 0 !important;
+    padding:14px 16px !important;
+    border:1px solid var(--app-border);
+    border-radius:14px;
+  }
+  .linkfolio-app .app-sidebar[data-compact='true'] .app-sidebar-account { display:none; }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav {
+    position:fixed;
+    z-index:50;
+    right:8px;
+    bottom:max(8px,env(safe-area-inset-bottom));
+    left:8px;
+    display:grid !important;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(46px,1fr);
+    grid-template-columns:none;
+    width:auto;
+    min-height:64px;
+    margin:0 !important;
+    padding:5px 6px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    border:1px solid var(--app-border);
+    border-radius:14px;
+    background:var(--app-surface);
+    box-shadow:0 8px 28px color-mix(in srgb,var(--app-text) 14%,transparent);
+    scrollbar-width:none;
+  }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav::-webkit-scrollbar { display:none; }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav a {
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    min-width:46px;
+    min-height:52px;
+    padding:4px 2px;
+    border-radius:9px;
+    font-size:10px;
+  }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav a > svg { width:17px; height:17px; }
+  .linkfolio-app .app-sidebar[data-compact='true'] .sidebar-nav-label { display:none; }
+  .linkfolio-app .app-sidebar[data-compact='true'] .sidebar-nav-compact-label { display:block; font-size:11px; line-height:1.1; white-space:nowrap; }
+  .linkfolio-app .app-sidebar[data-compact='true'] .sidebar-nav-badge { position:absolute; top:1px; inset-inline-end:calc(50% - 21px); min-width:16px; min-height:16px; margin:0; padding:2px 4px; font-size:9px; line-height:1; }
+  .linkfolio-app .app-workspace > .workspace-main { width:auto; min-height:calc(100dvh - 100px); margin:12px 16px 16px; padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important; scroll-padding-bottom:calc(104px + env(safe-area-inset-bottom)); }
+}
+@media(max-width:600px) {
+  .linkfolio-app .app-sidebar[data-compact='true'] { margin-inline:12px !important; }
+  .linkfolio-app .app-sidebar[data-compact='true'] .sidebar-nav-compact-label { font-size:9px; }
+  .linkfolio-app .app-workspace > .workspace-main { margin:12px 12px 0; padding-top:14px !important; padding-inline:14px !important; }
+  .linkfolio-app .workspace-heading-actions { gap:8px; }
+}
+@media(max-width:380px) {
+  .linkfolio-app .app-sidebar[data-compact='true'] { margin-inline:8px !important; padding:12px !important; }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav { right:6px; left:6px; grid-auto-columns:minmax(40px,1fr); min-height:58px; padding:4px; }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav a { min-width:40px; min-height:48px; gap:3px; }
+  .linkfolio-app .app-sidebar[data-compact='true'] nav a > svg { width:16px; height:16px; }
+  .linkfolio-app .app-sidebar[data-compact='true'] .sidebar-nav-compact-label { font-size:8px; }
+  .linkfolio-app .app-workspace > .workspace-main { margin:8px 8px 0; padding:12px 12px calc(96px + env(safe-area-inset-bottom)) !important; scroll-padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+  .linkfolio-app .workspace-page-header h1 { font-size:21px; }
 }
 
 /* Template selection keeps the design and its action visible together. */
@@ -1047,4 +1129,50 @@
 }
 @container (max-width:520px) {
   .gallery-template-grid { grid-template-columns:minmax(0,1fr); gap:18px; }
+}
+
+.linkfolio-app .gmail-inbox .mail-search-toggle,
+.linkfolio-app .gmail-inbox .mail-search-close { display:none; }
+
+@media (max-width:767px) {
+  .linkfolio-app .app-workspace[data-workspace-view='messages'] { display:block !important; height:auto !important; min-height:100dvh; overflow:visible !important; }
+  .linkfolio-app .app-workspace[data-workspace-view='messages'] > .workspace-main { height:auto !important; min-height:calc(100dvh - 80px); margin:8px !important; padding:0 0 calc(80px + env(safe-area-inset-bottom)) !important; overflow:visible !important; }
+  .linkfolio-app .workspace-inbox.message-inbox-redesign { display:block; overflow:visible; border-radius:14px; margin-bottom:0; }
+  .linkfolio-app .gmail-inbox .message-inbox-header { padding:14px; }
+  .linkfolio-app .gmail-inbox .mail-panel-title h1 { font-size:18px; }
+  .linkfolio-app .gmail-inbox .mail-search { min-height:40px; padding-inline:12px; }
+  .linkfolio-app .gmail-inbox .mail-search-toggle { display:grid; place-items:center; flex:none; width:38px; height:38px; border:1px solid var(--app-border); border-radius:9px; color:var(--app-text); }
+  .linkfolio-app .gmail-inbox .mail-search-close { display:grid; place-items:center; flex:none; width:34px; height:34px; border-radius:8px; color:var(--app-muted); }
+  .linkfolio-app .gmail-inbox .mail-search:not(.is-open) { display:none; }
+  .linkfolio-app .gmail-inbox .mail-search.is-open { display:flex; flex:1 0 100%; width:100%; }
+  .linkfolio-app .gmail-inbox .message-folder-rail { position:sticky; top:0; z-index:4; padding:0 8px; border-bottom:1px solid var(--app-border); background:var(--app-raised); }
+  .linkfolio-app .gmail-inbox .message-folder-rail nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; overflow:visible; }
+  .linkfolio-app .gmail-inbox .message-folder-rail nav button { justify-content:center; min-width:0; min-height:44px; padding:7px 5px; gap:6px; font-size:12px; }
+  .linkfolio-app .gmail-inbox .message-folder-rail nav button svg { width:16px; height:16px; }
+  .linkfolio-app .gmail-inbox .mail-toolbar { min-height:42px; gap:8px; padding:5px 12px; font-size:11px; }
+  .linkfolio-app .gmail-inbox .mail-toolbar .mail-labeled-action { min-height:32px; padding:5px 9px; font-size:11px; }
+  .linkfolio-app .gmail-inbox .mail-result-count { margin-left:auto; font-size:11px; }
+  .linkfolio-app .gmail-inbox .message-mail-layout { display:block; min-height:0; overflow:visible; }
+  .linkfolio-app .gmail-inbox .message-list-panel { display:block; min-height:0; overflow:visible; }
+  .linkfolio-app .gmail-inbox .message-list { display:block; height:auto; min-height:0; overflow:visible; }
+  .linkfolio-app .gmail-inbox .message-mail-layout[data-detail='true'] .message-list-panel { display:none; }
+  .linkfolio-app .gmail-inbox .message-mail-layout[data-detail='true'] .message-preview-pane { display:block; width:100%; min-height:60vh; margin:0; padding:0; overflow:visible; border:0; border-radius:0; }
+  .linkfolio-app .gmail-inbox .message-list-panel .message-open-button { min-height:58px; padding-inline:8px 30px; }
+  .linkfolio-app .gmail-inbox .mail-row-checkbox { margin-left:8px !important; }
+  .linkfolio-app .gmail-inbox .message-list-panel .message-row-action { width:30px; height:30px; flex-basis:30px; margin-right:8px; }
+  .linkfolio-app .gmail-inbox .message-empty-state { min-height:240px; padding:32px 20px; }
+  .linkfolio-app .gmail-inbox .message-empty-state h3 { font-size:17px; }
+  .linkfolio-app .gmail-inbox .message-empty-state p { font-size:14px; }
+  .linkfolio-app .gmail-inbox .mail-detail-actions { position:sticky; top:0; flex-wrap:nowrap; gap:3px; overflow-x:auto; padding:7px 8px; scrollbar-width:none; }
+  .linkfolio-app .gmail-inbox .mail-detail-actions::-webkit-scrollbar { display:none; }
+  .linkfolio-app .gmail-inbox .mail-detail-actions .mail-labeled-action { min-height:34px; padding:5px 8px; font-size:11px; }
+  .linkfolio-app .gmail-inbox .mail-detail-navigation { gap:3px; }
+  .linkfolio-app .gmail-inbox .mail-detail-navigation > span { margin-right:3px; white-space:nowrap; }
+}
+
+@media (max-width:380px) {
+  .linkfolio-app .gmail-inbox .message-folder-rail nav button { gap:5px; font-size:11px; }
+  .linkfolio-app .gmail-inbox .mail-toolbar { gap:7px; padding-inline:10px; }
+  .linkfolio-app .gmail-inbox .mail-toolbar .mail-labeled-action { gap:6px; padding-inline:8px; font-size:12px; }
+  .linkfolio-app .gmail-inbox .mail-result-count { font-size:11px; }
 }

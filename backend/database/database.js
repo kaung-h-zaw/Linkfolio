@@ -68,6 +68,9 @@ function openDatabase(path) {
     db.exec('ALTER TABLE messages ADD COLUMN deleted_at TEXT')
   }
   const { templateSeeds } = require('./seeds.js')
+  const { resumeTemplateIds, portfolioTemplateIds } = require('../../frontend/src/lib/templateCatalog.js')
+  db.prepare(`DELETE FROM templates WHERE kind = 'resume' AND id NOT IN (${resumeTemplateIds.map(() => '?').join(',')})`).run(...resumeTemplateIds)
+  db.prepare(`DELETE FROM templates WHERE kind = 'portfolio' AND id NOT IN (${portfolioTemplateIds.map(() => '?').join(',')})`).run(...portfolioTemplateIds)
   const insert = db.prepare(
     'INSERT OR IGNORE INTO templates (id, kind, name, premium) VALUES (?, ?, ?, ?)',
   )

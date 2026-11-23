@@ -60,6 +60,7 @@ import {
   FiArrowLeft,
   FiCalendar,
   FiClock,
+  FiSearch,
   FiInbox,
   FiLock,
 } from 'react-icons/fi'
@@ -134,6 +135,7 @@ const icons = {
   alignJustify: FiAlignJustify,
   calendar: FiCalendar,
   clock: FiClock,
+  search: FiSearch,
   inbox: FiInbox,
   lock: FiLock,
 }

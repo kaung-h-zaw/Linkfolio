@@ -14,8 +14,8 @@ five accounts use the demo-only password `LinkfolioDemo!2026`:
 | John Doe | `john.doe@example.com` | Free | Classic Serif | Miniport |
 | Jane Smith | `jane.smith@example.com` | Free | Editorial Rule | Bento Grid |
 | Michael Johnson | `michael.johnson@example.com` | Free | Precision Line | Sidebar |
-| Emily Davis | `emily.davis@example.com` | Premium | Rose Letter | Card-Based |
-| David Wilson | `david.wilson@example.com` | Premium | Atlantic Blue | Timeline |
+| Emily Davis | `emily.davis@example.com` | Premium | Rose Letter | Professional |
+| David Wilson | `david.wilson@example.com` | Premium | Atlantic Blue | Creative |
 
 Each account has a different resume template and a different portfolio template.
 The demo resumes include two work roles, five skills, two detailed projects, and

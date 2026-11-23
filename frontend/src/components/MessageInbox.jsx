@@ -14,6 +14,7 @@ export default function MessageInbox() {
   const [busy, setBusy] = useState(false)
   const [actionError, setActionError] = useState('')
   const [copiedEmail, setCopiedEmail] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [checkedIds, setCheckedIds] = useState([])
   const [confirmAction, setConfirmAction] = useState(null)
@@ -98,7 +99,8 @@ export default function MessageInbox() {
   return <section aria-label="Message inbox" className="workspace-inbox message-inbox-redesign gmail-inbox">
     <header className="message-inbox-header">
       <div className="mail-panel-title"><Icon name="mail"/><div><h1>Messages</h1><p>{unread > 99 ? '99+' : unread} unread {unread === 1 ? 'message' : 'messages'}</p></div></div>
-      <label className="mail-search"><Icon name="mail" className="h-4 w-4"/><input type="search" aria-label="Search messages" placeholder="Search messages" value={query} onChange={(event) => { setQuery(event.target.value); setCheckedIds([]); setSelectedId(null) }}/></label>
+      <button type="button" className="mail-search-toggle" aria-label={searchOpen ? 'Close message search' : 'Open message search'} aria-expanded={searchOpen} onClick={() => setSearchOpen(open => !open)}><Icon name={searchOpen ? 'close' : 'search'} className="h-5 w-5"/></button>
+      <div className={`mail-search${searchOpen ? ' is-open' : ''}`}><Icon name="search" className="h-4 w-4"/><input type="search" aria-label="Search messages" placeholder="Search messages" value={query} onChange={(event) => { setQuery(event.target.value); setCheckedIds([]); setSelectedId(null) }}/><button type="button" className="mail-search-close" aria-label="Close message search" onClick={() => setSearchOpen(false)}><Icon name="close" className="h-4 w-4"/></button></div>
     </header>
 
     <div className="message-mail-layout" data-detail={selected ? 'true' : undefined}>

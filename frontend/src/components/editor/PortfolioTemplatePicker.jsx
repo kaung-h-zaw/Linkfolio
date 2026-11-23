@@ -19,12 +19,14 @@ const details = {
 
 // Render real layouts with the user's content, using each template's original styling.
 function TemplateThumbnail({ template, profile, settings }) {
+  const previewWidth = template.id === 'strata' ? 1440 : 1024
+  const previewHeight = previewWidth * 820 / 1024
   const images = profile ? settings?.images : {
     portrait:portfolioDemoImages.portrait,
     projects:Object.fromEntries(getProjects(sampleProfile).entries.map((project,index) => [project.id,portfolioDemoImages.projectCovers[index % 3]])),
   }
-  return <svg aria-hidden="true" viewBox="0 0 1024 820" className="portfolio-template-live-preview">
-    <foreignObject width="1024" height="6000">
+  return <svg aria-hidden="true" viewBox={`0 0 ${previewWidth} ${previewHeight}`} className="portfolio-template-live-preview">
+    <foreignObject width={previewWidth} height="6000">
       <div xmlns="http://www.w3.org/1999/xhtml" inert>
         <PortfolioPreview profile={profile || sampleProfile} settings={{...defaultPortfolio,...settings,images,template:template.id,design:{},sectionLayouts:{}}} />
       </div>

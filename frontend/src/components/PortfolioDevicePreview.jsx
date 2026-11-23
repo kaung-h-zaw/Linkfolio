@@ -8,7 +8,7 @@ const devices = [
   { id: 'tablet', label: 'Tablet', width: 768, height: 1024, Icon: FiTablet },
   { id: 'mobile', label: 'Mobile', width: 390, height: 844, Icon: FiSmartphone },
 ]
-const frameDocument = '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portfolio device preview</title><style>html,body{margin:0}</style></head><body><div id="portfolio-root"></div></body></html>'
+const frameDocument = '<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portfolio device preview</title><style>html,body{margin:0;min-height:100%;background:#f1efec}#portfolio-root{min-height:100vh}</style></head><body><div id="portfolio-root"></div></body></html>'
 
 export default function PortfolioDevicePreview({ profile, settings, onExitPreview, focused = false }) {
   const [deviceId, setDeviceId] = useState('desktop')
@@ -16,9 +16,12 @@ export default function PortfolioDevicePreview({ profile, settings, onExitPrevie
   const [portalRoot, setPortalRoot] = useState(null)
   const stage = useRef(null)
   const device = focused ? devices.find((item) => item.id === deviceId) : devices[0]
-  const scale = Math.max(0, Math.min(1, available.width / device.width))
+  const desktopGutter = 0
+  const verticalGutter = 32
+  const fitScale = Math.max(0, Math.min(1, Math.max(0, available.width - desktopGutter) / device.width))
+  const scale = fitScale
 
-  const viewportHeight = scale > 0 ? Math.max(1, Math.min(focused ? device.height : Infinity, Math.floor(available.height / scale))) : device.height
+  const viewportHeight = scale > 0 ? Math.max(1, Math.min(focused ? device.height : Infinity, Math.floor(Math.max(0, available.height - verticalGutter) / scale))) : device.height
 
   useEffect(() => {
     const observer = new ResizeObserver(([entry]) => setAvailable({ width: entry.contentRect.width, height: entry.contentRect.height }))
@@ -83,8 +86,8 @@ export default function PortfolioDevicePreview({ profile, settings, onExitPrevie
         </button>}
         </div>
       </div>}
-      <div ref={stage} className="min-h-0 w-full min-w-0 flex-1">
-        <div className="relative mx-auto overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black/10"
+      <div ref={stage} className="flex min-h-0 w-full min-w-0 flex-1 items-center justify-center overflow-hidden">
+        <div className="relative mx-auto shrink-0 overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black/10"
           style={{ width: device.width * scale, height: viewportHeight * scale }}>
           <iframe title="Portfolio device preview" srcDoc={frameDocument} onLoad={prepareFrame}
             className="absolute left-0 top-0 origin-top-left border-0 bg-white"
@@ -93,7 +96,9 @@ export default function PortfolioDevicePreview({ profile, settings, onExitPrevie
             <div onClick={navigateSection} onKeyDown={(event) => {
               if (event.key === 'Escape') onExitPreview?.()
             }}>
-              <PortfolioPreview key={device.id} profile={profile} settings={settings} />
+              <div className="portfolio-device-page" data-device={device.id}>
+                <PortfolioPreview key={device.id} profile={profile} settings={settings} />
+              </div>
             </div>, portalRoot)}
         </div>
       </div>

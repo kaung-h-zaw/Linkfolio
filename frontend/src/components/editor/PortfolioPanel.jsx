@@ -15,6 +15,9 @@ import { getExperience } from '../../lib/experience'
 import { getEducation, getSkills } from '../../lib/educationSkills'
 import { getProjects, getCertifications, getLanguages, visibleEntries } from '../../lib/additionalSections'
 import { defaultPortfolio } from '../../lib/portfolio'
+import PortfolioPreview from '../PortfolioPreview'
+import { sourcedPortfolioTemplates } from '../../lib/portfolioTemplates'
+import { portfolioDemoImages } from '../../lib/portfolioImages'
 const availabilityOptions = [
   '',
   'Open to work',
@@ -49,6 +52,7 @@ export default function PortfolioPanel({
     () => !availabilityOptions.includes(settings.availability),
   )
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false)
+  const templatePreviews = [currentTemplate, ...sourcedPortfolioTemplates.filter((template) => template.id !== currentTemplate.id)].slice(0, 3)
   const set = (key, value) => onChange({ ...settings, [key]: value })
   return (
     <>
@@ -59,11 +63,12 @@ export default function PortfolioPanel({
       </div>
     <div className="editor-panel-body mx-auto max-w-2xl space-y-5 px-4 py-7 lg:px-8">
       {mode === 'design' && <>
-        <PortfolioDesignControls templatePicker={<section className="resume-design-card portfolio-template-card" data-design-group="templates">
-          <div className="portfolio-template-summary">
-            <span className="portfolio-template-summary-icon" aria-hidden="true"><Icon name="window" className="h-6 w-6" /></span>
-            <div><p>Portfolio template</p><strong>{currentTemplate.name}</strong><span>Six layouts. Your own look.</span></div>
-            <button type="button" onClick={() => setTemplatePickerOpen(true)}><span>Choose portfolio template</span><Icon name="arrow" className="h-4 w-4"/></button>
+        <PortfolioDesignControls templatePicker={<section data-design-group="templates" className="resume-design-card design-template-row resume-template-card portfolio-template-card" aria-labelledby="portfolio-templates-title">
+          <div className="resume-design-card-heading"><h2 id="portfolio-templates-title">Templates</h2></div>
+          <div className="resume-template-montage portfolio-template-montage" aria-hidden="true" inert>{templatePreviews.map((template) => <div key={template.id} className="template-thumbnail"><div className="portfolio-template-miniature"><PortfolioPreview profile={profile} settings={{...defaultPortfolio,...settings,images:settings.images || portfolioDemoImages,template:template.id}} /></div></div>)}</div>
+          <div className="resume-template-card-footer">
+            <span className="resume-template-current"><Icon name="check" className="h-4 w-4" /><span>{currentTemplate.name}</span></span>
+            <button type="button" onClick={() => setTemplatePickerOpen(true)} className="resume-template-browse"><Icon name="grid" className="h-4 w-4" /><span>Browse templates</span></button>
           </div>
         </section>} customizationTab={customizationTab} onCustomizationTabChange={onCustomizationTabChange} selectedSection={selectedSection} onSelectSection={onSelectSection} styleHistory={styleHistory} profile={profile} settings={settings} onChange={onChange} />
         {templatePickerOpen && <PortfolioTemplatePicker profile={profile} settings={settings} value={settings.template || defaultPortfolio.template} surface={settings.surface} color={settings.color} onChange={(value) => set('template',value)} onClose={() => setTemplatePickerOpen(false)} />}

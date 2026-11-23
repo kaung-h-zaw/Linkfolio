@@ -55,7 +55,7 @@ const DocumentController = {
       if (document.kind === 'resume')
         await Template.requireAvailable(document.templateId, 'resume', req.user)
       if (document.portfolio)
-        await Template.requireAvailable(document.portfolio.template || 'essential', 'portfolio', req.user)
+        await Template.requireAvailable(document.portfolio.template || 'bento', 'portfolio', req.user)
       if (document.portfolio?.sourceResume) {
         const source = await Document.findById(document.portfolio.sourceResume.id)
         requireValue(source && source.user_id === req.user.id && source.kind === 'resume', 'The selected resume is unavailable. Choose another resume.', 400)
