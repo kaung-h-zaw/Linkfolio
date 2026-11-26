@@ -24,12 +24,7 @@ export default function AuthDialog({ children, titleId }) {
   }, [])
 
   return <dialog ref={dialog} className="auth-popup" aria-labelledby={titleId}
-    onCancel={event => { event.preventDefault(); close() }}
-    onClick={event => {
-      if (event.target !== event.currentTarget) return
-      const rect = event.currentTarget.getBoundingClientRect()
-      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close()
-    }}>
+    onCancel={event => { event.preventDefault(); close() }}>
     <header className="auth-popup-header">
       <Logo />
       <div className="flex items-center gap-3">

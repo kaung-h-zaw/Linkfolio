@@ -68,6 +68,19 @@ export const portfolioSectionDesigns = [
     ],
   },
 ]
+
+export function portfolioLayoutOverride(settings, key, hasCustomSection) {
+  const layout = settings.sectionLayouts?.[key] ?? (isExtraSection(key) && !hasCustomSection ? settings.sectionLayouts?.custom : undefined)
+  if (key === 'hero' && layout === 'left') return 'portrait-left'
+  if (key === 'contact' && layout === 'centered') return 'form-first'
+  if (layout === 'panel') return key === 'about' ? 'reading' : 'simple'
+  return layout === 'template' ? undefined : layout
+}
+
+export function allowsProjectColumns(layout) {
+  return layout !== 'list' && layout !== 'feature'
+}
+
 export function validSectionLayouts(value) {
   return (
     value &&

@@ -16,10 +16,9 @@ export default function PortfolioDevicePreview({ profile, settings, onExitPrevie
   const [portalRoot, setPortalRoot] = useState(null)
   const stage = useRef(null)
   const device = focused ? devices.find((item) => item.id === deviceId) : devices[0]
-  const desktopGutter = 0
+  const horizontalGutter = 24
   const verticalGutter = 32
-  const fitScale = Math.max(0, Math.min(1, Math.max(0, available.width - desktopGutter) / device.width))
-  const scale = fitScale
+  const scale = Math.min(1, Math.max(0, available.width - horizontalGutter) / device.width)
 
   const viewportHeight = scale > 0 ? Math.max(1, Math.min(focused ? device.height : Infinity, Math.floor(Math.max(0, available.height - verticalGutter) / scale))) : device.height
 
@@ -87,7 +86,7 @@ export default function PortfolioDevicePreview({ profile, settings, onExitPrevie
         </div>
       </div>}
       <div ref={stage} className="flex min-h-0 w-full min-w-0 flex-1 items-center justify-center overflow-hidden">
-        <div className="relative mx-auto shrink-0 overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black/10"
+        <div className="portfolio-device-frame relative mx-auto shrink-0 overflow-hidden rounded-lg bg-white shadow-md"
           style={{ width: device.width * scale, height: viewportHeight * scale }}>
           <iframe title="Portfolio device preview" srcDoc={frameDocument} onLoad={prepareFrame}
             className="absolute left-0 top-0 origin-top-left border-0 bg-white"

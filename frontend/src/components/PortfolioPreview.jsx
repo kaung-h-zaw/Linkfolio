@@ -12,6 +12,8 @@ import { PreviewSelectionContext } from '../lib/previewSelection'
 import PortfolioHero from './PortfolioHero'
 import { getPortfolioTemplate } from '../lib/portfolioTemplates'
 import { defaultPortfolio } from '../lib/portfolio'
+import { allowsProjectColumns, portfolioLayoutOverride } from '../lib/portfolioSections'
+import { portfolioImageSource } from '../lib/portfolioImages'
 import { getSummary, summaryText } from '../lib/summary'
 import { getProjects, getCertifications, getLanguages, visibleEntries } from '../lib/additionalSections'
 import { getExperience, experienceDate } from '../lib/experience'
@@ -42,20 +44,15 @@ export default function PortfolioPreview({
   }
   function projectImage(entry) {
     const item=details.find((detail)=>detail.key===`projects:${entry.id}`)
-    return item ? detailImages(item,settings)[0] : ''
+    const detailImage = item && settings.detailPages?.[item.key]?.enabled ? detailImages(item,settings)[0] : ''
+    return detailImage || portfolioImageSource(settings.images?.projects?.[entry.id])
   }
   const target = (key) => publicSlug ? `#${key}` : `#portfolio-${instance}-${key}`
   const template = getPortfolioTemplate(settings.template)
   const design = settings.design || {}
   const order = portfolioOrder(template,design,customSections.map(section=>section.type))
-  const layout = (key) => {
-    const selected = settings.sectionLayouts?.[key] ?? (isExtraSection(key) && !hasCustomSection ? settings.sectionLayouts?.custom : undefined)
-    if (key === 'hero' && selected === 'left') return 'portrait-left'
-    if (key === 'contact' && selected === 'centered') return 'form-first'
-    if (selected === 'panel') return key === 'about' ? 'reading' : 'simple'
-    const resolved = selected && selected !== 'template' ? selected : template.layouts[key] || (isExtraSection(key) ? template.layouts[skillGroups.has(key) ? 'skills' : 'experience'] : undefined) || 'template'
-    return key === 'hero' && resolved === 'left' ? 'portrait-left' : key === 'contact' && resolved === 'centered' ? 'form-first' : resolved
-  }
+  const layoutOverride = (key) => portfolioLayoutOverride(settings, key, hasCustomSection)
+  const layout = (key) => layoutOverride(key) ?? template.layouts[key] ?? (isExtraSection(key) ? template.layouts[skillGroups.has(key) ? 'skills' : 'experience'] : undefined) ?? 'template'
   const personal = profile.personal
   const included = (key) => !(profile.removedSections || []).includes(key)
   const about = included('summary')
@@ -67,7 +64,7 @@ export default function PortfolioPreview({
     ? visibleEntries(getProjects(profile), ['name', 'subtitle', 'url', 'github'])
     : []
   const certifications = included('certifications')
-    ? visibleEntries(getCertifications(profile), ['name', 'issuer'])
+    ? visibleEntries(getCertifications(profile), ['name', 'issuer', 'issueDate', 'expiryDate', 'url'])
     : []
   const experience = included('experience')
     ? visibleEntries(getExperience(profile), ['jobTitle', 'company'])
@@ -76,7 +73,7 @@ export default function PortfolioPreview({
     ? visibleEntries(getEducation(profile), ['degree', 'school'])
     : []
   const skills = included('skills') ? visibleEntries(getSkills(profile), ['name']) : []
-  const languages = included('languages') && settings.languages === true ? visibleEntries(getLanguages(profile),['name']) : []
+  const languages = included('languages') && settings.languages === true ? visibleEntries(getLanguages(profile), ['name', 'level']) : []
   const links = getProfileLinks(personal).filter((link) => profileLinkHref(link.url))
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personal.email) ? personal.email : ''
   const sections = [
@@ -135,7 +132,7 @@ export default function PortfolioPreview({
       data-image-position={design.imagePosition}
       data-cover-ratio={design.coverRatio}
       data-portrait-size={design.portraitSize !== undefined ? 'true' : undefined}
-      data-project-columns={design.projectColumns}
+      data-project-columns={allowsProjectColumns(layoutOverride('projects')) ? design.projectColumns : undefined}
       data-custom-gap={design.projectGap !== undefined ? 'true' : undefined}
       data-custom-order={design.sectionOrder?.length ? 'true' : undefined}
       aria-label="Portfolio website"
@@ -161,7 +158,7 @@ export default function PortfolioPreview({
               id={target(key).slice(1)}
               className="portfolio-section"
               data-layout={layout(key)}
-              data-custom-layout={(settings.sectionLayouts?.[key] ?? (isExtraSection(key) && !hasCustomSection ? settings.sectionLayouts?.custom : undefined)) && layout(key) !== 'template' ? 'true' : undefined}
+              data-custom-layout={layoutOverride(key) ? 'true' : undefined}
               data-section={key}
               data-section-kind={isExtraSection(key) && !skillGroups.has(key) ? 'custom' : undefined}
               data-section-style={skillGroups.has(key) ? 'skills' : undefined}
@@ -187,9 +184,10 @@ export default function PortfolioPreview({
               )}
               {key === 'projects' && (
                 <div className="portfolio-projects" data-project-parity={entries.length % 2 ? 'odd' : 'even'}>
-                  {entries.map((entry, index) => (
-                    <div key={entry.id} className="portfolio-project">
-                      {projectImage(entry) && <img className="portfolio-project-image" src={projectImage(entry)} alt={`${entry.name || 'Project'} preview`} loading="lazy" />}
+                  {entries.map((entry, index) => {
+                    const image = projectImage(entry)
+                    return <div key={entry.id} className="portfolio-project">
+                      {image && <img className="portfolio-project-image" src={image} alt={`${entry.name || 'Project'} preview`} loading="lazy" />}
                       {['showcase', 'atelier', 'canvas', 'horizon'].includes(template.id) && (
                         <div className="portfolio-project-art" aria-hidden="true">
                           <span>{String(index + 1).padStart(2, '0')}</span>
@@ -227,14 +225,15 @@ export default function PortfolioPreview({
                           ))}
                       </div>
                     </div>
-                  ))}
+                  })}
                 </div>
               )}
-              {isExtraSection(key) && !skillGroups.has(key) && <div className="portfolio-custom-entries space-y-7">{entries.map((entry)=>{
+              {isExtraSection(key) && !skillGroups.has(key) && <div className="portfolio-custom-entries">{entries.map((entry)=>{
                 const item=details.find((detail)=>detail.key===`custom:${entry.id}`)
                 const image=item && settings.detailPages?.[item.key]?.enabled ? detailImages(item,settings)[0] : ''
-                return <div key={entry.id} className="portfolio-timeline">
-                  <p className="text-xs leading-6 text-muted">{date(entry)}</p>
+                const entryDate = date(entry)
+                return <div key={entry.id} className="portfolio-timeline portfolio-custom-entry" data-has-date={Boolean(entryDate)}>
+                  {entryDate && <p className="text-xs leading-6 text-muted">{entryDate}</p>}
                   <div>
                     {image && <img src={image} alt={`${entry.name || 'Entry'} preview`} className="portfolio-project-image" loading="lazy" />}
                     {entry.name && <h3>{entry.name}</h3>}
@@ -270,7 +269,7 @@ export default function PortfolioPreview({
                     <div key={entry.id}>
                       <h3>{entry.name}</h3>
                       <p className="mt-2 text-sm text-muted">
-                        {[entry.issuer, experienceDate(entry.issueDate)]
+                        {[entry.issuer, entry.issueDate && `Issued ${experienceDate(entry.issueDate)}`, entry.noExpiry ? 'Does not expire' : entry.expiryDate && `Expires ${experienceDate(entry.expiryDate)}`]
                           .filter(Boolean)
                           .join(' · ')}
                       </p>
@@ -318,7 +317,7 @@ export default function PortfolioPreview({
               className="portfolio-section"
               data-section="contact"
               data-layout={layout('contact')}
-              data-custom-layout={settings.sectionLayouts?.contact && settings.sectionLayouts.contact !== 'template' ? 'true' : undefined}
+              data-custom-layout={layoutOverride('contact') ? 'true' : undefined}
               data-design-selected={selectedSection === 'contact' || undefined}
             >
               <div className="mb-7"><h2>{template.id === 'nocturne' && <span className="developer-section-number">{String(sections.length).padStart(2,'0')} / </span>}{settings.sectionTitles?.contact?.trim() || 'Contact'}</h2></div>

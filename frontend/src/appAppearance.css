@@ -65,7 +65,7 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
   :scope input:is([type='checkbox'],[type='radio'],[type='range']) { accent-color:var(--app-accent); }
   :scope :is(h1,h2,h3,h4,legend,label,summary) { color:var(--app-text); }
   :scope .text-muted { color:var(--app-muted); }
-  :scope .text-accent { color:var(--app-accent); }
+  :scope .text-accent { color:var(--app-accent-text); }
   :scope :is(.bg-white,dialog,.resume-design-card,.editor-entry-card,.personal-overview,.library-empty-state,.plan-benefits-card) { background-color:var(--app-surface); color:var(--app-text); border-color:var(--app-border); }
   :scope .bg-paper { background-color:var(--app-canvas); }
   :scope .bg-sage { background-color:var(--app-selected); }
@@ -98,7 +98,6 @@ html[data-app-theme] body:has(.linkfolio-app) { background:var(--app-canvas); }
   :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button { border-color:var(--app-border); }
   :scope :is(.portfolio-appearance-options,.resume-style-presets,.portfolio-section-layouts) > button[aria-pressed='true'] { border-color:var(--app-control-border); box-shadow:0 0 0 1px var(--app-control-border); }
   :scope .resume-template-minimal-card[aria-pressed='true'] .resume-template-minimal-preview { border-color:var(--app-control-border); box-shadow:0 0 0 1px var(--app-control-border); }
-  :scope [class*='hover:bg-white']:hover { background-color:var(--app-inset); }
 }
 .linkfolio-app .app-auth.bg-white { background:var(--app-canvas); }
 .linkfolio-app .app-auth > header { background:var(--app-surface); }
@@ -240,9 +239,20 @@ html[data-app-theme-changing] .linkfolio-app *:not(:where(.resume-document,.resu
 .linkfolio-app .app-sidebar nav a[aria-current='page'] { background:var(--app-nav-selected); }
 html[data-app-theme='light'] .linkfolio-app .app-sidebar nav a[aria-current='page']::before { background:transparent; }
 
-/* Utility hover fills must follow the application palette in either mode. */
+/* Tailwind hover variants need their own theme mapping within the app. */
 @scope (.linkfolio-app) to (.resume-document,.portfolio-site,.linkfolio-sheet,.linkfolio-preview) {
-  :scope [class~='hover:bg-paper']:hover { background-color:var(--app-control-hover); }
+  @media (hover: hover) {
+    :scope :is(
+      [class~='hover:bg-paper'],
+      [class~='hover:bg-sage'],
+      [class~='hover:bg-sage/60'],
+      [class~='hover:bg-slate-100'],
+      [class~='hover:bg-white/60']
+    ):hover:not(:disabled) { background-color:var(--app-control-hover); }
+    :scope [class~='hover:text-accent']:hover:not(:disabled) { color:var(--app-accent-text); }
+    :scope [class~='hover:text-ink']:hover:not(:disabled) { color:var(--app-text); }
+    :scope [class~='hover:text-red-700']:hover:not(:disabled) { color:var(--app-danger); }
+  }
   :scope .create-resume-option { background:transparent; color:var(--app-text); cursor:pointer; }
   :scope .create-resume-option:hover { background:var(--app-control-hover); border-color:var(--app-control-border); }
   :scope .create-resume-option:active { background:var(--app-control-active); }

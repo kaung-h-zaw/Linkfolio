@@ -5,7 +5,7 @@ import { portfolioExtraSections } from '../../lib/portfolioContent'
 import { isCustomSection, isExtraSection } from '../../lib/contentCatalog'
 import { entryHasContent } from '../../lib/sectionContent'
 import PortfolioImageDesigns from './PortfolioImageDesigns'
-import { portfolioSectionDesigns } from '../../lib/portfolioSections'
+import { allowsProjectColumns, portfolioLayoutOverride, portfolioSectionDesigns } from '../../lib/portfolioSections'
 import { portfolioOrder } from '../../lib/portfolioDesign'
 import { getPortfolioTemplate } from '../../lib/portfolioTemplates'
 import { getSummary } from '../../lib/summary'
@@ -88,9 +88,11 @@ function SectionHeading({ sectionKey, title, value, onChange }) {
 export default function PortfolioSectionDesigns({ settings, profile, onChange, selected, onSelect, select, range, design }) {
   const definitions = Object.fromEntries(portfolioSectionDesigns.map((section) => [section.key,section]))
   const extraSections = portfolioExtraSections(profile)
+  const hasCustomSection = extraSections.some((section) => section.type === 'custom')
   const order = portfolioOrder(getPortfolioTemplate(settings.template),settings.design,extraSections.map(section=>section.type))
   const removed = profile?.removedSections || []
-  for (const section of extraSections) definitions[section.type] = {...definitions[section.format === 'skills' ? 'skills' : 'experience'],key:section.type,title:section.heading || 'Custom section'}
+  const customDefinition = definitions.custom
+  for (const section of extraSections) definitions[section.type] = {...(section.format === 'skills' ? definitions.skills : customDefinition),key:section.type,title:section.heading || 'Custom section'}
   const source = profile ? {
     ...Object.fromEntries(extraSections.map(section=>[section.type,section])),
     about:getSummary(profile),projects:getProjects(profile),experience:getExperience(profile),education:getEducation(profile),skills:getSkills(profile),certifications:getCertifications(profile),languages:getLanguages(profile),
@@ -106,8 +108,7 @@ export default function PortfolioSectionDesigns({ settings, profile, onChange, s
     const definition=definitions[key]
     const extra=isExtraSection(key)
     const visible=extra ? settings.extraSectionVisibility?.[key] ?? settings.custom !== false : settings[key] !== false
-    const savedLayout=settings.sectionLayouts?.[key] ?? (extra && !extraSections.some(section=>section.type==='custom') ? settings.sectionLayouts?.custom : undefined)
-    const layout=key==='hero' && savedLayout==='left'?'portrait-left':key==='contact' && savedLayout==='centered'?'form-first':savedLayout==='panel'?(key==='about'?'reading':'simple'):savedLayout||'template'
+    const layout = portfolioLayoutOverride(settings, key, hasCustomSection) ?? 'template'
     const change=value=>{onSelect(key);onChange(value)}
     return <section key={key} data-section-customization={key} data-selected={selected===key||undefined} className="resume-design-card resume-section-customization-card" aria-label={`${definition.title} customization`}>
       <SectionHeading sectionKey={key} title={definition.title} value={settings.sectionTitles?.[key]??definition.title} onChange={value=>change({...settings,sectionTitles:{...settings.sectionTitles,[key]:value}})} />
@@ -116,8 +117,8 @@ export default function PortfolioSectionDesigns({ settings, profile, onChange, s
       {extra && !visible && <p className="text-sm text-muted">Hidden from this portfolio.</p>}
       {extra && !source[key]?.entries.length && <p className="text-sm text-muted">Add visible entries in your resume to show this section.</p>}
       <fieldset className="layout-visual-controls"><legend>Layout</legend><div className="entry-setting-choices portfolio-section-layouts">{[['template','Original'],...definition.options].map(([id,label])=><PortfolioLayoutChoice key={id} sectionKey={key} previewLayout={key==='contact' && id==='template' ? (getPortfolioTemplate(settings.template).layouts.contact === 'centered' ? 'form-first' : getPortfolioTemplate(settings.template).layouts.contact || 'split') : undefined} sectionTitle={definition.title} layout={id} label={label} selected={layout===id} onSelect={()=>change({...settings,sectionLayouts:{...settings.sectionLayouts,[key]:id}})} />)}</div></fieldset>
-      {key==='projects'&&<details className="design-fine-group"><summary>Project cards</summary><div className="space-y-4 pt-4">{select('projectColumns','Project columns',{template:'Original',1:'One column',2:'Two columns',3:'Three columns'})}{range('projectGap','Project spacing',8,48)}</div></details>}
-      {key==='hero'&&<PortfolioImageDesigns section={key} settings={settings} profile={profile} design={design} select={select} range={range} onChange={change}/>}
+      {key==='projects'&&<details className="design-fine-group"><summary>Project spacing and columns</summary><div className="space-y-4 pt-4">{allowsProjectColumns(layout) && select('projectColumns','Project columns',{template:'Original',1:'One column',2:'Two columns',3:'Three columns'})}{range('projectGap','Project spacing',8,48)}</div></details>}
+      {['hero', 'projects'].includes(key) && <PortfolioImageDesigns section={key} settings={settings} profile={profile} design={design} select={select} range={range} onChange={change}/>}
     </section>
   })}</div>
 }

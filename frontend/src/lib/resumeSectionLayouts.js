@@ -1,3 +1,18 @@
+import { isCustomSection } from './contentCatalog.js'
+
+export function usesStackedGridEntries(sectionKey, style) {
+  return (sectionKey === 'certifications' || isCustomSection(sectionKey)) && style?.contentLayout === 'columns'
+}
+
+export function sectionEntryLayout(sectionKey, style) {
+  if (usesStackedGridEntries(sectionKey, style)) return 'full'
+  return style?.entryLayout
+}
+
+export function collectionLayout(sectionKey, style) {
+  return style?.contentLayout ?? (sectionKey === 'certifications' ? undefined : 'columns')
+}
+
 // Present the summary as a flowing paragraph without changing its saved rich text.
 export function summaryAsParagraph(content) {
   function blocks(node) {

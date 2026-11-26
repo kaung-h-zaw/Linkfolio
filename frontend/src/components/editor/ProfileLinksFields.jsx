@@ -248,7 +248,7 @@ export default function ProfileLinksFields({ links, onChange, firstInputRef }) {
                 key={type}
                 type="button"
                 onClick={() => add(type)}
-                className="min-h-10 rounded-md border border-line bg-paper px-3 text-xs font-medium hover:border-accent"
+                className="min-h-10 rounded-md border border-line bg-paper px-3 text-xs font-medium hover:bg-paper"
               >
                 <Icon name="plus" className="mr-1 inline-block h-4 w-4" />{type}
               </button>

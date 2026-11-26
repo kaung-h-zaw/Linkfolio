@@ -45,7 +45,17 @@ export default function Login() {
   const [submitted, setSubmitted] = useState(false)
   const errors = validate(values)
 
-  if (loading) return <main className="p-8" role="status">Checking your session…</main>
+  const title = (
+    <h1 id="login-title" tabIndex={-1} className="text-3xl font-semibold tracking-tight">
+      Sign in
+    </h1>
+  )
+  if (loading) return (
+    <AuthLayout titleId="login-title">
+      {title}
+      <p className="mt-3 text-sm leading-6 text-muted" role="status">Checking your session…</p>
+    </AuthLayout>
+  )
   if (user) return <Navigate replace to={user.role === 'admin' ? '/admin' : '/setup'} />
 
   async function handleSubmit(event) {
@@ -80,9 +90,7 @@ export default function Login() {
 
   return (
     <AuthLayout titleId="login-title">
-      <h1 id="login-title" tabIndex={-1} className="text-3xl font-semibold tracking-tight">
-        Sign in
-      </h1>
+      {title}
       <p className="mt-3 text-sm leading-6 text-muted">
         Enter your email and password to continue.
       </p>

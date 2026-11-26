@@ -22,9 +22,10 @@ const titles = {
   account: 'Account settings',
   premium: 'Upgrade to Premium',
 }
+const analyticsPath = `/analytics?${new URLSearchParams({ timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC' })}`
 const endpoints = {
-  dashboard: '/analytics',
-  analytics: '/analytics',
+  dashboard: analyticsPath,
+  analytics: analyticsPath,
   premium: '/billing',
 }
 
@@ -45,6 +46,12 @@ export default function WorkspacePage({ view = 'dashboard' }) {
     const timer = setTimeout(() => setNotice(''),4000)
     return () => clearTimeout(timer)
   },[notice,view])
+  useEffect(() => {
+    if (view !== 'analytics') return
+    const refresh = () => setAttempt((value) => value + 1)
+    window.addEventListener('focus', refresh)
+    return () => window.removeEventListener('focus', refresh)
+  }, [view])
   useEffect(() => {
     let active = true
     async function load() {
@@ -124,7 +131,7 @@ export default function WorkspacePage({ view = 'dashboard' }) {
           </p>
         )}
         {view === 'dashboard' && data && <DashboardCards records={records} analytics={analytics} messages={data.messages || []} />}
-        {view === 'analytics' && data && <PortfolioAnalytics analytics={analytics} onRefresh={async () => setData(await api('/analytics'))} />}
+        {view === 'analytics' && data && <PortfolioAnalytics analytics={analytics} onRefresh={async () => setData(await api(analyticsPath))} />}
         {view === 'messages' && <MessageInbox />}
         {view === 'account' && (
           <div className="account-card-grid user-account-settings">

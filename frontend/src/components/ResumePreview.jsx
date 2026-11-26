@@ -1,5 +1,5 @@
 import { isCustomSection, customEntryDates } from '../lib/contentCatalog'
-import { summaryAsParagraph } from '../lib/resumeSectionLayouts'
+import { collectionLayout, sectionEntryLayout, summaryAsParagraph } from '../lib/resumeSectionLayouts'
 import Icon from './Icon'
 import { contactLink } from '../lib/contactLinks'
 import { resumePhotoSource } from '../lib/resumePhoto'
@@ -55,7 +55,7 @@ function ResumeSection({ title, children, sectionKey, documentDesign, style, col
   }
   const SolidIcon = filled[sectionKey] || FaFileAlt
   return (
-    <section data-section={sectionKey} data-column-placement={column} data-design-selected={selectedSection === sectionKey || undefined} className="mt-6" data-section-entry-layout={override.entryLayout} data-content-layout={sectionKey === 'summary' ? undefined : override.contentLayout} style={{ ...style, ...(column ? {gridColumn:column === 'left' ? '1' : column === 'right' ? '2' : '1 / -1',gridRow:'auto'} : {}) }}>
+    <section data-section={sectionKey} data-column-placement={column} data-design-selected={selectedSection === sectionKey || undefined} className="mt-6" data-section-entry-layout={sectionEntryLayout(sectionKey, override)} data-content-layout={sectionKey === 'summary' ? undefined : override.contentLayout} style={{ ...style, ...(column ? {gridColumn:column === 'left' ? '1' : column === 'right' ? '2' : '1 / -1',gridRow:'auto'} : {}) }}>
       <h3 hidden={Boolean(override.hideHeading)} className="mb-3 border-b border-line pb-2 text-[10px] font-bold uppercase tracking-[0.16em]">
         {documentDesign?.headingIcons === 'outline' && (
           <Icon
@@ -118,7 +118,7 @@ export default function ResumePreview({
   const design = profile.design || template.defaults
     ? alignHeaderPhoto(getDesign({ ...template.defaults, ...profile.design }),template)
     : undefined
-  const photo = (design?.photoShow ?? template.photo) ? resumePhotoSource(personal.photo) : ''
+  const photo = design?.photoShow === false ? '' : resumePhotoSource(personal.photo)
   function contactIcon(name,link) {
     if (!design?.contactIcons || design.contactIcons === 'none') return null
     const service = link ? contactLink(link) : null
@@ -129,8 +129,9 @@ export default function ResumePreview({
   const included = (type) => !(profile.removedSections || []).includes(type)
   function collectionProps(key) {
     const sectionStyle=design?.sectionStyles?.[key]||{}
-    const mode=sectionStyle.contentLayout
-    const columns=['list','compact','tags'].includes(mode)?1:sectionStyle.columns||(key==='certifications'?1:2)
+    const mode = collectionLayout(key, sectionStyle)
+    const defaultColumns = key === 'certifications' && mode !== 'columns' ? 1 : 2
+    const columns = ['list', 'compact', 'tags'].includes(mode) ? 1 : sectionStyle.columns || defaultColumns
     return {className:`resume-section-collection grid ${key==='skills'?'resume-skills':''} ${key==='certifications'?'grid-cols-1':'grid-cols-2'} gap-x-6 gap-y-2`,'data-collection-layout':mode,'data-row-spacing':sectionStyle.rowSpacing||'tight','data-row-bullets':mode==='list'&&sectionStyle.rowBullets||undefined,'data-compact-separator':sectionStyle.compactSeparator||'bullet','data-subinfo-style':sectionStyle.subinfoStyle||'dash','data-layout-columns':columns,style:{'--collection-columns':columns}}
   }
   function collectionDetails(key,item,extra) {

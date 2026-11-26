@@ -131,7 +131,7 @@ export default function ImportResumePage() {
                 <button type="button" onClick={() => fileInput.current.click()} className="button button-green mt-5">Select Resume</button>
                 <input ref={fileInput} aria-label="Resume file" type="file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp" className="sr-only" tabIndex={-1}
                   onChange={(event) => { const file = event.target.files[0]; event.target.value = ''; if (file) process(file) }} />
-                <p className="mt-4 text-xs text-muted">PDF, DOCX, TXT, PNG, JPG · up to 5 MB</p>
+                <p className="mt-4 text-xs text-muted">PDF, DOCX, TXT, PNG, JPG, WebP · up to 5 MB</p>
               </div>
             ) : (
               <div id="import-panel-text" role="tabpanel" aria-labelledby="import-tab-text">
@@ -143,7 +143,7 @@ export default function ImportResumePage() {
               <input type="checkbox" checked={useAI} onChange={(event) => setUseAI(event.target.checked)} className="mt-1 accent-accent" />
               <span>Use AI-assisted parsing<span className="mt-1 block text-xs leading-5 text-muted">Sends extracted resume text to OpenAI to help organize complex layouts.</span></span>
             </label>}
-            <p className="mt-5 text-xs leading-5 text-muted">Unlimited imports. Review the detected details before opening your resume.</p>
+            <p className="mt-5 text-xs leading-5 text-muted">Scanned PDFs and images use English text recognition on your device. Review the detected details before opening your resume.</p>
           </>
         ) : (
           <form onSubmit={save} className="space-y-5">

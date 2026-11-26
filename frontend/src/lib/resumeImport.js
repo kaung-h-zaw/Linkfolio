@@ -15,23 +15,31 @@ const abort = (signal) => signal?.throwIfAborted()
 
 // OCR runs on the device with self-hosted workers, models and WebAssembly.
 async function createOcr(onProgress, signal) {
-  const { createWorker } = await import('tesseract.js')
+  const { createWorker, PSM } = await import('tesseract.js')
   abort(signal)
   const worker = await createWorker('eng', 1, {
     workerPath: '/ocr/worker.min.js', corePath: '/ocr/tesseract-core-lstm.wasm.js', langPath: '/ocr',
     logger: ({ status, progress }) => onProgress?.({ label: status === 'recognizing text' ? 'Reading scanned text…' : 'Preparing text recognition…', progress: Number.isFinite(progress) ? progress : 0 }),
   })
   const stop = () => { worker.terminate().catch(() => {}) }
-  signal?.addEventListener('abort', stop, { once: true })
-  if (signal?.aborted) { await worker.terminate(); abort(signal) }
-  return { worker, close: async () => { signal?.removeEventListener('abort', stop); await worker.terminate().catch(() => {}) } }
+  const close = async () => { signal?.removeEventListener('abort', stop); await worker.terminate().catch(() => {}) }
+  try {
+    // Detect columns and text orientation before reading lines from the scan.
+    await worker.setParameters({ tessedit_pageseg_mode: PSM.AUTO })
+    abort(signal)
+    signal?.addEventListener('abort', stop, { once: true })
+    return { worker, close }
+  } catch (error) {
+    await close()
+    throw error
+  }
 }
 export async function extractResumeText(file, { onProgress, signal } = {}) {
   if (!file.size) throw new Error('This file is empty. Choose another resume.')
   if (file.size > MAX_IMPORT_BYTES) throw new Error('Choose a resume smaller than 5 MB.')
   const extension = file.name.split('.').pop().toLowerCase()
   if (!['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'webp'].includes(extension))
-    throw new Error('Choose a PDF, Word .docx, TXT, PNG or JPG file.')
+    throw new Error('Choose a PDF, Word .docx, TXT, PNG, JPG or WebP file.')
   let text
   let ocr
   try {

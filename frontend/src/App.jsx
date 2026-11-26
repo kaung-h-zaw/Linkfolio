@@ -49,20 +49,19 @@ function RouteUpdates() {
   }, [pathname])
   return null
 }
-function AppSurface({ children }) {
-  const { pathname } = useLocation()
-  return <div className={pathname.startsWith('/p/') ? undefined : 'linkfolio-app'}>{children}</div>
-}
-
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <RouteUpdates />
-        <AppSurface>
-        <AppRoutes />
-        </AppSurface>
-      </AuthProvider>
+      <RouteUpdates />
+      <Routes>
+        <Route path="/p/:slug" element={<PublicPortfolioPage />} />
+        <Route path="/p/:slug/:detailKind/:entryId" element={<PublicPortfolioPage />} />
+        <Route path="*" element={
+          <AuthProvider>
+            <div className="linkfolio-app"><AppRoutes /></div>
+          </AuthProvider>
+        } />
+      </Routes>
     </BrowserRouter>
   )
 }
@@ -114,8 +113,6 @@ function AppRoutes() {
               </RequireAuth>
             }
           />
-          <Route path="/p/:slug" element={<PublicPortfolioPage />} />
-          <Route path="/p/:slug/:detailKind/:entryId" element={<PublicPortfolioPage />} />
           <Route path="/forgot-password" element={<PasswordPage />} />
           <Route path="/reset-password" element={<PasswordPage reset />} />
           <Route path="/admin" element={<RequireAuth admin><AdminPage /></RequireAuth>} />

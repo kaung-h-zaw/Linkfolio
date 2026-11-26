@@ -1,17 +1,20 @@
 import ResumeEntryHeader, { ResumeEntryMetadata } from './ResumeEntryHeader'
 import { profileLinkHref } from '../lib/profileLinks'
+import { sectionEntryLayout } from '../lib/resumeSectionLayouts'
 
 // Keep the title and body together when metadata occupies its own column.
 export default function ResumeEntry({ design, sectionKey, title, subtitle, url, dates, location, children, className = 'mb-4' }) {
-  if (design?.sectionStyles?.[sectionKey]?.titleOrder === 'subtitle-title' && subtitle) {
+  const sectionStyle = design?.sectionStyles?.[sectionKey]
+  if (sectionStyle?.titleOrder === 'subtitle-title' && subtitle) {
     const previousTitle = title
     const href = profileLinkHref(url)
     title = href ? <a href={href} target="_blank" rel="noopener noreferrer">{subtitle}</a> : subtitle
     subtitle = previousTitle
     url = undefined
   }
-  const layout = design?.sectionStyles?.[sectionKey]?.entryLayout || design?.entryLayout
-  const position = design?.metadataPosition || 'right'
+  const sectionLayout = sectionEntryLayout(sectionKey, sectionStyle)
+  const layout = sectionLayout ?? design?.entryLayout
+  const position = sectionLayout === 'columns' ? 'right' : (design?.metadataPosition ?? 'right')
   const order = design?.metadataOrder || 'date-location'
   const header = { title, subtitle, url, dates, location, metadataOrder:order }
   if (layout !== 'columns') return <div className={`resume-entry ${className}`} data-entry-structure={layout || 'template'}>

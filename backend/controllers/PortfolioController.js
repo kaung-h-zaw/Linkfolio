@@ -8,6 +8,7 @@ const { resolvePortfolioPortrait } = require('../../frontend/src/lib/portfolioIm
 const { randomUUID } = require('node:crypto')
 const { email, requireValue, text } = require('../utils/validation.js')
 const { resolvePortfolioSource } = require('../../frontend/src/lib/portfolioSource.js')
+const { profileLinkHref } = require('../../frontend/src/lib/profileLinks.js')
 const now = () => new Date().toISOString()
 
 // Controller: validate the request, call models, and send a JSON response.
@@ -16,7 +17,6 @@ const PortfolioController = {
     const { Publication, Analytics, Document } = req.app.locals.models
 
     const row = (await Publication.requirePublic(req.params.slug))
-    await Analytics.recordView(row.id, now())
     const documents = (await Document.findByUserId(row.user_id)).map((item) => JSON.parse(item.data))
     const data = resolvePortfolioSource(JSON.parse(row.data),documents)
     // Publish portfolio data only; hidden resume sections and drafts stay private.
@@ -47,7 +47,7 @@ const PortfolioController = {
           ? { ...section, entries: section.entries.filter((e) => e.visible) }
           : empty(heading)
     }
-    profile.extraContent=data.portfolio.custom !== false ? portfolioCustomSections(data) : []
+    profile.extraContent = portfolioCustomSections(data, data.portfolio)
     if (data.portfolio.contact) {
       profile.personal.email = data.personal.email || ''
       profile.personal.links =
@@ -100,6 +100,7 @@ const PortfolioController = {
         .filter((section) => !resumeProfile.removedSections.includes(section.type) && section.showInResume !== false)
         .map((section) => ({ ...section, entries: section.entries.filter((e) => e.visible) }))
     }
+    if (req.method === 'GET') await Analytics.recordView(row.id, now())
     res.json({ profile, settings, slug: row.slug, ...(resumeProfile ? { resumeProfile } : {}) })
   },
   recordClick: async (req, res) => {
@@ -111,18 +112,19 @@ const PortfolioController = {
       'Invalid analytics event.',
     )
     const data = resolvePortfolioSource(JSON.parse(row.data),(await Document.findByUserId(row.user_id)).map((item)=>JSON.parse(item.data)))
+    const href = profileLinkHref(req.body.href)
     function containsLink(node) {
       if (!node || typeof node !== 'object') return false
       return Object.entries(node).some(
         ([key, value]) =>
           (['url', 'github', 'website', 'linkedin', 'href'].includes(key) &&
             typeof value === 'string' &&
-            value === req.body.href) ||
+            profileLinkHref(value) === href) ||
           containsLink(value),
       )
     }
     requireValue(
-      containsLink(data) || req.body.href === `mailto:${data.personal.email}`,
+      (href && containsLink(data)) || (data.personal.email && req.body.href === `mailto:${data.personal.email}`),
       'Unknown portfolio link.',
     )
     await Analytics.recordClick(row.id, now())

@@ -11,7 +11,8 @@ async function migrate(source, destination) {
   await destination.transaction(async () => {
     const { n } = await destination.prepare('SELECT COUNT(*) AS n FROM users').get()
     if (n) throw new Error('The destination already has accounts. Use an empty Supabase project for this import.')
-    for (const table of tables) {
+    const hasEvents = source.prepare("SELECT 1 FROM sqlite_schema WHERE type = 'table' AND name = 'analytics_events'").get()
+    for (const table of hasEvents ? [...tables, 'analytics_events'] : tables) {
       const rows = source.prepare(`SELECT * FROM ${table}`).all()
       for (const row of rows) {
         const columns = Object.keys(row)

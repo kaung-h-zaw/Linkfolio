@@ -1,10 +1,11 @@
-export async function api(path, { method = 'GET', body, signal, cache } = {}) {
+export async function api(path, { method = 'GET', body, signal, cache, keepalive } = {}) {
   let response
   try {
     response = await fetch(`/api${path}`, {
       method,
       credentials: 'same-origin',
       signal,
+      keepalive,
       ...(cache ? { cache } : {}),
       headers: { 'Content-Type': 'application/json', 'X-Linkfolio-Request': '1' },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),

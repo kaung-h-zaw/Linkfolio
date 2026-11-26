@@ -11,7 +11,7 @@ function postgresSql(sql) {
   let parameter = 0
   let relation = false
   const tables = new Set(['users','sessions','password_resets','documents','publications',
-    'analytics','analytics_daily','messages','templates','plans','payments', ...relationalTables])
+    'analytics','analytics_daily','analytics_events','messages','templates','plans','payments', ...relationalTables])
   return sql.replace(/'(?:''|[^'])*'|"(?:""|[^"])*"|\?|[a-z_][a-z_0-9]*|\S/gi, (token) => {
     if (token === '?') return `$${++parameter}`
     const lower = token.toLowerCase()

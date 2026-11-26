@@ -32,29 +32,14 @@ function PublicPortfolio({ slug, detailKey }) {
     }
   }, [slug])
   function trackClick(event) {
-    const anchor = event.target.closest('a')
+    if (event.type === 'auxclick' && event.button !== 1) return
+    const anchor = event.target.closest?.('a')
     const href = anchor?.getAttribute('href')
-    if (!href || href.startsWith('/p/') || href.startsWith('#') || href.startsWith('data:') || !data) return
-    let raw = href
-    function find(node) {
-      if (!node || typeof node !== 'object') return
-      for (const [key, value] of Object.entries(node)) {
-        if (
-          ['url', 'github', 'website', 'linkedin', 'href'].includes(key) &&
-          typeof value === 'string'
-        ) {
-          try {
-            if (new URL(value.includes(':') ? value : `https://${value}`).href === href) raw = value
-          } catch {
-            /* Ignore invalid links. */
-          }
-        } else find(value)
-      }
-    }
-    find(data.profile)
+    if (!/^(https?:\/\/|mailto:)/i.test(href || '')) return
     api(`/public/portfolios/${encodeURIComponent(slug)}/events`, {
       method: 'POST',
-      body: { type: 'click', href: raw },
+      keepalive: true,
+      body: { type: 'click', href },
     }).catch(() => {})
   }
   if (error)
@@ -75,7 +60,7 @@ function PublicPortfolio({ slug, detailKey }) {
     )
   if(detailKey && !portfolioDetailEntries(hydrateProfile(data.profile),data.settings).some((item)=>item.key===detailKey && data.settings.detailPages?.[item.key]?.enabled)) return <main className="portfolio-detail-unavailable"><h1>Detail page unavailable</h1><Link to={`/p/${encodeURIComponent(slug)}`}>Back to portfolio</Link></main>
   return (
-    <main onClickCapture={trackClick}>
+    <main onClickCapture={trackClick} onAuxClickCapture={trackClick}>
       <PortfolioPreview
         profile={hydrateProfile(data.profile)}
         resumeProfile={data.resumeProfile ? hydrateProfile(data.resumeProfile) : undefined}

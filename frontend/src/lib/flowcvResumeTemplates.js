@@ -22,7 +22,7 @@ export const flowcvResumeTemplates = [
   template('flowcv-mercury-flow','Mercury Flow','Modern',
     'A pale grey photo header, centered section bands, and a left-hand date rail.',
     'classic-one-column-design-professionals','Georgia, serif','#484846',
-    {header:'left',headings:'template',capitals:false,headerColor:'#e7e7e5',photoPosition:'left',photoSize:'xl',photoShape:'circle',metadataPosition:'left',contactArrangement:'columns',titleStyle:'normal',sectionGap:24,sectionStyles:{skills:{contentLayout:'columns',columns:3,rowBullets:true}}}, {photo:true}),
+    {header:'left',headings:'template',capitals:false,headerColor:'#e7e7e5',photoPosition:'left',photoSize:'xl',photoShape:'circle',metadataPosition:'left',contactArrangement:'columns',titleStyle:'normal',sectionGap:24,sectionStyles:{skills:{contentLayout:'columns',columns:3,rowBullets:true}}}, {samplePhoto:true}),
   template('flowcv-rose-letter','Rose Letter','Creative',
     'A soft rose page with a bold left-aligned name, stacked contacts, and a profile introduction.',
     'rose-letter','Arial, Helvetica, sans-serif','#222222',
@@ -38,5 +38,5 @@ export const flowcvResumeTemplates = [
   template('flowcv-atlantic-blue','Atlantic Blue','Sidebar',
     'A deep blue identity sidebar with a portrait and profile beside a white career column.',
     'atlantic-blue-multi-column-sidebar-left','Georgia, serif','#193442',
-    {layout:'template',header:'left',headings:'template',fontSize:13,nameSize:29,titleSize:20,entrySize:13,headingSize:13,headingIcons:'filled',contactArrangement:'stacked',photoSize:'xl',photoShape:'circle',entryLayout:'full',titleStyle:'normal',sectionGap:24}, {photo:true}),
+    {layout:'template',header:'left',headings:'template',fontSize:13,nameSize:29,titleSize:20,entrySize:13,headingSize:13,headingIcons:'filled',contactArrangement:'stacked',photoSize:'xl',photoShape:'circle',entryLayout:'full',titleStyle:'normal',sectionGap:24}, {samplePhoto:true}),
 ]

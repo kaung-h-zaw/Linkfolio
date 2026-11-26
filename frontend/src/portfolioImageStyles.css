@@ -36,11 +36,11 @@
 .portfolio-site[data-portrait-effect='sepia'] .portfolio-portrait { filter:sepia(.65) saturate(.8) !important; }.portfolio-site[data-image-effect='sepia'] :is(.portfolio-project-image,.portfolio-hero-image) { filter:sepia(.65) saturate(.8) !important; }
 .portfolio-site[data-portrait-effect='vivid'] .portfolio-portrait { filter:saturate(1.4) contrast(1.08) !important; }.portfolio-site[data-image-effect='vivid'] :is(.portfolio-project-image,.portfolio-hero-image) { filter:saturate(1.4) contrast(1.08) !important; }
 .portfolio-site[data-portrait-effect='soft'] .portfolio-portrait { filter:saturate(.7) contrast(.92) brightness(1.05) !important; }.portfolio-site[data-image-effect='soft'] :is(.portfolio-project-image,.portfolio-hero-image) { filter:saturate(.7) contrast(.92) brightness(1.05) !important; }
-.portfolio-site[data-image-position] :is(.portfolio-portrait,.portfolio-project-image,.portfolio-hero-image) { object-position:center !important; }
-.portfolio-site[data-image-position='top'] :is(.portfolio-portrait,.portfolio-project-image,.portfolio-hero-image) { object-position:center top !important; }
-.portfolio-site[data-image-position='bottom'] :is(.portfolio-portrait,.portfolio-project-image,.portfolio-hero-image) { object-position:center bottom !important; }
-.portfolio-site[data-image-position='left'] :is(.portfolio-portrait,.portfolio-project-image,.portfolio-hero-image) { object-position:left center !important; }
-.portfolio-site[data-image-position='right'] :is(.portfolio-portrait,.portfolio-project-image,.portfolio-hero-image) { object-position:right center !important; }
+.portfolio-site[data-image-position] .portfolio-project-image { object-position:center !important; }
+.portfolio-site[data-image-position='top'] .portfolio-project-image { object-position:center top !important; }
+.portfolio-site[data-image-position='bottom'] .portfolio-project-image { object-position:center bottom !important; }
+.portfolio-site[data-image-position='left'] .portfolio-project-image { object-position:left center !important; }
+.portfolio-site[data-image-position='right'] .portfolio-project-image { object-position:right center !important; }
 .portfolio-site[data-cover-ratio]:not([data-cover-ratio='template']) .portfolio-hero-image { height:auto !important; max-height:none !important; width:100% !important; }
 .portfolio-site[data-cover-ratio='wide'] .portfolio-hero-image { aspect-ratio:16 / 9 !important; }.portfolio-site[data-cover-ratio='cinema'] .portfolio-hero-image { aspect-ratio:21 / 9 !important; }.portfolio-site[data-cover-ratio='banner'] .portfolio-hero-image { aspect-ratio:3 / 1 !important; }.portfolio-site[data-cover-ratio='square'] .portfolio-hero-image { aspect-ratio:1 !important; }
 .portfolio-image-style-tile span.portfolio-portrait { display:grid !important; place-items:center; }

@@ -40,8 +40,16 @@ function openDatabase(path) {
       activity_date TEXT NOT NULL, views INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (document_id, activity_date)
     );
+    CREATE TABLE IF NOT EXISTS analytics_events (
+      document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+      occurred_at TEXT NOT NULL, views INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (document_id, occurred_at)
+    );
     INSERT OR IGNORE INTO analytics_daily (document_id, activity_date, views, clicks)
-      SELECT document_id, substr(last_viewed_at, 1, 10), views, clicks FROM analytics WHERE last_viewed_at IS NOT NULL;
+      SELECT document_id, substr(last_viewed_at, 1, 10), views, clicks FROM analytics
+      WHERE last_viewed_at IS NOT NULL
+        AND NOT EXISTS (SELECT 1 FROM analytics_daily WHERE analytics_daily.document_id = analytics.document_id)
+        AND NOT EXISTS (SELECT 1 FROM analytics_events WHERE analytics_events.document_id = analytics.document_id);
     CREATE TABLE IF NOT EXISTS messages (
       id TEXT PRIMARY KEY, document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
       sender_name TEXT NOT NULL, sender_email TEXT NOT NULL, message TEXT NOT NULL,

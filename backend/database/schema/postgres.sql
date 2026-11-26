@@ -34,9 +34,16 @@ CREATE TABLE IF NOT EXISTS linkfolio.analytics_daily (
   activity_date TEXT NOT NULL, views INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (document_id, activity_date)
 );
+CREATE TABLE IF NOT EXISTS linkfolio.analytics_events (
+  document_id TEXT NOT NULL REFERENCES linkfolio.documents(id) ON DELETE CASCADE,
+  occurred_at TEXT NOT NULL, views INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (document_id, occurred_at)
+);
 INSERT INTO linkfolio.analytics_daily (document_id, activity_date, views, clicks)
   SELECT document_id, substring(last_viewed_at from 1 for 10), views, clicks
   FROM linkfolio.analytics WHERE last_viewed_at IS NOT NULL
+    AND NOT EXISTS (SELECT 1 FROM linkfolio.analytics_daily WHERE analytics_daily.document_id = analytics.document_id)
+    AND NOT EXISTS (SELECT 1 FROM linkfolio.analytics_events WHERE analytics_events.document_id = analytics.document_id)
   ON CONFLICT (document_id, activity_date) DO NOTHING;
 CREATE TABLE IF NOT EXISTS linkfolio.messages (
   id TEXT PRIMARY KEY, document_id TEXT NOT NULL REFERENCES linkfolio.documents(id) ON DELETE CASCADE,

@@ -30,7 +30,7 @@
 .linkfolio-app .app-editor-toolbar > div { min-height:76px; }
 .linkfolio-app .app-editor-toolbar nav button { font-size:13px; font-weight:450; border-radius:8px; }
 .linkfolio-app .app-editor-toolbar nav button[aria-current='page'] { color:var(--app-text); background:var(--app-selected); }
-.linkfolio-app .app-editor-toolbar button[title^='Save'] { background:var(--app-accent); font-weight:500; border-radius:9px; }
+.linkfolio-app .app-editor-toolbar button[title^='Save'] { background:var(--app-primary); font-weight:500; border-radius:9px; }
 .linkfolio-app #editor-content { background:var(--app-canvas); }
 .linkfolio-app #editor-preview { background:var(--app-inset); }
 .linkfolio-app #editor-preview > div:first-child { background:var(--app-inset); border-color:var(--app-border); }
@@ -333,7 +333,13 @@
 .analytics-line-legend .views { background:var(--app-accent); }
 .analytics-line-legend .clicks { background:#7f8da3; }
 .analytics-line-wrap { position:relative; margin-top:14px; overflow-x:auto; }
-.analytics-line-wrap svg { display:block; width:100%; min-width:600px; height:auto; overflow:visible; }
+.analytics-chart-canvas { position:relative; width:100%; min-width:600px; direction:ltr; }
+.analytics-line-wrap svg { display:block; width:100%; height:auto; overflow:visible; }
+@media(max-width:1024px) {
+  /* Start with the latest dates in view, keeping the time axis chronological. */
+  .analytics-line-wrap { direction:rtl; scroll-behavior:auto; scrollbar-width:none; }
+  .analytics-line-wrap::-webkit-scrollbar { display:none; }
+}
 .analytics-grid-line { stroke:var(--app-border); stroke-width:1; }
 .analytics-axis-label { fill:var(--app-muted); font-size:11px; }
 .analytics-line { fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
@@ -379,8 +385,8 @@
 .editor-toolbar-actions > span { display:inline-flex; }
 .editor-toolbar-actions .resume-download-short { display:none; }
 .editor-toolbar-actions .editor-nav-button svg { flex-shrink:0; }
-.linkfolio-app .editor-navigation-bar .editor-save-button { background:var(--app-accent); color:var(--app-on-primary); border-color:var(--app-accent); }
-.linkfolio-app .editor-navigation-bar .editor-save-button:hover { background:var(--app-primary); }
+.linkfolio-app .editor-navigation-bar .editor-save-button { background:var(--app-primary); color:var(--app-on-primary); border-color:var(--app-primary); }
+.linkfolio-app .editor-navigation-bar .editor-save-button:hover { background:var(--app-primary-hover); }
 .editor-toolbar-navigation { display:flex; align-items:center; gap:24px; padding:11px 20px; border-top:1px solid var(--app-border); border-radius:0 0 14px 14px; background:var(--app-selected); }
 .editor-type-label { display:flex; align-items:center; gap:8px; color:var(--app-muted); font-size:12px; white-space:nowrap; }
 .editor-toolbar-navigation nav { display:flex; gap:9px; }
@@ -770,6 +776,7 @@
   .app-workspace[data-workspace-view='analytics'] .analytics-line-card { display:flex; flex-direction:column; flex:1; min-height:0; }
   .app-workspace[data-workspace-view='analytics'] .analytics-chart-heading { flex:none; }
   .app-workspace[data-workspace-view='analytics'] .analytics-line-wrap { display:flex; flex:1; min-height:0; overflow:visible; }
+  .app-workspace[data-workspace-view='analytics'] .analytics-chart-canvas { min-width:0; }
   .app-workspace[data-workspace-view='analytics'] .analytics-line-wrap svg { width:100%; min-width:0; height:100%; }
 }
 .analytics-summary-card { padding:18px 20px; }

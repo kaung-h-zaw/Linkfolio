@@ -91,6 +91,7 @@ function ResumeEditor({ params, mode }) {
   const [portfolio, setPortfolio, portfolioStyleHistory] = useStyleHistory(() => ({
     ...defaultPortfolio,
     ...draft.portfolio,
+    languages: draft.portfolio ? draft.portfolio.languages === true : defaultPortfolio.languages,
     template:getPortfolioTemplate(draft.portfolio?.template || defaultPortfolio.template).id,
   }), ['template', 'design', 'color', 'surface', 'sectionLayouts', 'sectionTitles', 'extraSectionVisibility', 'about', 'projects', 'experience', 'education', 'skills', 'certifications', 'languages', 'contact'])
   function updatePortfolio(value) {

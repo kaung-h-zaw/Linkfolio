@@ -1,5 +1,6 @@
 /* Linkfolio editor: a single toolbar, open canvas, and focused editing cards. */
 .editor-workspace .portfolio-preview-toolbar { box-sizing:border-box; width:calc(100% - 32px); max-width:1440px; margin-inline:auto; padding:10px 0 0; }
+.editor-workspace .portfolio-device-frame { box-sizing:content-box; border:1px solid var(--app-muted, #64748b); }
 .portfolio-device-page { min-height:100vh; margin-inline:auto; background:#fff; }
 .editor-workspace .portfolio-preview-close { border-radius:50%; background:var(--app-surface); transition:background-color 140ms,border-color 140ms,color 140ms; }
 .editor-workspace .portfolio-preview-close:hover { background:var(--app-selected); border-color:var(--app-accent); color:var(--app-accent); }
