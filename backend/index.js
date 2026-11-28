@@ -1,4 +1,5 @@
 require('dotenv').config({ path: require('node:path').resolve(__dirname, '.env') })
+const { once } = require('node:events')
 const { resolve } = require('node:path')
 const { existsSync } = require('node:fs')
 const { createApp } = require('./app')
@@ -22,8 +23,15 @@ async function start() {
   const database = await openConfiguredDatabase()
   const app = createApp({ database, origin, production })
   serveClient(app, frontend)
-  const server = app.listen(port, '0.0.0.0', () =>
-    console.log(`Linkfolio listening on port ${port} (${database.engine || 'sqlite'} database)`))
+  const server = app.listen(port, '0.0.0.0')
+  try {
+    await once(server, 'listening')
+  } catch (error) {
+    await database.close()
+    if (error.code === 'EADDRINUSE') throw new Error(`Port ${port} is already in use. Set PORT to a free port.`, { cause: error })
+    throw error
+  }
+  console.log(`Linkfolio listening on port ${port} (${database.engine || 'sqlite'} database)`)
   for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => {
     server.close(async () => {
       await database.close()
